@@ -1,0 +1,22 @@
+# allow rewriting
+RewriteEngine On
+
+# targeted directory to install
+RewriteBase /avenue/
+
+# access forbidden for directories
+Options All -Indexes
+
+# prevent hidden files from being viewed
+<Files .*>
+Order Deny,Allow
+Deny From All
+</Files>
+
+# prevent files in directories being viewed directly
+RewriteRule ^(?:app|src|tests|vendor)\b.* index.php/$0 [L]
+
+# front control and url rewriting to index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule .* index.php/$0 [PT]

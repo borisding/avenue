@@ -1,0 +1,9 @@
+/vendor
+composer.lock
+.buildpath
+.project
+/.settings
+/nbproject
+.DS_Store
+avenue.sublime-project
+avenue.sublime-workspace
