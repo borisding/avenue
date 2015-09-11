@@ -2,10 +2,13 @@
 namespace Avenue;
 
 use \Closure;
+use Avenue\Traits\HelperTrait;
 use Avenue\Interfaces\AppInterface;
 
 final class App implements AppInterface
 {
+    use HelperTrait;
+    
     /**
      * Cache respective services.
      * 
@@ -75,7 +78,7 @@ final class App implements AppInterface
 	    }
 	    
 	    if (!is_object(static::$instances[$name])) {
-	        throw new \InvalidArgumentException('Non-object returned for [' .$name. '] in singleton.');
+	        throw new \Exception('Non-object returned for [' .$name. '] in singleton.');
 	    }
 	    
 	    return static::$instances[$name];
@@ -91,7 +94,7 @@ final class App implements AppInterface
 	    }
 	    
 	    if (!array_key_exists($key, static::$settings)) {
-	        throw new \InvalidArgumentException('Invalid config! [' . $key. '] is not set.');
+	        throw new \Exception('Invalid config! [' . $key. '] is not set.');
 	    }
 	    
 	    return static::$settings[$key];
