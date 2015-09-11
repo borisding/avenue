@@ -60,7 +60,7 @@ final class App implements AppInterface
 	public function resolve($name)
 	{
 	    if (!array_key_exists($name, static::$services)) {
-	        throw new \Exception('Service [' . $name . '] is not registered!');
+	        throw new \OutOfBoundsException('Service [' . $name . '] is not registered!');
 	    }
 	    
 	    $resolver = static::$services[$name];
@@ -78,7 +78,7 @@ final class App implements AppInterface
 	    }
 	    
 	    if (!is_object(static::$instances[$name])) {
-	        throw new \Exception('Non-object returned for [' .$name. '] in singleton.');
+	        throw new \InvalidArgumentException('Non-object returned for [' .$name. '] in singleton.');
 	    }
 	    
 	    return static::$instances[$name];
@@ -94,7 +94,7 @@ final class App implements AppInterface
 	    }
 	    
 	    if (!array_key_exists($key, static::$settings)) {
-	        throw new \Exception('Invalid config! [' . $key. '] is not set.');
+	        throw new \OutOfBoundsException('Invalid config! [' . $key. '] is not set.');
 	    }
 	    
 	    return static::$settings[$key];
@@ -122,7 +122,7 @@ final class App implements AppInterface
 	    }
 	    
 	    if (!method_exists($this, $method)) {
-	        throw new \Exception('[' . $method  . '] method does not exist in App class!');
+	        throw new \OutOfBoundsException('[' . $method  . '] method does not exist in App class!');
 	    }
 	}
 	
