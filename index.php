@@ -1,4 +1,10 @@
 <?php
+// application start time
+defined('AVENUE_START_TIME') or define('AVENUE_START_TIME', microtime(true));
+
+// application memory usage
+defined('AVENUE_MEMORY_USAGE') or define('AVENUE_MEMORY_USAGE', memory_get_usage());
+
 // avenue root directory
 defined('AVENUE_ROOT_DIR') or define('AVENUE_ROOT_DIR', __DIR__);
 

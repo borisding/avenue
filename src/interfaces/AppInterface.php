@@ -6,12 +6,9 @@ use \Closure;
 interface AppInterface
 {
     /**
-     * Route method that invokes the method in Route class.
-     * 
-     * @param mixed $segment
-     * @param array $filters
+     * Route method that inits the route mapping.
      */
-    public function route($segment, array $filters = []);
+    public function route();
     
     /**
      * Method that register the service by passing a function.

@@ -1,13 +1,6 @@
 <?php
 $app = new \Avenue\App();
 
-// default route mapping, any other routes should put before default route
-$app->route('(/@controller(/@action(/@id)))', [
-    '@controller' => ':alnum',
-    '@action' => ':alpha',
-    '@id' => ':digit'
-]);
-
 // application error handling based on the environment
 $app->service('error', function() use ($app) {
     $environment = $app->config('environment');
@@ -18,6 +11,13 @@ $app->service('error', function() use ($app) {
         // TODO
     }
 });
+
+// default route mapping, any other routes should put before default route
+$app->route('(/@controller(/@action(/@id)))', [
+    '@controller' => ':alnum',
+    '@action' => ':alpha',
+    '@id' => ':digit'
+]);
 
 // rendering application's output
 $app->render();

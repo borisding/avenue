@@ -2,12 +2,36 @@
 namespace Avenue;
 
 use \Closure;
+use Avenue\Request;
+use Avenue\Response;
+use Avenue\Route;
 use Avenue\Traits\HelperTrait;
 use Avenue\Interfaces\AppInterface;
 
 final class App implements AppInterface
 {
     use HelperTrait;
+    
+    /**
+     * Request instance.
+     * 
+     * @var object
+     */
+    public $request;
+    
+    /**
+     * Response instance.
+     * 
+     * @var object
+     */
+    public $response;
+    
+    /**
+     * Route instance;
+     * 
+     * @var object
+     */
+    public $route;
     
     /**
      * Cache respective services.
@@ -35,15 +59,17 @@ final class App implements AppInterface
      */
 	public function __construct()
 	{
-	    $this->configTimezone()->configErrorHandlers();
+	    $this->setTimezone()->setErrorHandler();
+	    
+	    $this->addRegistry()->getInstances();
 	}
 	
 	/**
 	 * @see \Avenue\Interfaces\AppInterface::route()
 	 */
-	public function route($segments = '', array $filters = [])
+	public function route()
 	{
-	    // TODO
+	    $this->route->init(func_get_args());
 	}
 	
 	/**
@@ -127,9 +153,9 @@ final class App implements AppInterface
 	}
 	
 	/**
-	 * Configure the application default timezone.
+	 * Set the application default timezone.
 	 */
-	protected function configTimezone()
+	protected function setTimezone()
 	{
 	    date_default_timezone_set($this->config('timezone'));
 	    
@@ -137,12 +163,12 @@ final class App implements AppInterface
 	}
 	
 	/**
-	 * Configure the error and exception handlers.
+	 * Set the error and exception handlers.
 	 * Error messages are render via error service.
 	 * 
 	 * @throws \ErrorException
 	 */
-	protected function configErrorHandlers()
+	protected function setErrorHandler()
 	{
 	    set_exception_handler(function() {
 	        $this->resolve('error');
@@ -157,5 +183,37 @@ final class App implements AppInterface
         });
         
         return $this;
+	}
+	
+	/**
+	 * Add the respective application registries via service container.
+	 */
+	protected function addRegistry()
+	{
+	    $this->service('request', function() {
+	        return new Request($this);
+	    });
+	    
+        $this->service('response', function() {
+            return new Response($this);
+        });
+        
+        $this->service('route', function() {
+            return new Route($this);
+        });
+        
+	    return $this;
+	}
+	
+	/**
+	 * Retrieve respective class instances via singleton method.
+	 */
+	protected function getInstances()
+	{
+	    $this->request = $this->singleton('request');
+	    
+	    $this->response = $this->singleton('response');
+	    
+	    $this->route = $this->singleton('route');
 	}
 }
