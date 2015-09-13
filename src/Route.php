@@ -156,6 +156,7 @@ class Route implements RouteInterface
             
             // iterate over and set respective values to token
             for ($i = 0, $len = count($arrUri); $i < $len; $i++) {
+                
                 if (!empty($arrPathInfo[$i]) && strpos($arrUri[$i], '@') !== false) {
                     $key = $arrUri[$i];
                     
@@ -185,7 +186,7 @@ class Route implements RouteInterface
         if (!class_exists($namespaceController)) {
             // TODO: add the http status code
             
-            throw new \RuntimeException('Controller [' . $namespaceController . '] not found.');
+            throw new \LogicException('Controller [' . $namespaceController . '] not found.');
         }
         
         // check if controller class has parent controller
@@ -216,7 +217,7 @@ class Route implements RouteInterface
             if (!method_exists($this->instance, $action)) {
                 // TODO: add the http status code
                 
-                throw new \InvalidArgumentException('Controller action method [' . $action. '] not found.');
+                throw new \BadMethodCallException('Controller action method [' . $action. '] not found.');
             }
             
             call_user_func([$this->instance, $action]);
