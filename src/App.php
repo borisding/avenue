@@ -154,7 +154,7 @@ final class App implements AppInterface
 	    }
 	    
 	    if (!method_exists($this, $method)) {
-	        throw new \OutOfBoundsException('[' . $method  . '] method does not exist in App class!');
+	        throw new \BadMethodCallException('[' . $method  . '] method does not exist in App class!');
 	    }
 	}
 	
