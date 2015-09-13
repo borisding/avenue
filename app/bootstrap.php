@@ -15,7 +15,7 @@ $app->service('error', function() use ($app) {
 // default route mapping, any other routes should put before default route
 $app->route('(/@controller(/@action(/@id)))', [
     '@controller' => ':alnum',
-    '@action' => ':alpha',
+    '@action' => ':alnum',
     '@id' => ':digit'
 ]);
 
