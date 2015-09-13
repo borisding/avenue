@@ -5,6 +5,7 @@ use \Closure;
 use Avenue\Request;
 use Avenue\Response;
 use Avenue\Route;
+use Avenue\Exception;
 use Avenue\Traits\HelperTrait;
 use Avenue\Interfaces\AppInterface;
 
@@ -89,7 +90,7 @@ final class App implements AppInterface
 	/**
 	 * @see \Avenue\Interfaces\AppInterface::resolve()
 	 */
-	public function resolve($name)
+	public function resolve($name, $args = null)
 	{
 	    if (!array_key_exists($name, static::$services)) {
 	        throw new \OutOfBoundsException('Service [' . $name . '] is not registered!');
@@ -97,16 +98,16 @@ final class App implements AppInterface
 	    
 	    $resolver = static::$services[$name];
 	    
-	    return $resolver();
+	    return $resolver($args);
 	}
 	
 	/**
 	 * @see \Avenue\Interfaces\AppInterface::singleton()
 	 */
-	public function singleton($name)
+	public function singleton($name, $args = null)
 	{
 	    if (!array_key_exists($name, static::$instances)) {
-	        static::$instances[$name] = $this->resolve($name);
+	        static::$instances[$name] = $this->resolve($name, $args);
 	    }
 	    
 	    if (!is_object(static::$instances[$name])) {
@@ -176,8 +177,14 @@ final class App implements AppInterface
 	 */
 	protected function setErrorHandler()
 	{
-	    set_exception_handler(function() {
-	        $this->resolve('error');
+	    set_exception_handler(function(\Exception $exc) {
+	        // create custom exception class instance
+	        // by passing the native exception class instance
+	        $exception = $this->resolve('exception', $exc);
+	        
+	        // passing the custom exception class instance
+	        // into the error service
+	        $this->resolve('error', $exception);
 	    });
 	    
         set_error_handler(function($severity, $message, $file, $line) {
@@ -206,6 +213,10 @@ final class App implements AppInterface
         
         $this->service('route', function() {
             return new Route($this);
+        });
+        
+        $this->service('exception', function($exc) {
+            return new Exception($this, $exc);
         });
         
 	    return $this;
