@@ -59,9 +59,11 @@ final class App implements AppInterface
      */
 	public function __construct()
 	{
-	    $this->setTimezone()->setErrorHandler();
-	    
-	    $this->addRegistry()->getInstances();
+	    $this
+	    ->setTimezone()
+	    ->setErrorHandler()
+	    ->addRegistry()
+	    ->getInstances();
 	}
 	
 	/**
@@ -69,7 +71,11 @@ final class App implements AppInterface
 	 */
 	public function route()
 	{
-	    $this->route->init(func_get_args());
+	    if (!$this->route->fulfilled()) {
+	        return $this->route->init(func_get_args());
+	    } else {
+	        return true;
+	    }
 	}
 	
 	/**
