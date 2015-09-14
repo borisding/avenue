@@ -22,17 +22,15 @@ interface AppInterface
      * Resolve the registered services.
      * 
      * @param mixed $name
-     * @param mixed $args
      */
-    public function resolve($name, $args = null);
+    public function resolve($name);
     
     /**
      * Return the singleton via object service.
      * 
      * @param mixed $name
-     * @param mixed $args
      */
-    public function singleton($name, $args = null);
+    public function singleton($name);
     
     /**
      * Retrieve the cofinguration value based on the key.
