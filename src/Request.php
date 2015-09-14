@@ -1,23 +1,14 @@
 <?php
 namespace Avenue;
 
-use Avenue\Interfaces\RequestInterface;
-
-class Request implements RequestInterface
+class Request
 {
-       /**
+    /**
      * Avenue class instance.
      * 
      * @var mixed
      */
     protected $app;
-    
-    /**
-     * Magic method's parameters.
-     * 
-     * @var array
-     */
-    protected $params = [];
     
     /**
      * Http get method.
@@ -83,9 +74,9 @@ class Request implements RequestInterface
      * 
      * @return boolean
      */
-    public function httpGet()
+    public function withGet()
     {
-        return $this->httpMethod() === static::HTTP_GET;    
+        return $this->withMethod() === static::HTTP_GET;    
     }
     
     /**
@@ -93,9 +84,9 @@ class Request implements RequestInterface
      *
      * @return boolean
      */
-    public function httpPost()
+    public function withPost()
     {
-        return $this->httpMethod() === static::HTTP_POST;
+        return $this->withMethod() === static::HTTP_POST;
     }
     
     /**
@@ -103,9 +94,9 @@ class Request implements RequestInterface
      *
      * @return boolean
      */
-    public function httpPut()
+    public function withPut()
     {
-        return $this->httpMethod() === static::HTTP_PUT;
+        return $this->withMethod() === static::HTTP_PUT;
     }
     
     /**
@@ -113,9 +104,9 @@ class Request implements RequestInterface
      *
      * @return boolean
      */
-    public function httpDelete()
+    public function withDelete()
     {
-        return $this->httpMethod() === static::HTTP_DELETE;
+        return $this->withMethod() === static::HTTP_DELETE;
     }
     
     /**
@@ -123,9 +114,9 @@ class Request implements RequestInterface
      *
      * @return boolean
      */
-    public function httpOptions()
+    public function withOptions()
     {
-        return $this->httpMethod() === static::HTTP_OPTIONS;
+        return $this->withMethod() === static::HTTP_OPTIONS;
     }
     
     /**
@@ -133,23 +124,13 @@ class Request implements RequestInterface
      *
      * @return boolean
      */
-    public function httpPatch()
+    public function withPatch()
     {
-        return $this->httpMethod() === static::HTTP_PATCH;
+        return $this->withMethod() === static::HTTP_PATCH;
     }
-    
+        
     /**
-     * To check if http is in secure mode.
-     *
-     * @return boolean
-     */
-    public function httpSecure()
-    {
-        return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' || $_SERVER['SERVER_PORT'] == 443;
-    }
-    
-    /**
-     * Returning http request method.
+     * Return http request method.
      * PUT, DELETE and OPTIONS methods can be checked via _method in POST.
      * If none was found, then using GET as default. 
      * If lower case is true, returned as lower case instead.
@@ -157,7 +138,7 @@ class Request implements RequestInterface
      * @param string $lowerCase
      * @return mixed
      */
-    public function httpMethod($lowerCase = false)
+    public function withMethod($lowerCase = false)
     {
         $arrHttpMethods = [static::HTTP_PUT, static::HTTP_DELETE, static::HTTP_OPTIONS];
         
@@ -169,9 +150,9 @@ class Request implements RequestInterface
         
         if ($lowerCase) {
             return strtolower($httpMethod);
+        } else {
+            return $httpMethod;
         }
-        
-        return $httpMethod;
     }
     
     /**
@@ -179,13 +160,23 @@ class Request implements RequestInterface
      *
      * @return boolean
      */
-    public function viaAjax()
+    public function withAjax()
     {
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
             return strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
         }
         
         return false;
+    }
+    
+    /**
+     * To check if http is in secure mode.
+     *
+     * @return boolean
+     */
+    public function isSecure()
+    {
+        return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' || $_SERVER['SERVER_PORT'] == 443;
     }
     
     /**
@@ -223,7 +214,7 @@ class Request implements RequestInterface
      */
     public function scheme()
     {
-        return $this->httpSecure() ? 'https' : 'http';
+        return $this->isSecure() ? 'https' : 'http';
     }
     
     /**
@@ -249,13 +240,15 @@ class Request implements RequestInterface
      */
     public function baseUrl()
     {
-        return $this->scheme() . '://' . $this->host() . str_replace('/' . static::ENTRY_SCRIPT, '', $this->scriptName());
+        $entryScript = str_replace('/' . static::ENTRY_SCRIPT, '', $this->scriptName());
+        
+        return $this->scheme() . '://' . $this->host() . $entryScript;
     }
     
     /**
      * Redirect to specified path.
      * Default is full path with base url appended.
-     * 
+     *
      * @param mixed $path
      * @param string $baseUrl
      */
@@ -277,37 +270,14 @@ class Request implements RequestInterface
      * 
      * @return string
      */
-    public function rawInput()
+    public function body()
     {
-        $rawInput = file_get_contents('php://input');
+        $input = file_get_contents('php://input');
         
-        if (empty($rawInput)) {
-            $rawInput = '';
+        if (empty($input)) {
+            $input = '';
         }
         
-        return $rawInput;
-    }
-    
-    /**
-     * Set magic method for request.
-     *
-     * @param string $key
-     * @param mixed $value
-     * @return mixed
-     */
-    public function __set($key, $value)
-    {
-        return $this->params[$key] = $value;
-    }
-    
-    /**
-     * Get magic method for request.
-     *
-     * @param string $key
-     * @return mixed
-     */
-    public function __get($key)
-    {
-        return $this->app->arrGet($key, $this->params);
+        return $input;
     }
 }
