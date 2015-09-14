@@ -35,11 +35,11 @@ class Route implements RouteInterface
     protected $filters = [];
     
     /**
-     * The uri tokens.
+     * The uri params.
      * 
      * @var array
      */
-    protected $tokens = [];
+    protected $params = [];
     
     /**
      * Flag to indicate route is fulfullied.
@@ -141,7 +141,7 @@ class Route implements RouteInterface
     }
     
     /**
-     * Extract URI values and match with the respective tokens.
+     * Extract URI values and match with the respective params.
      */
     protected function extractUriTokens()
     {
@@ -162,7 +162,7 @@ class Route implements RouteInterface
                     
                     $value = $arrPathInfo[$i];
                     
-                    $this->setToken($key, $this->app->escape($value));
+                    $this->setParams($key, $this->app->escape($value));
                 }
             }
         }
@@ -176,7 +176,7 @@ class Route implements RouteInterface
      */
     protected function withController()
     {
-        $controller = $this->app->arrGet('@controller', $this->getAllTokens(), $this->app->config('defaultController'));
+        $controller = $this->app->arrGet('@controller', $this->getAllParams(), $this->app->config('defaultController'));
         
         $controller = ucfirst($controller . static::CONTROLLER_SUFFIX);
         
@@ -210,7 +210,7 @@ class Route implements RouteInterface
     protected function invokeAction()
     {
         if (is_object($this->instance)) {
-            $action = $this->app->arrGet('@action', $this->getAllTokens(), 'index');
+            $action = $this->app->arrGet('@action', $this->getAllParams(), 'index');
             
             $action = $action . static::ACTION_SUFFIX;
             
@@ -267,33 +267,33 @@ class Route implements RouteInterface
     }
     
     /**
-     * @see \Avenue\Interfaces\RouteInterface::setToken()
+     * @see \Avenue\Interfaces\RouteInterface::setParams()
      */
-    public function setToken($key, $value)
+    public function setParams($key, $value)
     {
-        return $this->tokens[$key] = $value;
+        return $this->params[$key] = $value;
     }
     
     /**
-     * @see \Avenue\Interfaces\RouteInterface::getToken()
+     * @see \Avenue\Interfaces\RouteInterface::getParams()
      */
-    public function getToken($key)
+    public function getParams($key)
     {
-        return $this->app->arrGet($key, $this->tokens, null);
+        return $this->app->arrGet($key, $this->params, null);
     }
     
     /**
-     * @see \Avenue\Interfaces\RouteInterface::getAllTokens()
+     * @see \Avenue\Interfaces\RouteInterface::getAllParams()
      */
-    public function getAllTokens()
+    public function getAllParams()
     {
-        return $this->tokens;
+        return $this->params;
     }
     
     /**
-     * @see \Avenue\Interfaces\RouteInterface::fulfilled()
+     * @see \Avenue\Interfaces\RouteInterface::isFulfilled()
      */
-    public function fulfilled()
+    public function isFulfilled()
     {
         return $this->fulfill;
     }

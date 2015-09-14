@@ -72,7 +72,7 @@ final class App implements AppInterface
 	 */
 	public function route()
 	{
-	    if (!$this->route->fulfilled()) {
+	    if (!$this->route->isFulfilled()) {
 	        return $this->route->init(func_get_args());
 	    } else {
 	        return true;
@@ -184,7 +184,7 @@ final class App implements AppInterface
 	        
 	        // passing the custom exception class instance
 	        // into the error service
-	        $this->resolve('error', $exception);
+	        return $this->resolve('error', $exception);
 	    });
 	    
         set_error_handler(function($severity, $message, $file, $line) {

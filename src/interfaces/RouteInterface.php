@@ -16,22 +16,22 @@ interface RouteInterface
      * @param mixed $key
      * @param mixed $value
      */
-    public function setToken($key, $value);
+    public function setParams($key, $value);
     
     /**
      * Get the particular token value based on the key.
      * 
      * @param mixed $key
      */
-    public function getToken($key);
+    public function getParams($key);
     
     /**
      * Get all URI tokens in key/value pairs.
      */
-    public function getAllTokens();
+    public function getAllParams();
     
     /**
      * Check if particular route is fulfilled.
      */
-    public function fulfilled();
+    public function isFulfilled();
 }

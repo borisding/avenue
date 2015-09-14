@@ -12,7 +12,7 @@ return [
     // application's timezone
     'timezone' => 'UTC',
     
-    // default controller to be assigned when @controller token is empty
+    // default controller to be assigned when @controller param is empty
     'defaultController' => 'default',
     
     // database mode
