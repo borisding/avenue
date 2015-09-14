@@ -2,9 +2,8 @@
 namespace Avenue;
 
 use Avenue\App;
-use Avenue\Interfaces\RouteInterface;
 
-class Route implements RouteInterface
+class Route
 {
     /**
      * App instance.
@@ -103,7 +102,9 @@ class Route implements RouteInterface
     }
     
     /**
-     * @see \Avenue\Interfaces\RouteInterface::init()
+     * Start with the route mapping by accepting the arguments from app route.
+     *
+     * @param array $args
      */
     public function init(array $args)
     {
@@ -162,7 +163,7 @@ class Route implements RouteInterface
                     
                     $value = $arrPathInfo[$i];
                     
-                    $this->setParams($key, $this->app->escape($value));
+                    $this->setParam($key, $this->app->escape($value));
                 }
             }
         }
@@ -176,7 +177,9 @@ class Route implements RouteInterface
      */
     protected function withController()
     {
-        $controller = $this->app->arrGet('@controller', $this->getAllParams(), $this->app->config('defaultController'));
+        $defaultController = $this->app->config('defaultController');
+        
+        $controller = $this->app->arrGet('@controller', $this->getAllParams(), $defaultController);
         
         $controller = ucfirst($controller . static::CONTROLLER_SUFFIX);
         
@@ -267,23 +270,28 @@ class Route implements RouteInterface
     }
     
     /**
-     * @see \Avenue\Interfaces\RouteInterface::setParams()
+     * Set the particular URI token with a value.
+     *
+     * @param mixed $key
+     * @param mixed $value
      */
-    public function setParams($key, $value)
+    public function setParam($key, $value)
     {
         return $this->params[$key] = $value;
     }
     
     /**
-     * @see \Avenue\Interfaces\RouteInterface::getParams()
+     * Get the particular token value based on the key.
+     *
+     * @param mixed $key
      */
-    public function getParams($key)
+    public function getParam($key)
     {
         return $this->app->arrGet($key, $this->params, null);
     }
     
     /**
-     * @see \Avenue\Interfaces\RouteInterface::getAllParams()
+     * Get all URI tokens in key/value pairs.
      */
     public function getAllParams()
     {
@@ -291,7 +299,7 @@ class Route implements RouteInterface
     }
     
     /**
-     * @see \Avenue\Interfaces\RouteInterface::isFulfilled()
+     * Check if particular route is fulfilled.
      */
     public function isFulfilled()
     {
