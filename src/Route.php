@@ -115,9 +115,8 @@ class Route
         list($this->uri, $this->filters) = $args;
         
         if ($this->fulfill = $this->matchRoute()) {
-            $this->extractUriTokens();
-            
             $this
+            ->extractUriTokens()
             ->withController()
             ->invokeBefore()
             ->invokeAction()
@@ -161,6 +160,8 @@ class Route
                 }
             }
         }
+        
+        return $this;
     }
     
     /**
@@ -178,15 +179,13 @@ class Route
         
         // throw exception if no controller class found
         if (!class_exists($namespaceController)) {
-            // TODO: add the http status code
-            
+            $this->app->response->setHttpStatus(404);
             throw new \LogicException('Controller [' . $namespaceController . '] not found.');
         }
         
         // check if controller class has parent controller
         if (!$this->isExtendedFromBase($namespaceController)) {
-            // TODO: add the http status code
-            
+            $this->app->response->setHttpStatus(400);
             throw new \LogicException('Controller must be extending the base controller!');
         }
         
@@ -208,8 +207,7 @@ class Route
             $action = $action . static::ACTION_SUFFIX;
             
             if (!method_exists($this->instance, $action)) {
-                // TODO: add the http status code
-                
+                $this->app->response->setHttpStatus(404);
                 throw new \BadMethodCallException('Controller action method [' . $action. '] not found.');
             }
             
