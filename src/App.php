@@ -74,15 +74,15 @@ final class App implements AppInterface
 	{
 	    if (!$this->route->isFulfilled()) {
 	        return $this->route->init(func_get_args());
-	    } else {
-	        return true;
 	    }
+	    
+	    return true;
 	}
 	
 	/**
-	 * @see \Avenue\Interfaces\AppInterface::service()
+	 * @see \Avenue\Interfaces\AppInterface::addService()
 	 */
-	public function service($name, Closure $callback)
+	public function addService($name, Closure $callback)
 	{
 	    static::$services[$name] = $callback;
 	}
@@ -165,7 +165,6 @@ final class App implements AppInterface
 	protected function setTimezone()
 	{
 	    date_default_timezone_set($this->config('timezone'));
-	    
 	    return $this;
 	}
 	
@@ -203,19 +202,19 @@ final class App implements AppInterface
 	 */
 	protected function addRegistry()
 	{
-	    $this->service('request', function() {
+	    $this->addService('request', function() {
 	        return new Request($this);
 	    });
 	    
-        $this->service('response', function() {
+        $this->addService('response', function() {
             return new Response($this);
         });
         
-        $this->service('route', function() {
+        $this->addService('route', function() {
             return new Route($this);
         });
         
-        $this->service('exception', function($exc) {
+        $this->addService('exception', function($exc) {
             return new Exception($this, $exc);
         });
         
@@ -228,9 +227,7 @@ final class App implements AppInterface
 	protected function getInstances()
 	{
 	    $this->request = $this->singleton('request');
-	    
 	    $this->response = $this->singleton('response');
-	    
 	    $this->route = $this->singleton('route');
 	}
 }
