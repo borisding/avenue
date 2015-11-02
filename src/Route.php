@@ -133,9 +133,7 @@ class Route
     {
         // replace with the regexp patterns
         $uriRegex = strtr(strtr($this->uri, $this->filters), $this->regex);
-        
         $uriRegex = str_replace(')', ')?', $uriRegex);
-        
         $this->pathInfo = $this->app->request->pathInfo();
         
         return preg_match('#^/?' . $uriRegex . '/?$#', $this->pathInfo);
@@ -147,12 +145,10 @@ class Route
     protected function extractUriTokens()
     {
         $this->uri = str_replace(')', '', str_replace('(', '', $this->uri));
-        
         $fs = '/';
         
         if (strpos($this->uri, $fs) !== false && strpos($this->pathInfo, $fs) !== false) {
             $arrUri = explode($fs, $this->uri);
-            
             $arrPathInfo = explode($fs, $this->pathInfo);
             
             // iterate over and set respective values to token
@@ -160,9 +156,7 @@ class Route
                 
                 if (!empty($arrPathInfo[$i]) && strpos($arrUri[$i], '@') !== false) {
                     $key = $arrUri[$i];
-                    
                     $value = $arrPathInfo[$i];
-                    
                     $this->setParam($key, $this->app->escape($value));
                 }
             }
@@ -178,11 +172,8 @@ class Route
     protected function withController()
     {
         $defaultController = $this->app->config('defaultController');
-        
         $controller = $this->app->arrGet('@controller', $this->getAllParams(), $defaultController);
-        
         $controller = ucfirst($controller . static::CONTROLLER_SUFFIX);
-        
         $namespaceController = static::NAMESPACE_PREFIX . '\\' . $controller;
         
         // throw exception if no controller class found
@@ -214,7 +205,6 @@ class Route
     {
         if (is_object($this->instance)) {
             $action = $this->app->arrGet('@action', $this->getAllParams(), 'index');
-            
             $action = $action . static::ACTION_SUFFIX;
             
             if (!method_exists($this->instance, $action)) {
@@ -237,7 +227,6 @@ class Route
     {
         if (is_object($this->instance)) {
             $action = 'before' . static::ACTION_SUFFIX;
-            
             call_user_func([$this->instance, $action]);
         }
         
@@ -252,7 +241,6 @@ class Route
     {
         if (is_object($this->instance)) {
             $action = 'after' . static::ACTION_SUFFIX;
-        
             call_user_func([$this->instance, $action]);
         }
         
@@ -265,7 +253,6 @@ class Route
     protected function isExtendedFromBase($targetedClass)
     {
         $parents = class_parents($targetedClass);
-    
         return isset($parents[static::BASE_CONTROLLER]);
     }
     
