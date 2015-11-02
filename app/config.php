@@ -6,7 +6,7 @@ return [
     // http version that is used
     'httpVersion' => '1.1',
     
-    // application's environment mode
+    // application's environment mode (development, staging, production)
     'environment' => 'development',
     
     // application's timezone
