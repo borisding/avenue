@@ -74,9 +74,9 @@ class Request
      * 
      * @return boolean
      */
-    public function withGet()
+    public function isGet()
     {
-        return $this->withMethod() === static::HTTP_GET;    
+        return $this->getMethod() === static::HTTP_GET;    
     }
     
     /**
@@ -84,9 +84,9 @@ class Request
      *
      * @return boolean
      */
-    public function withPost()
+    public function isPost()
     {
-        return $this->withMethod() === static::HTTP_POST;
+        return $this->getMethod() === static::HTTP_POST;
     }
     
     /**
@@ -94,9 +94,9 @@ class Request
      *
      * @return boolean
      */
-    public function withPut()
+    public function isPut()
     {
-        return $this->withMethod() === static::HTTP_PUT;
+        return $this->getMethod() === static::HTTP_PUT;
     }
     
     /**
@@ -104,9 +104,9 @@ class Request
      *
      * @return boolean
      */
-    public function withDelete()
+    public function isDelete()
     {
-        return $this->withMethod() === static::HTTP_DELETE;
+        return $this->getMethod() === static::HTTP_DELETE;
     }
     
     /**
@@ -114,9 +114,9 @@ class Request
      *
      * @return boolean
      */
-    public function withOptions()
+    public function isOptions()
     {
-        return $this->withMethod() === static::HTTP_OPTIONS;
+        return $this->getMethod() === static::HTTP_OPTIONS;
     }
     
     /**
@@ -124,11 +124,11 @@ class Request
      *
      * @return boolean
      */
-    public function withPatch()
+    public function isPatch()
     {
-        return $this->withMethod() === static::HTTP_PATCH;
+        return $this->getMethod() === static::HTTP_PATCH;
     }
-        
+    
     /**
      * Return http request method.
      * PUT, DELETE and OPTIONS methods can be checked via _method in POST.
@@ -138,7 +138,7 @@ class Request
      * @param string $lowerCase
      * @return mixed
      */
-    public function withMethod($lowerCase = false)
+    public function getMethod($lowerCase = false)
     {
         $arrHttpMethods = [static::HTTP_PUT, static::HTTP_DELETE, static::HTTP_OPTIONS];
         
@@ -160,7 +160,7 @@ class Request
      *
      * @return boolean
      */
-    public function withAjax()
+    public function isAjax()
     {
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
             return strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
