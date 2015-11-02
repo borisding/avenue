@@ -184,17 +184,17 @@ class Request
      * 
      * @return mixed
      */
-    public function pathInfo()
+    public function getPathInfo()
     {
         return $this->app->arrGet('PATH_INFO', $_SERVER);
     }
-        
+    
     /**
      * Returning query string parameters.
      *
      * @return mixed
      */
-    public function queryString()
+    public function getQueryString()
     {
         return $this->app->arrGet('QUERY_STRING', $_SERVER);
     }
@@ -202,7 +202,7 @@ class Request
     /**
      * Return the host name.
      */
-    public function host()
+    public function getHost()
     {
         return $this->app->arrGet('HTTP_HOST', $_SERVER);
     }
@@ -212,7 +212,7 @@ class Request
      * 
      * @return string
      */
-    public function scheme()
+    public function getScheme()
     {
         return $this->isSecure() ? 'https' : 'http';
     }
@@ -220,7 +220,7 @@ class Request
     /**
      * Return the script name.
      */
-    public function scriptName()
+    public function getScriptName()
     {
         return $this->app->arrGet('SCRIPT_NAME', $_SERVER);
     }
@@ -228,7 +228,7 @@ class Request
     /**
      * Return the current request URI.
      */
-    public function requestUri()
+    public function getRequestUri()
     {
         return $this->app->arrGet('REQUEST_URI', $_SERVER);
     }
@@ -238,11 +238,10 @@ class Request
      * 
      * @return string
      */
-    public function baseUrl()
+    public function getBaseUrl()
     {
-        $entryScript = str_replace('/' . static::ENTRY_SCRIPT, '', $this->scriptName());
-        
-        return $this->scheme() . '://' . $this->host() . $entryScript;
+        $entryScript = str_replace('/' . static::ENTRY_SCRIPT, '', $this->getScriptName());
+        return $this->getScheme(). '://' . $this->getHost() . $entryScript;
     }
     
     /**
@@ -255,13 +254,11 @@ class Request
     public function redirect($path, $baseUrl = true)
     {
         if ($baseUrl) {
-            $path = $this->baseUrl() . $path;
+            $path = $this->getBaseUrl() . $path;
         }
         
         $this->app->response->setHttpStatus(302);
-        
         header('Location:' . $path);
-        
         die();
     }
     
@@ -270,7 +267,7 @@ class Request
      * 
      * @return string
      */
-    public function body()
+    public function getBody()
     {
         $input = file_get_contents('php://input');
         

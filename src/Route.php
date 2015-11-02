@@ -58,7 +58,7 @@ class Route
      * @var Route's regular expression patterns to be matched.
      */
     protected $regex = [
-        ':alnum' => '([a-zA-Z0-9-_]+)',
+        ':alnum' => '([a-zA-Z0-9-]+)',
         ':alpha' => '([a-zA-Z]+)',
         ':digit' => '([0-9]+)'
     ];
@@ -133,7 +133,7 @@ class Route
         // replace with the regexp patterns
         $uriRegex = strtr(strtr($this->uri, $this->filters), $this->regex);
         $uriRegex = str_replace(')', ')?', $uriRegex);
-        $this->pathInfo = $this->app->request->pathInfo();
+        $this->pathInfo = $this->app->request->getPathInfo();
         
         return preg_match('#^/?' . $uriRegex . '/?$#', $this->pathInfo);
     }
