@@ -1,7 +1,7 @@
 <?php
 // application error handling based on the environment
 $app->addService('error', function($e) use ($app) {
-    $environment = $app->config('environment');
+    $environment = $app->getConfig('environment');
 
     if ($environment === 'staging' || $environment === 'production') {
         error_reporting(0);

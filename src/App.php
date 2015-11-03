@@ -68,9 +68,10 @@ final class App implements AppInterface
 	}
 	
 	/**
-	 * @see \Avenue\Interfaces\AppInterface::route()
+	 * {@inheritDoc}
+	 * @see \Avenue\Interfaces\AppInterface::addRoute()
 	 */
-	public function route()
+	public function addRoute()
 	{
 	    if (!$this->route->isFulfilled()) {
 	        return $this->route->init(func_get_args());
@@ -80,6 +81,7 @@ final class App implements AppInterface
 	}
 	
 	/**
+	 * {@inheritDoc}
 	 * @see \Avenue\Interfaces\AppInterface::addService()
 	 */
 	public function addService($name, Closure $callback)
@@ -88,6 +90,7 @@ final class App implements AppInterface
 	}
 	
 	/**
+	 * {@inheritDoc}
 	 * @see \Avenue\Interfaces\AppInterface::resolve()
 	 */
 	public function resolve($name, $args = null)
@@ -102,6 +105,7 @@ final class App implements AppInterface
 	}
 	
 	/**
+	 * {@inheritDoc}
 	 * @see \Avenue\Interfaces\AppInterface::singleton()
 	 */
 	public function singleton($name, $args = null)
@@ -118,9 +122,10 @@ final class App implements AppInterface
 	}
 	
 	/**
-	 * @see \Avenue\Interfaces\AppInterface::config()
+	 * {@inheritDoc}
+	 * @see \Avenue\Interfaces\AppInterface::getConfig()
 	 */
-	public function config($key)
+	public function getConfig($key)
 	{
 	    if (empty(static::$settings)) {
 	        static::$settings = require_once AVENUE_APP_DIR . '/config.php';
@@ -134,6 +139,7 @@ final class App implements AppInterface
 	}
 	
 	/**
+	 * {@inheritDoc}
 	 * @see \Avenue\Interfaces\AppInterface::render()
 	 */
 	public function render()
@@ -164,7 +170,7 @@ final class App implements AppInterface
 	 */
 	protected function setTimezone()
 	{
-	    date_default_timezone_set($this->config('timezone'));
+	    date_default_timezone_set($this->getConfig('timezone'));
 	    return $this;
 	}
 	

@@ -8,7 +8,7 @@ interface AppInterface
     /**
      * Route method that inits the route mapping.
      */
-    public function route();
+    public function addRoute();
     
     /**
      * Method that register the service by passing a function.
@@ -37,7 +37,7 @@ interface AppInterface
      * 
      * @param mixed $key
      */
-    public function config($key);
+    public function getConfig($key);
     
     /**
      * Rendering the application output.
