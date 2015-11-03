@@ -64,7 +64,7 @@ final class App implements AppInterface
 	    ->setTimezone()
 	    ->setErrorHandler()
 	    ->addRegistry()
-	    ->getInstances();
+	    ->factory();
 	}
 	
 	/**
@@ -115,7 +115,7 @@ final class App implements AppInterface
 	    }
 	    
 	    if (!is_object(static::$instances[$name])) {
-	        throw new \InvalidArgumentException('Non-object returned for [' .$name. '] in singleton.');
+	        return null;
 	    }
 	    
 	    return static::$instances[$name];
@@ -230,7 +230,7 @@ final class App implements AppInterface
 	/**
 	 * Retrieve respective class instances via singleton method.
 	 */
-	protected function getInstances()
+	protected function factory()
 	{
 	    $this->request = $this->singleton('request');
 	    $this->response = $this->singleton('response');

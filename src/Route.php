@@ -189,7 +189,7 @@ class Route
             throw new \LogicException('Controller must be extending the base controller!');
         }
         
-        $this->instance = new $namespaceController();
+        $this->instance = new $namespaceController($this->app);
         
         return $this;
     }
