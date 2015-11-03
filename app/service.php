@@ -9,6 +9,11 @@ $app->addService('error', function($e) use ($app) {
     } else {
         // TODO
         error_reporting(-1);
-        echo 'error.';
+        print_r('something wrong.');
     }
+});
+
+// default view service
+$app->addService('view', function() use ($app) {
+    return new \Avenue\View($app);
 });
