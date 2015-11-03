@@ -5,6 +5,7 @@ use \Closure;
 use Avenue\Request;
 use Avenue\Response;
 use Avenue\Route;
+use Avenue\View;
 use Avenue\Exception;
 use Avenue\Traits\HelperTrait;
 use Avenue\Interfaces\AppInterface;
@@ -218,6 +219,10 @@ final class App implements AppInterface
         
         $this->addService('route', function() {
             return new Route($this);
+        });
+        
+        $this->addService('view', function() {
+            return new View($this);
         });
         
         $this->addService('exception', function($exc) {
