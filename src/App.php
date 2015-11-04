@@ -152,7 +152,13 @@ final class App implements AppInterface
 	 */
 	public function render()
 	{
-	    // TODO
+	    // throw page not found exception, if any
+	    if (!$this->route->isFulfilled()) {
+	        $this->response->setHttpStatus(404);
+	        throw new \Exception('Page not found!');
+	    }
+	    
+	    $this->response->render();
 	}
 	
 	/**
@@ -171,23 +177,6 @@ final class App implements AppInterface
 	    if (!method_exists($this, $method)) {
 	        throw new \BadMethodCallException('[' . $method  . '] method does not exist in App class!');
 	    }
-	}
-	
-	/**
-	 * Returning avenue version.
-	 */
-	public function getVersion()
-	{
-	    return static::AVENUE_VERSION;
-	}
-	
-	/**
-	 * Set the application default timezone.
-	 */
-	protected function setTimezone()
-	{
-	    date_default_timezone_set($this->getConfig('timezone'));
-	    return $this;
 	}
 	
 	/**
@@ -244,6 +233,23 @@ final class App implements AppInterface
             return new Exception($this, $exc);
         });
         
+	    return $this;
+	}
+	
+	/**
+	 * Returning avenue version.
+	 */
+	public function getVersion()
+	{
+	    return static::AVENUE_VERSION;
+	}
+	
+	/**
+	 * Set the application default timezone.
+	 */
+	protected function setTimezone()
+	{
+	    date_default_timezone_set($this->getConfig('timezone'));
 	    return $this;
 	}
 	
