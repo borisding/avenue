@@ -1,4 +1,7 @@
 <?php
+// avenue version
+defined('AVENUE_VERSION') or define('AVENUE_VERSION', 1.0);
+
 // application start time
 defined('AVENUE_START_TIME') or define('AVENUE_START_TIME', microtime(true));
 
@@ -10,6 +13,9 @@ defined('AVENUE_ROOT_DIR') or define('AVENUE_ROOT_DIR', __DIR__);
 
 // avenue app directory
 defined('AVENUE_APP_DIR') or define('AVENUE_APP_DIR', AVENUE_ROOT_DIR . '/app');
+
+// avenue src directory
+defined('AVENUE_SRC_DIR') or define('AVENUE_SRC_DIR', AVENUE_ROOT_DIR . '/src');
 
 // path to 'vendor' directory
 defined('AVENUE_VENDOR_DIR') or define('AVENUE_VENDOR_DIR', AVENUE_ROOT_DIR . '/vendor');
