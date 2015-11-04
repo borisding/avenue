@@ -165,7 +165,7 @@ class Response
      */
     public function getHttpStatusDesc($code)
     {
-        $httpStatusCodes = require_once AVENUE_APP_DIR . '/src/includes/http_status.php';
+        $httpStatusCodes = require_once AVENUE_SRC_DIR . '/includes/http_status.php';
         $httpStatusDesc = 'Unknown http status!';
 
         if (isset($httpStatusCodes[$code])) {
