@@ -1,7 +1,4 @@
 <?php
-// avenue version
-defined('AVENUE_VERSION') or define('AVENUE_VERSION', 1.0);
-
 // application start time
 defined('AVENUE_START_TIME') or define('AVENUE_START_TIME', microtime(true));
 
