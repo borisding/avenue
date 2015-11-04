@@ -64,139 +64,139 @@ final class App implements AppInterface
     static $settings = [];
     
     /**
-     * App class constructor.
+     * App constructor
      */
-	public function __construct()
-	{
-	    $this
-	    ->setTimezone()
-	    ->setErrorHandler()
-	    ->addRegistry()
-	    ->factory();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \Avenue\Interfaces\AppInterface::addRoute()
-	 */
-	public function addRoute()
-	{
-	    if (!$this->route->isFulfilled()) {
-	        return $this->route->init(func_get_args());
-	    }
-	    
-	    return true;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \Avenue\Interfaces\AppInterface::addService()
-	 */
-	public function addService($name, Closure $callback)
-	{
-	    static::$services[$name] = $callback;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \Avenue\Interfaces\AppInterface::resolve()
-	 */
-	public function resolve($name, $args = null)
-	{
-	    if (!array_key_exists($name, static::$services)) {
-	        throw new \OutOfBoundsException('Service [' . $name . '] is not registered!');
-	    }
-	    
-	    $resolver = static::$services[$name];
-	    
-	    return $resolver($args);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \Avenue\Interfaces\AppInterface::singleton()
-	 */
-	public function singleton($name, $args = null)
-	{
-	    if (!array_key_exists($name, static::$instances)) {
-	        static::$instances[$name] = $this->resolve($name, $args);
-	    }
-	    
-	    if (!is_object(static::$instances[$name])) {
-	        return null;
-	    }
-	    
-	    return static::$instances[$name];
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \Avenue\Interfaces\AppInterface::getConfig()
-	 */
-	public function getConfig($key)
-	{
-	    if (empty(static::$settings)) {
-	        static::$settings = require_once AVENUE_APP_DIR . '/config.php';
-	    }
-	    
-	    if (!array_key_exists($key, static::$settings)) {
-	        throw new \OutOfBoundsException('Invalid config! [' . $key. '] is not set.');
-	    }
-	    
-	    return static::$settings[$key];
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \Avenue\Interfaces\AppInterface::render()
-	 */
-	public function render()
-	{
-	    // throw page not found exception, if any
-	    if (!$this->route->isFulfilled()) {
-	        $this->response->setHttpStatus(404);
-	        throw new \Exception('Page not found!');
-	    }
-	    
-	    $this->response->render();
-	}
-	
-	/**
-	 * Shortcut of resolving registered services.
-	 * 
-	 * @param mixed $method
-	 * @param array $params
-	 * @throws \Exception
-	 */
-	public function __call($method, array $params = [])
-	{
-	    if (array_key_exists($method, static::$services)) {
-	        return $this->resolve($method);
-	    }
-	    
-	    if (!method_exists($this, $method)) {
-	        throw new \BadMethodCallException('[' . $method  . '] method does not exist in App class!');
-	    }
-	}
-	
-	/**
-	 * Set the error and exception handlers.
-	 * Error messages are render via error service.
-	 * 
-	 * @throws \ErrorException
-	 */
-	protected function setErrorHandler()
-	{
-	    set_exception_handler(function(\Exception $exc) {
-	        // create custom exception class instance
-	        // by passing the native exception class instance
-	        $exception = $this->resolve('exception', $exc);
-	        
-	        // passing the custom exception class instance
-	        // into the error service
-	        return $this->resolve('error', $exception);
-	    });
-	    
+    public function __construct()
+    {
+        $this
+        ->setTimezone()
+        ->setErrorHandler()
+        ->addRegistry()
+        ->factory();
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::addRoute()
+     */
+    public function addRoute()
+    {
+        if (!$this->route->isFulfilled()) {
+            return $this->route->init(func_get_args());
+        }
+        
+        return true;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::addService()
+     */
+    public function addService($name, Closure $callback)
+    {
+        static::$services[$name] = $callback;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::resolve()
+     */
+    public function resolve($name, $args = null)
+    {
+        if (!array_key_exists($name, static::$services)) {
+            throw new \OutOfBoundsException('Service [' . $name . '] is not registered!');
+        }
+        
+        $resolver = static::$services[$name];
+        
+        return $resolver($args);
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::singleton()
+     */
+    public function singleton($name, $args = null)
+    {
+        if (!array_key_exists($name, static::$instances)) {
+            static::$instances[$name] = $this->resolve($name, $args);
+        }
+        
+        if (!is_object(static::$instances[$name])) {
+            return null;
+        }
+        
+        return static::$instances[$name];
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::getConfig()
+     */
+    public function getConfig($key)
+    {
+        if (empty(static::$settings)) {
+            static::$settings = require_once AVENUE_APP_DIR . '/config.php';
+        }
+        
+        if (!array_key_exists($key, static::$settings)) {
+            throw new \OutOfBoundsException('Invalid config! [' . $key. '] is not set.');
+        }
+        
+        return static::$settings[$key];
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::render()
+     */
+    public function render()
+    {
+        // throw page not found exception, if any
+        if (!$this->route->isFulfilled()) {
+            $this->response->setHttpStatus(404);
+            throw new \Exception('Page not found!');
+        }
+        
+        $this->response->render();
+    }
+    
+    /**
+     * Shortcut of resolving registered services.
+     * 
+     * @param mixed $method
+     * @param array $params
+     * @throws \Exception
+     */
+    public function __call($method, array $params = [])
+    {
+        if (array_key_exists($method, static::$services)) {
+            return $this->resolve($method);
+        }
+        
+        if (!method_exists($this, $method)) {
+            throw new \BadMethodCallException('[' . $method  . '] method does not exist in App class!');
+        }
+    }
+    
+    /**
+     * Set the error and exception handlers.
+     * Error messages are render via error service.
+     * 
+     * @throws \ErrorException
+     */
+    protected function setErrorHandler()
+    {
+        set_exception_handler(function(\Exception $exc) {
+            // create custom exception class instance
+            // by passing the native exception class instance
+            $exception = $this->resolve('exception', $exc);
+            
+            // passing the custom exception class instance
+            // into the error service
+            return $this->resolve('error', $exception);
+        });
+        
         set_error_handler(function($severity, $message, $file, $line) {
             if (!(error_reporting() & $severity)) {
                 return;
@@ -206,17 +206,17 @@ final class App implements AppInterface
         });
         
         return $this;
-	}
-	
-	/**
-	 * Add the respective application registries via service container.
-	 */
-	protected function addRegistry()
-	{
-	    $this->addService('request', function() {
-	        return new Request($this);
-	    });
-	    
+    }
+    
+    /**
+     * Add the respective application registries via service container.
+     */
+    protected function addRegistry()
+    {
+        $this->addService('request', function() {
+            return new Request($this);
+        });
+        
         $this->addService('response', function() {
             return new Response($this);
         });
@@ -233,33 +233,33 @@ final class App implements AppInterface
             return new Exception($this, $exc);
         });
         
-	    return $this;
-	}
-	
-	/**
-	 * Returning avenue version.
-	 */
-	public function getVersion()
-	{
-	    return static::AVENUE_VERSION;
-	}
-	
-	/**
-	 * Set the application default timezone.
-	 */
-	protected function setTimezone()
-	{
-	    date_default_timezone_set($this->getConfig('timezone'));
-	    return $this;
-	}
-	
-	/**
-	 * Retrieve respective class instances via singleton method.
-	 */
-	protected function factory()
-	{
-	    $this->request = $this->singleton('request');
-	    $this->response = $this->singleton('response');
-	    $this->route = $this->singleton('route');
-	}
+        return $this;
+    }
+    
+    /**
+     * Returning avenue version.
+     */
+    public function getVersion()
+    {
+        return static::AVENUE_VERSION;
+    }
+    
+    /**
+     * Set the application default timezone.
+     */
+    protected function setTimezone()
+    {
+        date_default_timezone_set($this->getConfig('timezone'));
+        return $this;
+    }
+    
+    /**
+     * Retrieve respective class instances via singleton method.
+     */
+    protected function factory()
+    {
+        $this->request = $this->singleton('request');
+        $this->response = $this->singleton('response');
+        $this->route = $this->singleton('route');
+    }
 }
