@@ -15,6 +15,13 @@ final class App implements AppInterface
     use HelperTrait;
     
     /**
+     * Avenue version.
+     * 
+     * @var string
+     */
+    const AVENUE_VERSION = '1.0';
+    
+    /**
      * Request instance.
      * 
      * @var object
@@ -164,6 +171,14 @@ final class App implements AppInterface
 	    if (!method_exists($this, $method)) {
 	        throw new \BadMethodCallException('[' . $method  . '] method does not exist in App class!');
 	    }
+	}
+	
+	/**
+	 * Returning avenue version.
+	 */
+	public function getVersion()
+	{
+	    return static::AVENUE_VERSION;
 	}
 	
 	/**
