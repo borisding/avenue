@@ -43,21 +43,21 @@ final class App implements AppInterface
     public $route;
     
     /**
-     * Cache respective registries.
+     * List of respective services.
      * 
      * @var array
      */
-    static $registries = [];
+    static $services = [];
     
     /**
-     * Cache respective class instances.
+     * List of respective class instances.
      * 
      * @var array
      */
     static $instances = [];
     
     /**
-     * Cache respective settings.
+     * List of respective settings.
      * 
      * @var array
      */
@@ -90,11 +90,11 @@ final class App implements AppInterface
     
     /**
      * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::container()
+     * @see \Avenue\Interfaces\AppInterface::service()
      */
-    public function container($name, Closure $callback)
+    public function service($name, Closure $callback)
     {
-        static::$registries[$name] = $callback;
+        static::$services[$name] = $callback;
     }
     
     /**
@@ -103,11 +103,11 @@ final class App implements AppInterface
      */
     public function resolve($name, $args = null)
     {
-        if (!array_key_exists($name, static::$registries)) {
+        if (!array_key_exists($name, static::$services)) {
             throw new \OutOfBoundsException('Service [' . $name . '] is not registered!');
         }
         
-        $resolver = static::$registries[$name];
+        $resolver = static::$services[$name];
         
         return $resolver($args);
     }
@@ -162,7 +162,7 @@ final class App implements AppInterface
     }
     
     /**
-     * Shortcut of resolving registered registries.
+     * Shortcut of resolving registered services.
      * 
      * @param mixed $method
      * @param array $params
@@ -170,7 +170,7 @@ final class App implements AppInterface
      */
     public function __call($method, array $params = [])
     {
-        if (array_key_exists($method, static::$registries)) {
+        if (array_key_exists($method, static::$services)) {
             return $this->resolve($method);
         }
         
@@ -209,27 +209,27 @@ final class App implements AppInterface
     }
     
     /**
-     * Add the respective application registries via service container.
+     * Add the respective application services.
      */
     protected function addRegistry()
     {
-        $this->container('request', function() {
+        $this->service('request', function() {
             return new Request($this);
         });
         
-        $this->container('response', function() {
+        $this->service('response', function() {
             return new Response($this);
         });
         
-        $this->container('route', function() {
+        $this->service('route', function() {
             return new Route($this);
         });
         
-        $this->container('view', function() {
+        $this->service('view', function() {
             return new View($this);
         });
         
-        $this->container('exception', function($exc) {
+        $this->service('exception', function($exc) {
             return new Exception($this, $exc);
         });
         
