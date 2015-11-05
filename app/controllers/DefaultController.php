@@ -12,7 +12,15 @@ class DefaultController extends Controller
     
     public function indexAction()
     {
-        $this->response->write('Hello! Welcome to Avenue.');
+        // template variable through view object
+        $this->view->title = 'Avenue | PHP Framework';
+        
+        // template variable as second parameter
+        $page = $this->view->fetch('layout', [
+           'content' => '<h3>Hello! Welcome to Avenue.</h3>'
+        ]);
+        
+        $this->response->write($page);
     }
     
     public function afterAction()
