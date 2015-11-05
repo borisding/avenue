@@ -8,18 +8,18 @@ interface AppInterface
     /**
      * Route method that inits the route mapping.
      */
-    public function addRoute();
+    public function route();
     
     /**
-     * Method that register the service by passing a function.
+     * Container method that registers the dependencies.
      * 
      * @param mixed $name
      * @param Closure $callback
      */
-    public function addService($name, Closure $callback);
+    public function container($name, Closure $callback);
     
     /**
-     * Resolve the registered services.
+     * Resolve the registered dependencies.
      * 
      * @param mixed $name
      */
@@ -37,7 +37,7 @@ interface AppInterface
      * 
      * @param mixed $key
      */
-    public function getConfig($key);
+    public function config($key);
     
     /**
      * Rendering the application output.

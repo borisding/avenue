@@ -43,11 +43,11 @@ final class App implements AppInterface
     public $route;
     
     /**
-     * Cache respective services.
+     * Cache respective registries.
      * 
      * @var array
      */
-    static $services = [];
+    static $registries = [];
     
     /**
      * Cache respective class instances.
@@ -77,9 +77,9 @@ final class App implements AppInterface
     
     /**
      * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::addRoute()
+     * @see \Avenue\Interfaces\AppInterface::route()
      */
-    public function addRoute()
+    public function route()
     {
         if (!$this->route->isFulfilled()) {
             return $this->route->init(func_get_args());
@@ -90,11 +90,11 @@ final class App implements AppInterface
     
     /**
      * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::addService()
+     * @see \Avenue\Interfaces\AppInterface::container()
      */
-    public function addService($name, Closure $callback)
+    public function container($name, Closure $callback)
     {
-        static::$services[$name] = $callback;
+        static::$registries[$name] = $callback;
     }
     
     /**
@@ -103,11 +103,11 @@ final class App implements AppInterface
      */
     public function resolve($name, $args = null)
     {
-        if (!array_key_exists($name, static::$services)) {
+        if (!array_key_exists($name, static::$registries)) {
             throw new \OutOfBoundsException('Service [' . $name . '] is not registered!');
         }
         
-        $resolver = static::$services[$name];
+        $resolver = static::$registries[$name];
         
         return $resolver($args);
     }
@@ -131,9 +131,9 @@ final class App implements AppInterface
     
     /**
      * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::getConfig()
+     * @see \Avenue\Interfaces\AppInterface::config()
      */
-    public function getConfig($key)
+    public function config($key)
     {
         if (empty(static::$settings)) {
             static::$settings = require_once AVENUE_APP_DIR . '/config.php';
@@ -162,7 +162,7 @@ final class App implements AppInterface
     }
     
     /**
-     * Shortcut of resolving registered services.
+     * Shortcut of resolving registered registries.
      * 
      * @param mixed $method
      * @param array $params
@@ -170,7 +170,7 @@ final class App implements AppInterface
      */
     public function __call($method, array $params = [])
     {
-        if (array_key_exists($method, static::$services)) {
+        if (array_key_exists($method, static::$registries)) {
             return $this->resolve($method);
         }
         
@@ -213,23 +213,23 @@ final class App implements AppInterface
      */
     protected function addRegistry()
     {
-        $this->addService('request', function() {
+        $this->container('request', function() {
             return new Request($this);
         });
         
-        $this->addService('response', function() {
+        $this->container('response', function() {
             return new Response($this);
         });
         
-        $this->addService('route', function() {
+        $this->container('route', function() {
             return new Route($this);
         });
         
-        $this->addService('view', function() {
+        $this->container('view', function() {
             return new View($this);
         });
         
-        $this->addService('exception', function($exc) {
+        $this->container('exception', function($exc) {
             return new Exception($this, $exc);
         });
         
@@ -249,7 +249,7 @@ final class App implements AppInterface
      */
     protected function setTimezone()
     {
-        date_default_timezone_set($this->getConfig('timezone'));
+        date_default_timezone_set($this->config('timezone'));
         return $this;
     }
     

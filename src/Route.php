@@ -172,7 +172,7 @@ class Route
      */
     protected function withController()
     {
-        $defaultController = $this->app->getConfig('defaultController');
+        $defaultController = $this->app->config('defaultController');
         $controller = $this->app->arrGet('@controller', $this->getAllParams(), $defaultController);
         $controller = ucfirst($controller . static::CONTROLLER_SUFFIX);
         $namespaceController = static::NAMESPACE_PREFIX . '\\' . $controller;
