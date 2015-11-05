@@ -43,31 +43,42 @@ final class App implements AppInterface
     public $route;
     
     /**
+     * App instance.
+     * 
+     * @var object
+     */
+    protected static $app;
+    
+    /**
      * List of respective services.
      * 
      * @var array
      */
-    static $services = [];
+    protected static $services = [];
     
     /**
      * List of respective class instances.
      * 
      * @var array
      */
-    static $instances = [];
+    protected static $instances = [];
     
     /**
      * List of respective settings.
      * 
      * @var array
      */
-    static $settings = [];
+    protected static $settings = [];
     
     /**
      * App constructor
      */
     public function __construct()
     {
+        if (empty(static::$app)) {
+            static::$app = $this;
+        }
+        
         $this
         ->setTimezone()
         ->setErrorHandler()
@@ -209,7 +220,23 @@ final class App implements AppInterface
     }
     
     /**
-     * Add the respective application services.
+     * Returning avenue version.
+     */
+    public function version()
+    {
+        return static::AVENUE_VERSION;
+    }
+    
+    /**
+     * Returning app instance.
+     */
+    public static function instance()
+    {
+        return static::$app;
+    }
+    
+    /**
+     * Add the respective application registries.
      */
     protected function addRegistry()
     {
@@ -234,14 +261,6 @@ final class App implements AppInterface
         });
         
         return $this;
-    }
-    
-    /**
-     * Returning avenue version.
-     */
-    public function getVersion()
-    {
-        return static::AVENUE_VERSION;
     }
     
     /**

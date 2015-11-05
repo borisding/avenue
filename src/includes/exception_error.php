@@ -87,7 +87,7 @@
             <pre><?php echo $this->getTraceAsString(); ?></pre>
         </section>
         <footer>
-            <?php echo date('Y'); ?> &copy; Powered by, Avenue Framework - v<?php echo $this->app->getVersion(); ?>
+            <?php echo date('Y'); ?> &copy; Powered by, Avenue Framework - v<?php echo $this->app->version(); ?>
         </footer>
     </body>
 </html>
