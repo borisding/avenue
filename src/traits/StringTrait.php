@@ -37,6 +37,19 @@ trait StringTrait
     }
     
     /**
+     * Alias escaping and converting to html entities from input.
+     *
+     * @param mixed $input
+     * @param string $flag
+     * @param string $encoding
+     * @param string $doubleEncode
+     */
+    public function e($input, $flag = ENT_COMPAT, $encoding = 'UTF-8', $doubleEncode = true)
+    {
+        return $this->escape($input, $flag, $encoding, $doubleEncode);
+    }
+
+    /**
      * Loop over data and escape it, respectively.
      *
      * @param array $data
@@ -53,5 +66,15 @@ trait StringTrait
         }
     
         return $escapedData;
+    }
+
+    /**
+     * Alias loop over data and escape it, respectively.
+     *
+     * @param array $data
+     */
+    public function ee(array $data)
+    {
+        return $this->escapeEach($data);
     }
 }
