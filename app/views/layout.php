@@ -2,9 +2,9 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title><?=$title?></title>
+<title><?= $this->e($title) ?></title>
 </head>
 <body>
-<?=$content?>
+<?= $this->upper($content) ?>
 </body>
 </html>

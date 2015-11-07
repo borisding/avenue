@@ -1,16 +1,27 @@
 <?php
 namespace Avenue;
 
+use \Closure;
 use Avenue\App;
+use Avenue\Traits\HelperTrait;
 
 class View
 {
+    use HelperTrait;
+    
     /**
      * Avenue class instance.
      *
      * @var mixed
      */
     protected $app;
+    
+    /**
+     * List of view helpers.
+     * 
+     * @var array
+     */
+    protected $helpers = [];
     
     /**
      * Parameters for magic methods.
@@ -28,7 +39,7 @@ class View
     
     /**
      * View class constructor.
-     *
+     * 
      * @param App $app
      */
     public function __construct(App $app)
@@ -47,8 +58,7 @@ class View
         ob_start();
         // merge with direct variables assignment to object
         // the latter will overwrite the first
-        $mergedParams = array_merge($this->params, $params);
-        extract($mergedParams);
+        extract(array_merge($this->params, $params));
         require $this->getViewFile($name);
         
         return ob_get_clean();
@@ -76,6 +86,42 @@ class View
         }
         
         return $PATH_TO_VIEW_FILE;
+    }
+    
+    /**
+     * Register custom helper method.
+     *
+     * @param mixed $name
+     * @param Closure $callback
+     */
+    public function register($name, Closure $callback)
+    {
+        if (array_key_exists($name, $this->helpers) || method_exists($this, $name)) {
+            throw new \LogicException('Helper name already registered!');
+        }
+        
+        if (preg_match('/^[a-zA-Z0-9-_]+$/', $name) !== 1) {
+            throw new \LogicException('Invalid helper name! Alphanumeric only.');
+        }
+        
+        $this->helpers[$name] = $callback;
+    }
+    
+    /**
+     * Magic call method for invoking added method.
+     * 
+     * @param mixed $name
+     * @param array $params
+     * @throws \LogicException
+     * @return mixed
+     */
+    public function __call($name, array $params = [])
+    {
+        if (!array_key_exists($name, $this->helpers)) {
+            throw new \LogicException('Calling invalid helper [' + $name + '].');
+        }
+        
+        return call_user_func_array($this->helpers[$name], $params);
     }
     
     /**
