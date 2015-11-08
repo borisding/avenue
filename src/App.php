@@ -36,6 +36,13 @@ final class App implements AppInterface
     public $response;
     
     /**
+     * View instsance.
+     * 
+     * @var object
+     */
+    public $view;
+    
+    /**
      * Route instance;
      * 
      * @var object
@@ -213,6 +220,7 @@ final class App implements AppInterface
                 return;
             }
             
+            $this->response->setHttpStatus(500);
             throw new \ErrorException($message, 0, $severity, $file, $line);
         });
         
@@ -280,5 +288,6 @@ final class App implements AppInterface
         $this->request = $this->singleton('request');
         $this->response = $this->singleton('response');
         $this->route = $this->singleton('route');
+        $this->view = $this->singleton('view');
     }
 }
