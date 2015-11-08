@@ -89,7 +89,7 @@ final class App implements AppInterface
         $this
         ->setTimezone()
         ->setErrorHandler()
-        ->addRegistry()
+        ->registry()
         ->factory();
     }
     
@@ -180,24 +180,6 @@ final class App implements AppInterface
     }
     
     /**
-     * Shortcut of resolving registered services.
-     * 
-     * @param mixed $method
-     * @param array $params
-     * @throws \Exception
-     */
-    public function __call($method, array $params = [])
-    {
-        if (array_key_exists($method, static::$services)) {
-            return $this->resolve($method);
-        }
-        
-        if (!method_exists($this, $method)) {
-            throw new \BadMethodCallException('[' . $method  . '] method does not exist in App class!');
-        }
-    }
-    
-    /**
      * Set the error and exception handlers.
      * Error messages are render via error service.
      * 
@@ -246,26 +228,26 @@ final class App implements AppInterface
     /**
      * Add the respective application registries.
      */
-    protected function addRegistry()
+    protected function registry()
     {
         $this->service('request', function() {
-            return new Request($this);
+            return new Request(static::$app);
         });
         
         $this->service('response', function() {
-            return new Response($this);
+            return new Response(static::$app);
         });
         
         $this->service('route', function() {
-            return new Route($this);
+            return new Route(static::$app);
         });
         
         $this->service('view', function() {
-            return new View($this);
+            return new View(static::$app);
         });
         
         $this->service('exception', function($exc) {
-            return new Exception($this, $exc);
+            return new Exception(static::$app, $exc);
         });
         
         return $this;
