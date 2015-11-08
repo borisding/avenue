@@ -102,17 +102,18 @@ class Route
     }
     
     /**
+     * TODO: map directory
      * Start with the route mapping by accepting the arguments from app route.
      *
      * @param array $args
      */
     public function init(array $args)
     {
-        if (count($args) !== 2) {
-            throw new \Exception('Route method is expecting two arguments.');
-        }
+        $this->setRouteParams($args);
         
-        list($this->uri, $this->filters) = $args;
+        if (!is_array($this->filters)) {
+            throw new \LogicException('Route callback should be returning array.');
+        }
         
         if ($this->fulfill = $this->matchRoute()) {
             $this
@@ -122,6 +123,26 @@ class Route
             ->invokeAction()
             ->invokeAfter();
         }
+    }
+    
+    /**
+     * Set the route params.
+     * 
+     * @param array $args
+     * @throws \LogicException
+     */
+    protected function setRouteParams(array $args)
+    {
+        if (count($args) !== 2) {
+            throw new \LogicException('Route method is expecting two arguments.');
+        }
+        
+        if (!is_callable($args[1])) {
+            throw new \LogicException('Second argument must be callable.');
+        }
+        
+        $this->uri = $args[0];
+        $this->filters = $args[1]();
     }
     
     /**
