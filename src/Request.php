@@ -180,6 +180,45 @@ class Request
     }
     
     /**
+     * Returning all http request headers.
+     */
+    public function getAllHeaders()
+    {
+        if (!function_exists('getallheaders')) {
+            return $this->getAllNginxHeaders();
+        } else {
+            return getallheaders();
+        }
+    }
+    
+    /**
+     * Returning nginx http request headers.
+     * Credit: http://php.net/manual/en/function.getallheaders.php#84262
+     */
+    public function getAllNginxHeaders()
+    {
+        $headers = [];
+        
+        if (!is_array($_SERVER)) {
+            return $headers;
+        }
+        
+        foreach ($_SERVER as $name => $value) {
+            
+            if (substr($name, 0, 5) == 'HTTP_') {
+                $key = substr($name, 5);
+                $key = str_replace('_', ' ', $key);
+                $key = ucwords(strtolower($key));
+                $key = str_replace(' ', '-', $key);
+                
+                $headers[$key] = $value;
+            }
+        }
+        
+        return $headers;
+    }
+    
+    /**
      * Returning url's path info.
      * 
      * @return mixed
