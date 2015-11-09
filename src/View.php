@@ -118,7 +118,7 @@ class View
     public function __call($name, array $params = [])
     {
         if (!array_key_exists($name, $this->helpers)) {
-            throw new \LogicException('Calling invalid helper [' + $name + '].');
+            throw new \LogicException('Calling invalid helper [' . $name . '].');
         }
         
         return call_user_func_array($this->helpers[$name], $params);
