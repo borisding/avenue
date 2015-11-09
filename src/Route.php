@@ -20,11 +20,11 @@ class Route
     protected $instance;
     
     /**
-     * The route uri.
+     * The route rule.
      * 
      * @var mixed
      */
-    protected $uri;
+    protected $rule;
     
     /**
      * The route filters.
@@ -34,7 +34,7 @@ class Route
     protected $filters = [];
     
     /**
-     * The uri params.
+     * The route params.
      * 
      * @var array
      */
@@ -92,6 +92,13 @@ class Route
     const ACTION_SUFFIX = 'Action';
     
     /**
+     * Default action method.
+     * 
+     * @var string
+     */
+    const DEFAULT_ACTION = 'index';
+    
+    /**
      * Route class constructor.
      * 
      * @param App $app
@@ -102,36 +109,11 @@ class Route
     }
     
     /**
-     * TODO: map directory
      * Start with the route mapping by accepting the arguments from app route.
      *
      * @param array $args
      */
     public function init(array $args)
-    {
-        $this->setRouteParams($args);
-        
-        if (!is_array($this->filters)) {
-            throw new \LogicException('Route callback should be returning array.');
-        }
-        
-        if ($this->fulfill = $this->matchRoute()) {
-            $this
-            ->extractUriTokens()
-            ->withController()
-            ->invokeBefore()
-            ->invokeAction()
-            ->invokeAfter();
-        }
-    }
-    
-    /**
-     * Set the route params.
-     * 
-     * @param array $args
-     * @throws \LogicException
-     */
-    protected function setRouteParams(array $args)
     {
         if (count($args) !== 2) {
             throw new \LogicException('Route method is expecting two arguments.');
@@ -141,8 +123,17 @@ class Route
             throw new \LogicException('Second argument must be callable.');
         }
         
-        $this->uri = $args[0];
+        $this->rule = $args[0];
         $this->filters = $args[1]();
+        
+        if ($this->fulfill = $this->matchRoute()) {
+            $this
+            ->setRouteParams()
+            ->withController()
+            ->invokeBefore()
+            ->invokeAction()
+            ->invokeAfter();
+        }
     }
     
     /**
@@ -151,25 +142,28 @@ class Route
      */
     protected function matchRoute()
     {
+        if (!is_array($this->filters)) {
+            throw new \LogicException('Route callback should be returning array.');
+        }
+        
         // replace with the regexp patterns
-        $uriRegex = strtr(strtr($this->uri, $this->filters), $this->regex);
-        $uriRegex = str_replace(')', ')?', $uriRegex);
+        $ruleRegex = strtr(strtr($this->rule, $this->filters), $this->regex);
+        $ruleRegex = str_replace(')', ')?', $ruleRegex);
         $this->pathInfo = $this->app->request->getPathInfo();
         
-        return preg_match('#^/?' . $uriRegex . '/?$#', $this->pathInfo);
+        return preg_match('#^/?' . $ruleRegex . '/?$#', $this->pathInfo);
     }
     
     /**
-     * Extract URI values and match with the respective params.
+     * Set respective route params with actual value.
      */
-    protected function extractUriTokens()
+    protected function setRouteParams()
     {
-        $this->uri = str_replace(')', '', str_replace('(', '', $this->uri));
-        $fs = '/';
+        $this->rule = str_replace(')', '', str_replace('(', '', $this->rule));
         
-        if (strpos($this->uri, $fs) !== false && strpos($this->pathInfo, $fs) !== false) {
-            $arrUri = explode($fs, $this->uri);
-            $arrPathInfo = explode($fs, $this->pathInfo);
+        if (strpos($this->rule, '/') !== false && strpos($this->pathInfo, '/') !== false) {
+            $arrUri = explode('/', $this->rule);
+            $arrPathInfo = explode('/', $this->pathInfo);
             
             // iterate over and set respective values to token
             for ($i = 0, $len = count($arrUri); $i < $len; $i++) {
@@ -182,37 +176,72 @@ class Route
             }
         }
         
+        // set directory
+        $this->setParam('@directory', $this->app->arrGet('@directory', $this->filters, ''));
+        
+        // set default controller if empty
+        if (empty($this->getParam('@controller'))) {
+            $this->setParam('@controller', $this->app->config('defaultController'));
+        }
+        
+        // set default action if empty
+        if (empty($this->getParam('@action'))) {
+            $this->setParam('@action', static::DEFAULT_ACTION);
+        }
+        
         return $this;
     }
     
     /**
-     * Compute the namespace controller class and instantiate when found.
+     * Get the controller namespace and do the instantiation.
      * 
      * @throws \RuntimeException
      * @throws \LogicException
      */
     protected function withController()
     {
-        $defaultController = $this->app->config('defaultController');
-        $controller = $this->app->arrGet('@controller', $this->getAllParams(), $defaultController);
-        $controller = ucfirst($controller . static::CONTROLLER_SUFFIX);
-        $namespaceController = static::NAMESPACE_PREFIX . '\\' . $controller;
+        $controllerClass = $this->buildNamespaceController();
         
         // throw exception if no controller class found
-        if (!class_exists($namespaceController)) {
+        if (!class_exists($controllerClass)) {
             $this->app->response->setHttpStatus(404);
-            throw new \LogicException('Controller [' . $namespaceController . '] not found.');
+            throw new \LogicException('Controller [' . $controllerClass . '] not found.');
         }
         
         // check if controller class has parent controller
-        if (!$this->isExtendedFromBase($namespaceController)) {
+        if (!$this->isExtendedFromBase($controllerClass)) {
             $this->app->response->setHttpStatus(400);
             throw new \LogicException('Controller must be extending the base controller!');
         }
         
-        $this->instance = new $namespaceController($this->app);
+        $this->instance = new $controllerClass($this->app);
         
         return $this;
+    }
+    
+    /**
+     * Build the controller namespace for the matched route.
+     * If no controller is specified, the default controller will always be used.
+     */
+    protected function buildNamespaceController()
+    {
+        $namespace = '';
+        $directory = $this->app->escape($this->getParam('@directory'));
+        $controller = $this->app->escape($this->getParam('@controller'));
+        $controller = ucfirst($controller . static::CONTROLLER_SUFFIX);
+        
+        // check directory
+        if (!empty($directory)) {
+            if (strpos($directory, '/') !== false) {
+                $namespace .= implode('\\', array_map('ucfirst', explode('/', $directory))) . '\\';
+            } else {
+                $namespace .= ucfirst($directory) . '\\';
+            }
+        }
+        
+        $namespace .= $controller;
+        
+        return static::NAMESPACE_PREFIX . '\\' . $namespace;
     }
     
     /**
@@ -224,8 +253,8 @@ class Route
     protected function invokeAction()
     {
         if (is_object($this->instance)) {
-            $action = $this->app->arrGet('@action', $this->getAllParams(), 'index');
-            $action = $action . static::ACTION_SUFFIX;
+            $action = $this->app->escape($this->getParam('@action'));
+            $action .= static::ACTION_SUFFIX;
             
             if (!method_exists($this->instance, $action)) {
                 $this->app->response->setHttpStatus(404);
