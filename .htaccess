@@ -14,7 +14,7 @@ Deny From All
 </Files>
 
 # prevent files in directories being viewed directly
-RewriteRule ^(?:app|src|tests|vendor)\b.* index.php/$0 [L]
+RewriteRule ^(?:app|src|log|tests|vendor)\b.* index.php/$0 [L]
 
 # front control and url rewriting to index.php
 RewriteCond %{REQUEST_FILENAME} !-f
