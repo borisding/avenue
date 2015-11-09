@@ -64,7 +64,7 @@ class Logger
      * @param array $context
      * @return \Avenue\Logger
      */
-    public function record($message, $level = 'warning', array $context = [])
+    public function record($message, $level = 'debug', array $context = [])
     {
         $level = $this->app->arrGet($level, $this->levels, $this->levels['debug']);
         $this->logger->addRecord($level, $message, $context);
