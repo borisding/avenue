@@ -5,13 +5,9 @@ use Avenue\Controller;
 
 class DefaultController extends Controller
 {
-    protected $logger;
-    
     public function beforeAction()
     {
         parent::beforeAction();
-        // create logger instance
-        $this->logger = $this->app->singleton('logger');
     }
     
     public function indexAction()
@@ -25,9 +21,6 @@ class DefaultController extends Controller
         ]);
         
         $this->response->write($page);
-        
-        // log info example
-        $this->logger->info('page rendered!');
     }
     
     public function afterAction()
