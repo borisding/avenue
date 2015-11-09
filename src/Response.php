@@ -232,6 +232,8 @@ class Response
     
     /**
      * Shortcut for xml header.
+     * 
+     * @return \Avenue\Response
      */
     public function xmlHeader()
     {
