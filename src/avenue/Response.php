@@ -183,7 +183,7 @@ class Response
      */
     public function setHttpHeader(array $headers = [])
     {
-        foreach($headers as $type => $format) {
+        foreach ($headers as $type => $format) {
             $this->headers[$type] = $format;
         }
 
