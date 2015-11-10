@@ -180,12 +180,12 @@ class Route
         $this->setParam('@directory', $this->app->arrGet('@directory', $this->filters, ''));
         
         // set default controller if empty
-        if (empty($this->getParam('@controller'))) {
+        if (empty($this->getParams('@controller'))) {
             $this->setParam('@controller', $this->app->config('defaultController'));
         }
         
         // set default action if empty
-        if (empty($this->getParam('@action'))) {
+        if (empty($this->getParams('@action'))) {
             $this->setParam('@action', static::DEFAULT_ACTION);
         }
         
@@ -226,8 +226,8 @@ class Route
     protected function buildNamespaceController()
     {
         $namespace = '';
-        $directory = $this->app->escape($this->getParam('@directory'));
-        $controller = $this->app->escape($this->getParam('@controller'));
+        $directory = $this->app->escape($this->getParams('@directory'));
+        $controller = $this->app->escape($this->getParams('@controller'));
         $controller = ucfirst($controller . static::CONTROLLER_SUFFIX);
         
         // check directory
@@ -253,7 +253,7 @@ class Route
     protected function invokeAction()
     {
         if (is_object($this->instance)) {
-            $action = $this->app->escape($this->getParam('@action'));
+            $action = $this->app->escape($this->getParams('@action'));
             $action .= static::ACTION_SUFFIX;
             
             if (!method_exists($this->instance, $action)) {
@@ -317,20 +317,17 @@ class Route
     
     /**
      * Get the particular token value based on the key.
-     *
+     * Return all params if key is not provided.
+     * 
      * @param mixed $key
      */
-    public function getParam($key)
+    public function getParams($key = null)
     {
-        return $this->app->arrGet($key, $this->params, null);
-    }
-    
-    /**
-     * Get all URI tokens in key/value pairs.
-     */
-    public function getAllParams()
-    {
-        return $this->params;
+        if (empty($key)) {
+            return $this->params;
+        } else {
+            return $this->app->arrGet($key, $this->params, null);
+        }
     }
     
     /**
