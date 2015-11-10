@@ -29,7 +29,7 @@ class PageController extends Controller
     {
         parent::beforeAction();
         
-        $this->layout = 'layout';
+        $this->layout = 'layouts/page';
     }
     
     /**
