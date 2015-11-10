@@ -1,9 +1,9 @@
 <?php
 namespace App\Controllers\Admin;
 
-use Avenue\Controller;
+use App\Controllers\PageController;
 
-class DefaultController extends Controller
+class DefaultController extends PageController
 {
     public function beforeAction()
     {
@@ -13,10 +13,10 @@ class DefaultController extends Controller
     public function indexAction()
     {
         // template variable through view object
-        $this->view->title = 'Avenue | PHP Framework';
+        $this->view->title = $this->title .= 'Admin';
         
         // template variable as second parameter
-        $page = $this->view->fetch('layout', [
+        $page = $this->view->fetch($this->layout, [
            'content' => '<h3>Hello from Admin page.</h3>'
         ]);
         
