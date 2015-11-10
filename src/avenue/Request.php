@@ -316,4 +316,28 @@ class Request
         
         return $input;
     }
+    
+    /**
+     * Return requested directory.
+     */
+    public function getDirectory()
+    {
+        return $this->app->route->getParams('@directory');
+    }
+    
+    /**
+     * Return requested controller.
+     */
+    public function getController()
+    {
+        return $this->app->route->getParams('@controller');
+    }
+    
+    /**
+     * Return requested action.
+     */
+    public function getAction()
+    {
+        return $this->app->route->getParams('@action');
+    }
 }
