@@ -27,7 +27,7 @@ class PageController extends Controller
      */
     public function beforeAction()
     {
-        parent::afterAction();
+        parent::beforeAction();
         
         $this->layout = 'layout';
     }
