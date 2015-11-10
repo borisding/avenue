@@ -74,7 +74,7 @@ class Response
             $this->sendHeader()->sendDefinedHeader();
         }
 
-        $this->printBody()->reset();
+        $this->output()->flush();
     }
 
     /**
@@ -110,18 +110,18 @@ class Response
     }
     
     /**
-     * Print out the body.
+     * Print the body output.
      */
-    protected function printBody()
+    protected function output()
     {
         echo $this->getBody();
         return $this;
     }
 
     /**
-     * Reset to the default values after body printed.
+     * Reset to the default values after body output printed.
      */
-    public function reset()
+    public function flush()
     {
         $this->statusCode = null;
         $this->body = null;
