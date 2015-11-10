@@ -12,7 +12,7 @@ defined('AVENUE_ROOT_DIR') or define('AVENUE_ROOT_DIR', __DIR__);
 defined('AVENUE_APP_DIR') or define('AVENUE_APP_DIR', AVENUE_ROOT_DIR . '/app');
 
 // avenue src directory
-defined('AVENUE_SRC_DIR') or define('AVENUE_SRC_DIR', AVENUE_ROOT_DIR . '/src');
+defined('AVENUE_SRC_DIR') or define('AVENUE_SRC_DIR', AVENUE_ROOT_DIR . '/src/avenue');
 
 // avenue log directory
 defined('AVENUE_LOG_DIR') or define('AVENUE_LOG_DIR', AVENUE_ROOT_DIR . '/log');
