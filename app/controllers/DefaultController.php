@@ -12,15 +12,9 @@ class DefaultController extends PageController
     
     public function indexAction()
     {
-        // template variable through view object
-        $this->view->title = $this->title .= 'Default';
-        
-        // template variable as second parameter
-        $page = $this->view->fetch($this->layout, [
-           'content' => '<h3>Hello! Welcome to Avenue.</h3>'
-        ]);
-        
-        $this->response->write($page);
+        // assign index title and content
+        $this->title .= 'Default';
+        $this->content = '<h3>Hello! Welcome to Avenue.</h3>';
     }
     
     public function afterAction()

@@ -15,9 +15,16 @@ class PageController extends Controller
     /**
      * Page title.
      * 
-     * @var string
+     * @var mixed
      */
-    protected $title = 'Avenue Framework | ';
+    protected $title;
+    
+    /**
+     * Page content.
+     * 
+     * @var mixed
+     */
+    protected $content;
     
     /**
      * Page controller before action.
@@ -29,7 +36,10 @@ class PageController extends Controller
     {
         parent::beforeAction();
         
+        // default values
         $this->layout = 'layouts/page';
+        $this->title = 'Avenue Framework | ';
+        $this->content= '';
     }
     
     /**
@@ -50,5 +60,14 @@ class PageController extends Controller
     public function afterAction()
     {
         parent::afterAction();
+        
+        // fetching page view tempate by passing parameters
+        $page = $this->view->fetch($this->layout, [
+            'title' => $this->title,
+            'content' => $this->content
+        ]);
+        
+        // write to body
+        $this->response->write($page);
     }
 }
