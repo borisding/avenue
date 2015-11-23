@@ -33,13 +33,6 @@ interface AppInterface
     public function singleton($name);
     
     /**
-     * Retrieve the cofinguration value based on the key.
-     * 
-     * @param mixed $key
-     */
-    public function config($key);
-    
-    /**
      * Rendering the application output.
      */
     public function render();

@@ -72,11 +72,18 @@ final class App implements AppInterface
     protected static $instances = [];
     
     /**
-     * List of respective settings.
+     * List of respective configurations.
      * 
      * @var array
      */
-    protected static $settings = [];
+    protected static $config = [];
+    
+    /**
+     * List of database settings.
+     * 
+     * @var array
+     */
+    protected static $database = [];
     
     /**
      * App constructor
@@ -146,23 +153,6 @@ final class App implements AppInterface
         }
         
         return static::$instances[$name];
-    }
-    
-    /**
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::config()
-     */
-    public function config($key)
-    {
-        if (empty(static::$settings)) {
-            static::$settings = require_once AVENUE_APP_DIR . '/config.php';
-        }
-        
-        if (!array_key_exists($key, static::$settings)) {
-            throw new \OutOfBoundsException('Invalid config! [' . $key. '] is not set.');
-        }
-        
-        return static::$settings[$key];
     }
     
     /**
@@ -257,6 +247,44 @@ final class App implements AppInterface
         });
         
         return $this;
+    }
+    
+    /**
+     * Retrieving config value based on the key.
+     *
+     * @param mixed $key
+     * @throws \OutOfBoundsException
+     */
+    public function config($key)
+    {
+        if (empty(static::$config)) {
+            static::$config = require_once AVENUE_APP_DIR . '/config.php';
+        }
+    
+        if (!array_key_exists($key, static::$config)) {
+            throw new \OutOfBoundsException('Invalid config! [' . $key. '] is not set.');
+        }
+    
+        return static::$config[$key];
+    }
+    
+    /**
+     * Retrieving database settings based on the environment mode.
+     *
+     * @param mixed $mode
+     * @throws \OutOfBoundsException
+     */
+    public function database($mode)
+    {
+        if (empty(static::$database)) {
+            static::$database = require_once AVENUE_APP_DIR . '/database.php';
+        }
+    
+        if (!array_key_exists($mode, static::$database)) {
+            throw new \OutOfBoundsException('Invalid database mode [' . $mode . '].');
+        }
+    
+        return static::$database[$mode];
     }
     
     /**
