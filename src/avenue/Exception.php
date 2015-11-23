@@ -55,6 +55,7 @@ class Exception implements ExceptionInterface
         ob_start();
         require_once $PATH_TO_EXCEPTION_FILE;
         
+        $this->app->response->flush();
         $this->app->response->write(ob_get_clean());
         $this->app->response->render();
         
