@@ -1,9 +1,9 @@
 <?php
 namespace Avenue;
 
-use Avenue\Database\Model;
+use Avenue\Database\Model as BaseModel;
 
-abstract class Model extends Model  
+abstract class Model extends BaseModel  
 {
     /**
      * Model class constructor.
