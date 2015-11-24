@@ -245,18 +245,17 @@ final class App implements AppInterface
     
     /**
      * Retrieving config value based on the key.
-     *
+     * 
      * @param mixed $key
-     * @throws \OutOfBoundsException
      */
     public function config($key)
     {
         if (empty(static::$config)) {
             static::$config = require_once AVENUE_APP_DIR . '/config.php';
         }
-    
+        
         if (!array_key_exists($key, static::$config)) {
-            throw new \OutOfBoundsException('Invalid config! [' . $key. '] is not set.');
+            static::$config[$key] = null;
         }
     
         return static::$config[$key];
