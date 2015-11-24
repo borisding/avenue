@@ -6,10 +6,10 @@ use Avenue\Request;
 use Avenue\Response;
 use Avenue\Route;
 use Avenue\View;
-use Avenue\Logger;
+use Avenue\Log;
 use Avenue\Exception;
-use Avenue\Traits\HelperTrait;
-use Avenue\Interfaces\AppInterface;
+use Avenue\Helpers\HelperTrait;
+use Avenue\AppInterface;
 
 final class App implements AppInterface
 {
@@ -215,9 +215,9 @@ final class App implements AppInterface
             return new View(static::$app);
         });
         
-        $this->service('logger', function() {
+        $this->service('log', function() {
             $monolog = $this->singleton('monolog');
-            return new Logger(static::$app, $monolog);
+            return new Log(static::$app, $monolog);
         });
         
         $this->service('exception', function($exc) {

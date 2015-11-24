@@ -2,10 +2,10 @@
 namespace Avenue;
 
 use Avenue\App;
-use Monolog\Logger as MonoLogger;
+use Monolog\Logger;
 
-class Logger
-{    
+class Log
+{
     /**
      * Avenue class instance.
      *
@@ -27,30 +27,30 @@ class Logger
      */
     protected $levels = [
         // (100): Detailed debug information.
-        'debug' => MonoLogger::DEBUG,
+        'debug' => Logger::DEBUG,
         // (200): Interesting events. Examples: User logs in, SQL logs.
-        'info' => MonoLogger::INFO,
+        'info' => Logger::INFO,
         // (250): Normal but significant events.
-        'notice' => MonoLogger::NOTICE,
+        'notice' => Logger::NOTICE,
         // (300): Exceptional occurrences that are not errors.
-        'warning' => MonoLogger::WARNING,
+        'warning' => Logger::WARNING,
         // (400): Runtime errors that do not require immediate action
-        'error' => MonoLogger::ERROR,
+        'error' => Logger::ERROR,
         // (500): Critical conditions.
-        'critical' => MonoLogger::CRITICAL,
+        'critical' => Logger::CRITICAL,
         // (550): Action must be taken immediately.
-        'alert' => MonoLogger::ALERT,
+        'alert' => Logger::ALERT,
         // (600): Emergency: system is unusable.
-        'emergency' => MonoLogger::EMERGENCY
+        'emergency' => Logger::EMERGENCY
     ];
     
     /**
      * Logger class constructor.
      * 
      * @param App $app
-     * @param MonoLogger $logger
+     * @param Logger $logger
      */
-    public function __construct(App $app, MonoLogger $logger)
+    public function __construct(App $app, Logger $logger)
     {
         $this->app = $app;
         $this->logger = $logger;
@@ -62,7 +62,7 @@ class Logger
      * @param mixed $message
      * @param string $level
      * @param array $context
-     * @return \Avenue\Logger
+     * @return \Avenue\Log
      */
     public function record($message, $level = 'debug', array $context = [])
     {
@@ -77,7 +77,7 @@ class Logger
      * 
      * @param mixed $message
      * @param array $context
-     * @return \Avenue\Logger
+     * @return \Avenue\Log
      */
     public function debug($message, array $context = [])
     {
@@ -90,7 +90,7 @@ class Logger
      * 
      * @param mixed $message
      * @param array $context
-     * @return \Avenue\Logger
+     * @return \Avenue\Log
      */
     public function info($message, array $context = [])
     {
@@ -103,7 +103,7 @@ class Logger
      * 
      * @param mixed $message
      * @param array $context
-     * @return \Avenue\Logger
+     * @return \Avenue\Log
      */
     public function notice($message, array $context = [])
     {
@@ -116,7 +116,7 @@ class Logger
      * 
      * @param mixed $message
      * @param array $context
-     * @return \Avenue\Logger
+     * @return \Avenue\Log
      */
     public function warning($message, array $context = [])
     {
@@ -129,7 +129,7 @@ class Logger
      * 
      * @param mixed $message
      * @param array $context
-     * @return \Avenue\Logger
+     * @return \Avenue\Log
      */
     public function error($message, array $context = [])
     {
@@ -142,7 +142,7 @@ class Logger
      * 
      * @param mixed $message
      * @param array $context
-     * @return \Avenue\Logger
+     * @return \Avenue\Log
      */
     public function critical($message, array $context = [])
     {
@@ -155,7 +155,7 @@ class Logger
      * 
      * @param mixed $message
      * @param array $context
-     * @return \Avenue\Logger
+     * @return \Avenue\Log
      */
     public function alert($message, array $context = [])
     {
@@ -168,7 +168,7 @@ class Logger
      * 
      * @param mixed $message
      * @param array $context
-     * @return \Avenue\Logger
+     * @return \Avenue\Log
      */
     public function emergency($message, array $context = [])
     {

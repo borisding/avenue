@@ -3,7 +3,7 @@ namespace Avenue;
 
 use \Closure;
 use Avenue\App;
-use Avenue\Traits\HelperTrait;
+use Avenue\Helpers\HelperTrait;
 
 class View
 {

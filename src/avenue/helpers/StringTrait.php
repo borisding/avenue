@@ -1,5 +1,5 @@
 <?php
-namespace Avenue\Traits;
+namespace Avenue\Helpers;
 
 trait StringTrait
 {

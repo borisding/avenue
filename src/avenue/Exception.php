@@ -2,7 +2,7 @@
 namespace Avenue;
 
 use Avenue\App;
-use Avenue\Interfaces\ExceptionInterface;
+use Avenue\ExceptionInterface;
 
 class Exception implements ExceptionInterface
 {

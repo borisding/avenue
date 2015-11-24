@@ -1,5 +1,5 @@
 <?php
-namespace Avenue\Interfaces;
+namespace Avenue;
 
 interface ExceptionInterface
 {
