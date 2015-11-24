@@ -8,12 +8,12 @@ use Avenue\Route;
 use Avenue\View;
 use Avenue\Log;
 use Avenue\Exception;
-use Avenue\Helpers\HelperTrait;
 use Avenue\AppInterface;
+use Avenue\Helpers\HelperBundleTrait;
 
 final class App implements AppInterface
 {
-    use HelperTrait;
+    use HelperBundleTrait;
     
     /**
      * Avenue version.

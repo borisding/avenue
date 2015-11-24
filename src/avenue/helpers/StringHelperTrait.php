@@ -1,7 +1,7 @@
 <?php
 namespace Avenue\Helpers;
 
-trait StringTrait
+trait StringHelperTrait
 {
     /**
      * Convert JSON data into array associative format.

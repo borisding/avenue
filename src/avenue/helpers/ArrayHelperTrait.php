@@ -1,7 +1,7 @@
 <?php
 namespace Avenue\Helpers;
 
-trait ArrayTrait
+trait ArrayHelperTrait
 {
     /**
      * Shortcut of returning array element based on name.
