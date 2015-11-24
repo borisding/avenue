@@ -15,6 +15,6 @@ return [
     // default controller to be assigned when @controller param is empty
     'defaultController' => 'default',
     
-    // database mode
-    'database' => 'development'
+    // database configurations
+    'database' => require 'database.php'
 ];

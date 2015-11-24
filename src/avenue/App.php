@@ -79,13 +79,6 @@ final class App implements AppInterface
     protected static $config = [];
     
     /**
-     * List of database settings.
-     * 
-     * @var array
-     */
-    protected static $database = [];
-    
-    /**
      * App constructor
      */
     public function __construct()
@@ -266,25 +259,6 @@ final class App implements AppInterface
         }
     
         return static::$config[$key];
-    }
-    
-    /**
-     * Retrieving database settings based on the environment mode.
-     *
-     * @param mixed $mode
-     * @throws \OutOfBoundsException
-     */
-    public function database($mode)
-    {
-        if (empty(static::$database)) {
-            static::$database = require_once AVENUE_APP_DIR . '/database.php';
-        }
-    
-        if (!array_key_exists($mode, static::$database)) {
-            throw new \OutOfBoundsException('Invalid database mode [' . $mode . '].');
-        }
-    
-        return static::$database[$mode];
     }
     
     /**
