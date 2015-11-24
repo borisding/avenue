@@ -195,22 +195,6 @@ final class App implements AppInterface
     }
     
     /**
-     * Returning avenue version.
-     */
-    public function version()
-    {
-        return static::AVENUE_VERSION;
-    }
-    
-    /**
-     * Returning app instance.
-     */
-    public static function instance()
-    {
-        return static::$app;
-    }
-    
-    /**
      * Add the respective application registries.
      */
     protected function registry()
@@ -259,6 +243,22 @@ final class App implements AppInterface
         }
     
         return static::$config[$key];
+    }
+    
+    /**
+     * Returning avenue version.
+     */
+    public function version()
+    {
+        return static::AVENUE_VERSION;
+    }
+    
+    /**
+     * Returning app instance.
+     */
+    public static function instance()
+    {
+        return static::$app;
     }
     
     /**
