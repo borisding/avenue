@@ -7,11 +7,11 @@ $app->service('error', function($exc) use ($app) {
     if ($environment === 'staging' || $environment === 'production') {
         error_reporting(0);
         
-        $page = ($httpStatus === 404)
-        ? $app->view->fetch('errors/404')
-        : $app->view->fetch('errors/500');
+        $message = ($httpStatus === 404) 
+        ? 'Page not found.'
+        : 'Sorry! Something went wrong.';
         
-        $app->response->write($page);
+        $app->response->write($message);
         $app->response->render();
     } else {
         error_reporting(-1);
