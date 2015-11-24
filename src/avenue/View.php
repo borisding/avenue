@@ -31,13 +31,6 @@ class View
     protected $params = [];
     
     /**
-     * Default view file extension.
-     *
-     * @var mixed
-     */
-    const EXT = '.php';
-    
-    /**
      * View class constructor.
      * 
      * @param App $app
@@ -76,7 +69,7 @@ class View
         // assign with default .php extension
         // if there is no extension specified in file name
         if (empty(pathinfo($name, PATHINFO_EXTENSION))) {
-            $name = $name . static::EXT;
+            $name = $name . '.php';
         }
         
         $PATH_TO_VIEW_FILE = AVENUE_APP_DIR . '/views/' . $name;
