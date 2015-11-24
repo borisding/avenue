@@ -28,7 +28,7 @@ class PageController extends Controller
     
     /**
      * Page controller before action.
-     * Can add some settings here for extended child class usage.
+     * Can add some settings here for child class usage.
      * 
      * @see \Avenue\Controller::beforeAction()
      */
