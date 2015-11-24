@@ -123,6 +123,7 @@ final class App implements AppInterface
     public function resolve($name, $args = null)
     {
         if (!array_key_exists($name, static::$services)) {
+            $this->response->setHttpStatus(500);
             throw new \OutOfBoundsException('Service [' . $name . '] is not registered!');
         }
         
