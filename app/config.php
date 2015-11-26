@@ -15,6 +15,9 @@ return [
     // default controller to be assigned when @controller param is empty
     'defaultController' => 'default',
     
+    // name for the log channel
+    'logChannel' => 'avenue.log',
+    
     // database configurations
     'database' => require 'database.php'
 ];
