@@ -1,5 +1,8 @@
 <?php
-// application error handling based on the environment
+/**
+ * Application error handling.
+ * Error details & stack trace only be displayed in development environment.
+ */
 $app->addService('error', function($exc) use ($app) {
     $environment = $app->getConfig('environment');
     $httpStatus = $app->response->getHttpStatus();
@@ -19,4 +22,17 @@ $app->addService('error', function($exc) use ($app) {
     }
     
     return $app;
+});
+
+/**
+ * Monolog service for the application.
+ * Default is using the StreamHandler.
+ * Details: https://github.com/Seldaek/monolog
+ */
+$app->addService('log', function() use ($app) {
+    $logFile = AVENUE_LOG_DIR . '/' . date('Y-m-d'). '.log';
+    $monolog = new Monolog\Logger($app->getConfig('logChannel'));
+    $monolog->pushHandler(new Monolog\Handler\StreamHandler($logFile));
+    
+    return $monolog;
 });

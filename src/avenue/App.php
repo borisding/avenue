@@ -6,12 +6,9 @@ use Avenue\Request;
 use Avenue\Response;
 use Avenue\Route;
 use Avenue\View;
-use Avenue\Log;
 use Avenue\Exception;
 use Avenue\AppInterface;
 use Avenue\Helpers\HelperBundleTrait;
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
 
 final class App implements AppInterface
 {
@@ -219,14 +216,6 @@ final class App implements AppInterface
                 
         $this->addService('exception', function($exc) {
             return new Exception(static::$app, $exc);
-        });
-        
-        $this->addService('log', function() {
-            $logFile = AVENUE_LOG_DIR . '/' . date('Y-m-d'). '.log';
-            $monolog = new Logger($this->getConfig('logChannel'));
-            $monolog->pushHandler(new StreamHandler($logFile));
-        
-            return new Log(static::$app, $monolog);
         });
         
         return $this;
