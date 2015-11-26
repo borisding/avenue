@@ -20,13 +20,3 @@ $app->addService('error', function($exc) use ($app) {
     
     return $app;
 });
-
-// Monolog setup for application logger
-// https://github.com/Seldaek/monolog
-$app->addService('monolog', function() {
-    $logFile = AVENUE_LOG_DIR . '/' . date('Y-m-d'). '.log';
-    $logger = new \Monolog\Logger('avenue.log');
-    $logger->pushHandler(new \Monolog\Handler\StreamHandler($logFile));
-    
-    return $logger;
-});
