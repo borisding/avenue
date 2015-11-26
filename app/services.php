@@ -1,7 +1,7 @@
 <?php
 // application error handling based on the environment
-$app->service('error', function($exc) use ($app) {
-    $environment = $app->config('environment');
+$app->addService('error', function($exc) use ($app) {
+    $environment = $app->getConfig('environment');
     $httpStatus = $app->response->getHttpStatus();
     
     if ($environment === 'staging' || $environment === 'production') {
@@ -23,7 +23,7 @@ $app->service('error', function($exc) use ($app) {
 
 // Monolog setup for application logger
 // https://github.com/Seldaek/monolog
-$app->service('monolog', function() {
+$app->addService('monolog', function() {
     $logFile = AVENUE_LOG_DIR . '/' . date('Y-m-d'). '.log';
     $logger = new \Monolog\Logger('avenue.log');
     $logger->pushHandler(new \Monolog\Handler\StreamHandler($logFile));

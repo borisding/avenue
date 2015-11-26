@@ -90,15 +90,15 @@ final class App implements AppInterface
         $this
         ->setTimezone()
         ->setErrorHandler()
-        ->registry()
+        ->addRegistry()
         ->factory();
     }
     
     /**
      * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::route()
+     * @see \Avenue\AppInterface::addRoute()
      */
-    public function route()
+    public function addRoute()
     {
         if (!$this->route->isFulfilled()) {
             return $this->route->init(func_get_args());
@@ -109,9 +109,9 @@ final class App implements AppInterface
     
     /**
      * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::service()
+     * @see \Avenue\AppInterface::addService()
      */
-    public function service($name, Closure $callback)
+    public function addService($name, Closure $callback)
     {
         static::$services[$name] = $callback;
     }
@@ -197,30 +197,30 @@ final class App implements AppInterface
     /**
      * Add the respective application registries.
      */
-    protected function registry()
+    protected function addRegistry()
     {
-        $this->service('request', function() {
+        $this->addService('request', function() {
             return new Request(static::$app);
         });
         
-        $this->service('response', function() {
+        $this->addService('response', function() {
             return new Response(static::$app);
         });
         
-        $this->service('route', function() {
+        $this->addService('route', function() {
             return new Route(static::$app);
         });
         
-        $this->service('view', function() {
+        $this->addService('view', function() {
             return new View(static::$app);
         });
         
-        $this->service('log', function() {
+        $this->addService('log', function() {
             $monolog = $this->singleton('monolog');
             return new Log(static::$app, $monolog);
         });
         
-        $this->service('exception', function($exc) {
+        $this->addService('exception', function($exc) {
             return new Exception(static::$app, $exc);
         });
         
@@ -232,7 +232,7 @@ final class App implements AppInterface
      * 
      * @param mixed $key
      */
-    public function config($key)
+    public function getConfig($key)
     {
         if (empty(static::$config)) {
             static::$config = require_once AVENUE_APP_DIR . '/config.php';
@@ -248,7 +248,7 @@ final class App implements AppInterface
     /**
      * Returning avenue version.
      */
-    public function version()
+    public function getVersion()
     {
         return static::AVENUE_VERSION;
     }
@@ -256,7 +256,7 @@ final class App implements AppInterface
     /**
      * Returning app instance.
      */
-    public static function instance()
+    public static function getInstance()
     {
         return static::$app;
     }
@@ -266,7 +266,7 @@ final class App implements AppInterface
      */
     protected function setTimezone()
     {
-        date_default_timezone_set($this->config('timezone'));
+        date_default_timezone_set($this->getConfig('timezone'));
         return $this;
     }
     

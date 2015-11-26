@@ -181,7 +181,7 @@ class Route
         
         // set default controller if empty
         if (empty($this->getParams('@controller'))) {
-            $this->setParam('@controller', $this->app->config('defaultController'));
+            $this->setParam('@controller', $this->app->getConfig('defaultController'));
         }
         
         // set default action if empty
