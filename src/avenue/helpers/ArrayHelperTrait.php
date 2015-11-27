@@ -7,7 +7,7 @@ trait ArrayHelperTrait
      * Shortcut of returning array element based on name.
      * Return default if element not found.
      *
-     * @param unknown $name
+     * @param mixed $name
      * @param array $arr
      * @param string $default
      * @return mixed
