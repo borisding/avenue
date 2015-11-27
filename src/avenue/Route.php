@@ -201,21 +201,21 @@ class Route
      */
     protected function withController()
     {
-        $controllerClass = $this->buildNamespaceController();
+        $ControllerClass = $this->buildNamespaceController();
         
         // throw exception if no controller class found
-        if (!class_exists($controllerClass)) {
+        if (!class_exists($ControllerClass)) {
             $this->app->response->setStatus(404);
-            throw new \LogicException('Controller [' . $controllerClass . '] not found.');
+            throw new \LogicException('Controller [' . $ControllerClass . '] not found.');
         }
         
         // check if controller class has parent controller
-        if (!$this->isExtendedFromBase($controllerClass)) {
+        if (!$this->isExtendedFromBase($ControllerClass)) {
             $this->app->response->setStatus(400);
             throw new \LogicException('Controller must be extending the base controller!');
         }
         
-        $this->instance = new $controllerClass($this->app);
+        $this->instance = new $ControllerClass($this->app);
         
         return $this;
     }
