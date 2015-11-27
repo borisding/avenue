@@ -285,10 +285,12 @@ final class App implements AppInterface
      */
     public function __call($name, array $params = [])
     {
-        if ($name) {
+        if (array_key_exists($name, static::$services)) {
             return $this->singleton($name);
         }
         
-        return null;
+        if (!method_exists($this, $name)) {
+            throw new \Exception('Calling invalid App class method [' . $name . ']');
+        }
     }
 }
