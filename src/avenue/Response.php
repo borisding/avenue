@@ -46,8 +46,8 @@ class Response
     {
         $this->app = $app;
         $this->httpVersion = $this->app->getConfig('httpVersion');
-        $this->setHttpStatus(200);
-        $this->setHttpHeader(['Content-Type' => 'text/html']);
+        $this->setStatus(200);
+        $this->setHeader(['Content-Type' => 'text/html']);
     }
 
     /**
@@ -82,8 +82,8 @@ class Response
      */
     protected function sendHeader()
     {
-        $statusCode = $this->getHttpStatus();
-        $statusDesc = $this->getHttpStatusDesc($statusCode);
+        $statusCode = $this->getStatus();
+        $statusDesc = $this->getStatusDesc($statusCode);
         $httpProtocol = 'HTTP/' . (!empty($this->httpVersion) ? $this->httpVersion : '1.1');
 
         if (strpos(php_sapi_name(), 'cgi') !== false) {
@@ -142,7 +142,7 @@ class Response
      * @param mixed $code
      * @return mixed
      */
-    public function setHttpStatus($code)
+    public function setStatus($code)
     {
         return $this->statusCode = $code;
     }
@@ -152,7 +152,7 @@ class Response
      *
      * @return mixed
      */
-    public function getHttpStatus()
+    public function getStatus()
     {
         return $this->statusCode;
     }
@@ -163,7 +163,7 @@ class Response
      * @param mixed $code
      * @return mixed
      */
-    public function getHttpStatusDesc($code)
+    public function getStatusDesc($code)
     {
         $httpStatusCodes = require_once AVENUE_SRC_DIR . '/includes/http_status.php';
         $httpStatusDesc = 'Unknown http status!';
@@ -181,7 +181,7 @@ class Response
      * @param array $headers
      * @return \Avenue\Response
      */
-    public function setHttpHeader(array $headers = [])
+    public function setHeader(array $headers = [])
     {
         foreach ($headers as $type => $format) {
             $this->headers[$type] = $format;
@@ -195,7 +195,7 @@ class Response
      * 
      * @param mixed $key
      */
-    public function getHttpHeader($key)
+    public function getHeader($key)
     {
         return $this->app->arrGet($key, $this->headers);
     }
@@ -207,7 +207,7 @@ class Response
      */
     public function setJsonHeader()
     {
-        return $this->setHttpHeader(['Content-Type' => 'application/json']);
+        return $this->setHeader(['Content-Type' => 'application/json']);
     }
     
     /**
@@ -217,7 +217,7 @@ class Response
      */
     public function setTextHeader()
     {
-        return $this->setHttpHeader(['Content-Type' => 'text/plain']);
+        return $this->setHeader(['Content-Type' => 'text/plain']);
     }
 
     /**
@@ -227,7 +227,7 @@ class Response
      */
     public function setCsvHeader()
     {
-        return $this->setHttpHeader(['Content-Type' => 'text/csv']);
+        return $this->setHeader(['Content-Type' => 'text/csv']);
     }
     
     /**
@@ -237,6 +237,6 @@ class Response
      */
     public function setXmlHeader()
     {
-        return $this->setHttpHeader(['Content-Type' => 'text/xml']);
+        return $this->setHeader(['Content-Type' => 'text/xml']);
     }
 }

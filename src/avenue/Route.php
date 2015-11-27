@@ -160,10 +160,11 @@ class Route
     protected function setRouteParams()
     {
         $this->rule = str_replace(')', '', str_replace('(', '', $this->rule));
+        $fs = '/';
         
-        if (strpos($this->rule, '/') !== false && strpos($this->pathInfo, '/') !== false) {
-            $arrUri = explode('/', $this->rule);
-            $arrPathInfo = explode('/', $this->pathInfo);
+        if (strpos($this->rule, $fs) !== false && strpos($this->pathInfo, $fs) !== false) {
+            $arrUri = explode($fs, $this->rule);
+            $arrPathInfo = explode($fs, $this->pathInfo);
             
             // iterate over and set respective values to token
             for ($i = 0, $len = count($arrUri); $i < $len; $i++) {
@@ -204,13 +205,13 @@ class Route
         
         // throw exception if no controller class found
         if (!class_exists($controllerClass)) {
-            $this->app->response->setHttpStatus(404);
+            $this->app->response->setStatus(404);
             throw new \LogicException('Controller [' . $controllerClass . '] not found.');
         }
         
         // check if controller class has parent controller
         if (!$this->isExtendedFromBase($controllerClass)) {
-            $this->app->response->setHttpStatus(400);
+            $this->app->response->setStatus(400);
             throw new \LogicException('Controller must be extending the base controller!');
         }
         
@@ -225,6 +226,8 @@ class Route
      */
     protected function buildNamespaceController()
     {
+        $fs = '/';
+        $bs = '\\';
         $namespace = '';
         $directory = $this->app->escape($this->getParams('@directory'));
         $controller = $this->app->escape($this->getParams('@controller'));
@@ -232,16 +235,16 @@ class Route
         
         // check directory
         if (!empty($directory)) {
-            if (strpos($directory, '/') !== false) {
-                $namespace .= implode('\\', array_map('ucfirst', explode('/', $directory))) . '\\';
+            if (strpos($directory, $fs) !== false) {
+                $namespace .= implode($bs, array_map('ucfirst', explode($fs, $directory))) . $bs;
             } else {
-                $namespace .= ucfirst($directory) . '\\';
+                $namespace .= ucfirst($directory) . $bs;
             }
         }
         
         $namespace .= $controller;
         
-        return static::NAMESPACE_PREFIX . '\\' . $namespace;
+        return static::NAMESPACE_PREFIX . $bs . $namespace;
     }
     
     /**
@@ -257,7 +260,7 @@ class Route
             $action .= static::ACTION_SUFFIX;
             
             if (!method_exists($this->instance, $action)) {
-                $this->app->response->setHttpStatus(404);
+                $this->app->response->setStatus(404);
                 throw new \BadMethodCallException('Controller action method [' . $action. '] not found.');
             }
             

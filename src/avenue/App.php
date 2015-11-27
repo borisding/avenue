@@ -122,7 +122,7 @@ final class App implements AppInterface
     public function resolve($name, $args = null)
     {
         if (!array_key_exists($name, static::$services)) {
-            $this->response->setHttpStatus(500);
+            $this->response->setStatus(500);
             throw new \OutOfBoundsException('Service [' . $name . '] is not registered!');
         }
         
@@ -156,7 +156,7 @@ final class App implements AppInterface
     {
         // throw page not found exception, if any
         if (!$this->route->isFulfilled()) {
-            $this->response->setHttpStatus(404);
+            $this->response->setStatus(404);
             throw new \Exception('Page not found!');
         }
         
@@ -172,7 +172,7 @@ final class App implements AppInterface
     protected function setErrorHandler()
     {
         set_exception_handler(function(\Exception $exc) {
-            // create custom exception class instance
+            // resolving exception service
             // by passing the native exception class instance
             $exception = $this->resolve('exception', $exc);
             
@@ -186,7 +186,7 @@ final class App implements AppInterface
                 return;
             }
             
-            $this->response->setHttpStatus(500);
+            $this->response->setStatus(500);
             throw new \ErrorException($message, 0, $severity, $file, $line);
         });
         

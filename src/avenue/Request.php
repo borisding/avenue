@@ -306,7 +306,7 @@ class Request
             $path = $this->getBaseUrl() . $path;
         }
         
-        $this->app->response->setHttpStatus(302);
+        $this->app->response->setStatus(302);
         header('Location:' . $path);
         die();
     }

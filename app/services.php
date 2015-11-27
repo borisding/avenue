@@ -5,12 +5,12 @@
  */
 $app->addService('error', function($exc) use ($app) {
     $environment = $app->getConfig('environment');
-    $httpStatus = $app->response->getHttpStatus();
+    $status = $app->response->getStatus();
     
     if ($environment === 'staging' || $environment === 'production') {
         error_reporting(0);
         
-        $message = ($httpStatus === 404) 
+        $message = ($status === 404) 
         ? 'Page not found.'
         : 'Sorry! Something went wrong.';
         
