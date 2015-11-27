@@ -47,8 +47,8 @@ class Factory
         if (isset($this->classes[$name])) {
             $classInstance = $this->app->singleton($name);
 
-            if ($classInstance instanceof $this->classes[$name] === false) {
-                throw \new LogicException('Core class instance [' . $name . '] cannot be overwritten.');
+            if (!$classInstance instanceof $this->classes[$name]) {
+                throw new \LogicException('Core class instance [' . $name . '] cannot be overwritten.');
             }
 
             return $classInstance;
