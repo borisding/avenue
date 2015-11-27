@@ -205,7 +205,7 @@ class Response
      * 
      * @return \Avenue\Response
      */
-    public function jsonHeader()
+    public function setJsonHeader()
     {
         return $this->setHttpHeader(['Content-Type' => 'application/json']);
     }
@@ -215,7 +215,7 @@ class Response
      * 
      * @return \Avenue\Response
      */
-    public function textHeader()
+    public function setTextHeader()
     {
         return $this->setHttpHeader(['Content-Type' => 'text/plain']);
     }
@@ -225,7 +225,7 @@ class Response
      * 
      * @return \Avenue\Response
      */
-    public function csvHeader()
+    public function setCsvHeader()
     {
         return $this->setHttpHeader(['Content-Type' => 'text/csv']);
     }
@@ -235,7 +235,7 @@ class Response
      * 
      * @return \Avenue\Response
      */
-    public function xmlHeader()
+    public function setXmlHeader()
     {
         return $this->setHttpHeader(['Content-Type' => 'text/xml']);
     }
