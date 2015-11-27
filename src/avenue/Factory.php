@@ -18,7 +18,7 @@ class Factory
      * 
      * @var array
      */
-    protected $classes = [
+    protected $core = [
         'request'   => 'Avenue\Request',
         'response'  => 'Avenue\Response',
         'route'     => 'Avenue\Route',
@@ -44,16 +44,16 @@ class Factory
      */
     public function __call($name, array $params = [])
     {
-        if (isset($this->classes[$name])) {
-            $classInstance = $this->app->singleton($name);
+        $instance = $this->app->singleton($name);
 
-            if (!$classInstance instanceof $this->classes[$name]) {
+        if (isset($this->core[$name])) {
+
+            // check if belongs to core class
+            if (!$instance instanceof $this->core[$name]) {
                 throw new \LogicException('Core class instance [' . $name . '] cannot be overwritten.');
             }
-
-            return $classInstance;
         }
 
-        return null;
+        return $instance;
     }
 }
