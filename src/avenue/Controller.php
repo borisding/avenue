@@ -104,10 +104,10 @@ abstract class Controller
      */
     protected function factory()
     {
-        $this->request = $this->app->singleton('request');
-        $this->response = $this->app->singleton('response');
-        $this->route = $this->app->singleton('route');
-        $this->view = $this->app->singleton('view');
+        $this->request = $this->app->request();
+        $this->response = $this->app->response();
+        $this->route = $this->app->route();
+        $this->view = $this->app->view();
     }
     
     /**

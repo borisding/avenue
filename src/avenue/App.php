@@ -269,9 +269,26 @@ final class App implements AppInterface
      */
     protected function factory()
     {
-        $this->request = $this->singleton('request');
-        $this->response = $this->singleton('response');
-        $this->route = $this->singleton('route');
-        $this->view = $this->singleton('view');
+        $this->request = $this->request();
+        $this->response = $this->response();
+        $this->route = $this->route();
+        $this->view = $this->view();
+    }
+    
+    /**
+     * App call magic method.
+     * Shortcut of creating instance via singleton.
+     * 
+     * @param mixed $name
+     * @param array $params
+     * @return NULL|NULL
+     */
+    public function __call($name, array $params = [])
+    {
+        if ($name) {
+            return $this->singleton($name);
+        }
+        
+        return null;
     }
 }
