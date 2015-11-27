@@ -199,23 +199,23 @@ final class App implements AppInterface
     protected function addRegistry()
     {
         $this->addService('request', function() {
-            return new Request(static::$app);
+            return new Request($this->getInstance());
         });
         
         $this->addService('response', function() {
-            return new Response(static::$app);
+            return new Response($this->getInstance());
         });
         
         $this->addService('route', function() {
-            return new Route(static::$app);
+            return new Route($this->getInstance());
         });
         
         $this->addService('view', function() {
-            return new View(static::$app);
+            return new View($this->getInstance());
         });
-                
+        
         $this->addService('exception', function($exc) {
-            return new Exception(static::$app, $exc);
+            return new Exception($this->getInstance(), $exc);
         });
         
         return $this;
