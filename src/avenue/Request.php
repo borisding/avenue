@@ -180,6 +180,16 @@ class Request
     }
     
     /**
+     * Get particular header value based on the name.
+     * 
+     * @param mixed $name
+     */
+    public function getHeader($name)
+    {
+        return $this->app->arrGet($name, $this->getAllHeaders());
+    }
+    
+    /**
      * Returning all http request headers.
      */
     public function getAllHeaders()
