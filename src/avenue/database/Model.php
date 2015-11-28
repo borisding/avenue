@@ -1,10 +1,15 @@
 <?php
 namespace Avenue\Database;
 
-class Model
+use Avenue\Database\PdoAdapter;
+
+class Model extends PdoAdapter
 {
+    /**
+     * Base model class constructor.
+     */
     public function __construct()
     {
-        // TODO
+        parent::__construct();
     }
 }
