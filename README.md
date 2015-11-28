@@ -1,5 +1,5 @@
 ## Avenue
-- A lightweight MCV framework for quick PHP web development and prototyping.
+- A lightweight MVC framework for quick PHP web development and prototyping.
 - **WARNING** It is currently under development phase.
 
 ## Features

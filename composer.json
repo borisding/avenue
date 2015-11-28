@@ -1,7 +1,7 @@
 {
     "name": "avenue/avenue",
     "type": "library",
-    "description": "Avenue - A lightweight MCV framework for quick PHP web development and prototyping",
+    "description": "Avenue - A lightweight MVC framework for quick PHP web development and prototyping",
     "license": "MIT",
     "keywords": ["avenue", "lightweight", "mvc", "framework", "php"],
     "authors": [
