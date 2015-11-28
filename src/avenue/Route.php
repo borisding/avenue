@@ -116,11 +116,11 @@ class Route
     public function init(array $args)
     {
         if (count($args) !== 2) {
-            throw new \LogicException('Route method is expecting two arguments.');
+            throw new \InvalidArgumentException('Route method is expecting two arguments.');
         }
         
         if (!is_callable($args[1])) {
-            throw new \LogicException('Second argument must be callable.');
+            throw new \InvalidArgumentException('Second argument must be callable.');
         }
         
         $this->rule = $args[0];
