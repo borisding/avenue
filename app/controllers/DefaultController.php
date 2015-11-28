@@ -2,6 +2,7 @@
 namespace App\Controllers;
 
 use App\Controllers\PageController;
+use App\Models\User;
 
 class DefaultController extends PageController
 {
@@ -15,6 +16,8 @@ class DefaultController extends PageController
         // assign index title and content
         $this->title .= 'Default';
         $this->content = '<h3>Hello! Welcome to Avenue.</h3>';
+        
+        $user = new User();
     }
     
     public function afterAction()

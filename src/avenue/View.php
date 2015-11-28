@@ -90,11 +90,11 @@ class View
     public function register($name, Closure $callback)
     {
         if (array_key_exists($name, $this->helpers) || method_exists($this, $name)) {
-            throw new \LogicException('Helper name already registered!');
+            throw new \InvalidArgumentException('Helper name already registered!');
         }
         
         if (preg_match('/^[a-zA-Z0-9-_]+$/', $name) !== 1) {
-            throw new \LogicException('Invalid helper name! Alphanumeric only.');
+            throw new \InvalidArgumentException('Invalid helper name! Alphanumeric only.');
         }
         
         $this->helpers[$name] = $callback;
