@@ -28,6 +28,13 @@ class Connection
     protected static $dbConn;
     
     /**
+     * Current PDO driver to be used.
+     * 
+     * @var mixed
+     */
+    protected static $pdoDriver;
+    
+    /**
      * Connection class constructor.
      * 
      * @throws \InvalidArgumentException
@@ -152,6 +159,24 @@ class Connection
     public function getTablePrefix()
     {
         return $this->app->arrGet('tablePrefix', $this->dbConfig);
+    }
+    
+    /**
+     * Get the current PDO driver to be used.
+     * 
+     * @return mixed
+     */
+    public function getCurrentPdoDriver()
+    {
+        if (empty(static::$dbConn)) {
+            $this->getDatabaseConnection();
+        }
+        
+        if (empty(static::$pdoDriver)) {
+            return static::$dbConn->getAttribute(PDO::ATTR_DRIVER_NAME);
+        }
+        
+        return static::$pdoDriver;
     }
     
     /**
