@@ -28,13 +28,13 @@ return [
      */
     'production' => [
         // database connection string
-        'dsn' => 'mysql:host=localhost;charset=utf8;dbname=production_db',
+        'dsn' => 'mysql:host=localhost;charset=utf8;dbname=production',
         
         // database user name
-        'username' => '',
+        'username' => 'root',
          
         // database user password
-        'password' => '',
+        'password' => 'root',
         
         // database table's prefix
         'tablePrefix' => '',
