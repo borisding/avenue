@@ -108,9 +108,9 @@ final class App implements AppInterface
     
     /**
      * {@inheritDoc}
-     * @see \Avenue\AppInterface::addService()
+     * @see \Avenue\AppInterface::container()
      */
-    public function addService($name, Closure $callback)
+    public function container($name, Closure $callback)
     {
         static::$services[$name] = $callback;
     }
@@ -198,24 +198,24 @@ final class App implements AppInterface
      */
     protected function addRegistry()
     {
-        $this->addService('request', function() {
-            return new Request($this->getInstance());
+        $this->container('request', function() {
+            return new Request(static::getInstance());
         });
         
-        $this->addService('response', function() {
-            return new Response($this->getInstance());
+        $this->container('response', function() {
+            return new Response(static::getInstance());
         });
         
-        $this->addService('route', function() {
-            return new Route($this->getInstance());
+        $this->container('route', function() {
+            return new Route(static::getInstance());
         });
         
-        $this->addService('view', function() {
-            return new View($this->getInstance());
+        $this->container('view', function() {
+            return new View(static::getInstance());
         });
         
-        $this->addService('exception', function($exc) {
-            return new Exception($this->getInstance(), $exc);
+        $this->container('exception', function($exc) {
+            return new Exception(static::getInstance(), $exc);
         });
         
         return $this;

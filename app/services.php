@@ -3,7 +3,7 @@
  * Application error handling.
  * Error details & stack trace only be displayed in development environment.
  */
-$app->addService('error', function($exc) use ($app) {
+$app->container('error', function($exc) use ($app) {
     $environment = $app->getConfig('environment');
     $status = $app->response->getStatus();
     
@@ -29,7 +29,7 @@ $app->addService('error', function($exc) use ($app) {
  * Default is using the StreamHandler.
  * Details: https://github.com/Seldaek/monolog
  */
-$app->addService('log', function() use ($app) {
+$app->container('log', function() use ($app) {
     $logFile = AVENUE_LOG_DIR . '/' . date('Y-m-d'). '.log';
     $monolog = new Monolog\Logger($app->getConfig('logChannel'));
     $monolog->pushHandler(new Monolog\Handler\StreamHandler($logFile));

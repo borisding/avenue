@@ -16,7 +16,7 @@ interface AppInterface
      * @param mixed $name
      * @param Closure $callback
      */
-    public function addService($name, Closure $callback);
+    public function container($name, Closure $callback);
     
     /**
      * Resolve the registered dependencies.
