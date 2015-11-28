@@ -1,7 +1,15 @@
 <?php
 namespace Avenue\Database;
 
-class Dao
+use Avenue\Database\Connection;
+
+class PdoAdapter extends Connection
 {
-    // TODO
+    /**
+     * PdoAdapter class constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
 }
