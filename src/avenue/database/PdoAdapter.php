@@ -73,8 +73,8 @@ class PdoAdapter extends Connection implements PdoAdapterInterface
      */
     public function fetchAll($type = 'assoc')
     {
-        $this->run();
-        return $this->stmt->fetchAll($this->getFetchType($type));
+        $this->getFetchMode($type)->run();
+        return $this->stmt->fetchAll();
     }
     
     /**
@@ -83,8 +83,18 @@ class PdoAdapter extends Connection implements PdoAdapterInterface
      */
     public function fetchOne($type = 'assoc')
     {
-        $this->run();
-        return $this->stmt->fetch($this->getFetchType($type));
+        $this->getFetchMode($type)->run();
+        return $this->stmt->fetch();
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \Avenue\Database\PdoAdapterInterface::fetchClass()
+     */
+    public function fetchClass($name)
+    {
+        $this->getFetchMode('class', $name)->run();
+        return $this->stmt->fetchAll();
     }
     
     /**
@@ -168,6 +178,26 @@ class PdoAdapter extends Connection implements PdoAdapterInterface
     public function getInsertedId()
     {
         return $this->conn->lastInsertId();
+    }
+    
+    /**
+     * Deciding the fetch mode based on the fetch type.
+     * 
+     * @param mixed $type
+     * @param mixed $clasName
+     * @return \Avenue\Database\PdoAdapter
+     */
+    private function getFetchMode($type, $clasName = null)
+    {
+        $fetchType = $this->getFetchType($type);
+        
+        if (!empty($clasName) && $type === 'class') {
+            $this->stmt->setFetchMode($fetchType | PDO::FETCH_PROPS_LATE, $clasName);
+        } else {
+            $this->stmt->setFetchMode($fetchType);
+        }
+        
+        return $this;
     }
     
     /**

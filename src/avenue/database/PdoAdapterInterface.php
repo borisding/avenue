@@ -30,6 +30,13 @@ interface PdoAdapterInterface
     public function fetchOne($type);
     
     /**
+     * Fetch records via class.
+     * 
+     * @param mixed $name
+     */
+    public function fetchClass($name);
+    
+    /**
      * Bind SQL parameters, default is bind data as value.
      * 
      * @param mixed $key
