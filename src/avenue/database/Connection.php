@@ -18,21 +18,21 @@ class Connection
      * 
      * @var array
      */
-    protected $dbConfig = [];
+    private $dbConfig = [];
     
     /**
      * Database connection instance.
      * 
      * @var mixed
      */
-    protected static $dbConn;
+    private static $dbConn;
     
     /**
      * Current PDO driver to be used.
      * 
      * @var mixed
      */
-    protected static $pdoDriver;
+    private static $pdoDriver;
     
     /**
      * Connection class constructor.
@@ -56,11 +56,11 @@ class Connection
      */
     public function getDatabaseConnection()
     {
-        if (empty(static::$dbConn)) {
-            static::$dbConn = $this->establishConnection();
+        if (empty(self::$dbConn)) {
+            self::$dbConn = $this->establishConnection();
         }
         
-        return static::$dbConn;
+        return self::$dbConn;
     }
     
     /**
@@ -99,7 +99,7 @@ class Connection
      */
     public function disconnectDatabase()
     {
-        return static::$dbConn = null;
+        return self::$dbConn = null;
     }
     
     /**
@@ -168,15 +168,15 @@ class Connection
      */
     public function getCurrentPdoDriver()
     {
-        if (empty(static::$dbConn)) {
+        if (empty(self::$dbConn)) {
             $this->getDatabaseConnection();
         }
         
-        if (empty(static::$pdoDriver)) {
-            return static::$dbConn->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if (empty(self::$pdoDriver)) {
+            return self::$dbConn->getAttribute(PDO::ATTR_DRIVER_NAME);
         }
         
-        return static::$pdoDriver;
+        return self::$pdoDriver;
     }
     
     /**
