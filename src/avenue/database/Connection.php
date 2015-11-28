@@ -18,21 +18,21 @@ class Connection
      * 
      * @var array
      */
-    protected $dbConfig = [];
+    private $dbConfig = [];
     
     /**
      * Database connection instance.
      * 
      * @var mixed
      */
-    protected static $dbConn;
+    private static $dbConn;
     
     /**
      * Current PDO driver to be used.
      * 
      * @var mixed
      */
-    protected static $pdoDriver;
+    private static $pdoDriver;
     
     /**
      * Connection class constructor.
