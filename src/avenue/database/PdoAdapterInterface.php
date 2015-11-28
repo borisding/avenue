@@ -43,6 +43,16 @@ interface PdoAdapterInterface
     public function end();
     
     /**
+     * Cancel transaction by rolling back.
+     */
+    public function cancel();
+    
+    /**
+     * Get the total row count.
+     */
+    public function getTotalRows();
+    
+    /**
      * Get last inserted ID.
      */
     public function getInsertedId();

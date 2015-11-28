@@ -112,6 +112,24 @@ class PdoAdapter extends Connection implements PdoAdapterInterface
     
     /**
      * {@inheritDoc}
+     * @see \Avenue\Database\PdoAdapterInterface::cancel()
+     */
+    public function cancel()
+    {
+        return $this->conn->rollBack();
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \Avenue\Database\PdoAdapterInterface::getTotalRows()
+     */
+    public function getTotalRows()
+    {
+        return $this->stmt->rowCount();
+    }
+    
+    /**
+     * {@inheritDoc}
      * @see \Avenue\Database\PdoAdapterInterface::getInsertedId()
      */
     public function getInsertedId()
