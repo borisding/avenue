@@ -276,6 +276,17 @@ final class App implements AppInterface
     }
     
     /**
+     * Check if a function does exist.
+     * 
+     * @param mixed $name
+     * @return boolean
+     */
+    public function hasFunction($name)
+    {
+        return !!function_exists($name);
+    }
+    
+    /**
      * App call magic method.
      * Shortcut of creating instance via singleton and user defined function.
      * 
