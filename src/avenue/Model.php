@@ -1,7 +1,7 @@
 <?php
 namespace Avenue;
 
-use Avenue\Database\Model as BaseModel;
+use Avenue\Database\Street as BaseModel;
 
 abstract class Model extends BaseModel  
 {

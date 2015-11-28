@@ -3,7 +3,7 @@ namespace Avenue\Database;
 
 use Avenue\Database\PdoAdapter;
 
-class Model extends PdoAdapter
+class Street extends PdoAdapter
 {
     /**
      * Base model class constructor.
