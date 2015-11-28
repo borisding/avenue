@@ -229,7 +229,7 @@ final class App implements AppInterface
     public function getConfig($key)
     {
         if (empty(static::$config)) {
-            static::$config = require_once AVENUE_APP_DIR . '/config.php';
+            static::$config = require_once AVENUE_APP_DIR . '/config/app.php';
         }
         
         if (!array_key_exists($key, static::$config)) {

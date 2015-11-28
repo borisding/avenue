@@ -1,4 +1,7 @@
 <?php
+/**
+ * Configuration of the application.
+ */
 return [
     // current application's version
     'appVersion' => '1.0',
