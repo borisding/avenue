@@ -277,7 +277,7 @@ final class App implements AppInterface
     
     /**
      * App call magic method.
-     * Shortcut of creating instance via singleton.
+     * Shortcut of creating instance via singleton and user defined function.
      * 
      * @param mixed $name
      * @param array $params
