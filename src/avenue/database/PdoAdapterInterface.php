@@ -16,6 +16,20 @@ interface PdoAdapterInterface
     public function run();
     
     /**
+     * Fetch result set based on the fetch type.
+     * 
+     * @param mixed $type
+     */
+    public function fetchAll($type);
+    
+    /**
+     * Fetch one result based on the fetch type.
+     * 
+     * @param mixed $type
+     */
+    public function fetchOne($type);
+    
+    /**
      * Bind SQL parameters, default is bind data as value.
      * 
      * @param mixed $key

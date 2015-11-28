@@ -22,6 +22,19 @@ class PdoAdapter extends Connection implements PdoAdapterInterface
     private $stmt;
     
     /**
+     * Supported fetch types.
+     * 
+     * @var array
+     */
+    private $fetchTypes = [
+        'both' 	=> PDO::FETCH_BOTH,
+        'obj'	=> PDO::FETCH_OBJ,
+        'class'	=> PDO::FETCH_CLASS,
+        'num'	=> PDO::FETCH_NUM,
+        'assoc'	=> PDO::FETCH_ASSOC
+    ];
+    
+    /**
      * PdoAdapter class constructor.
      */
     public function __construct()
@@ -51,7 +64,27 @@ class PdoAdapter extends Connection implements PdoAdapterInterface
             throw new \PDOException('Failed to execute prepared statement.');
         }
         
-        $this->stmt->execute();
+        return $this->stmt->execute();
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \Avenue\Database\PdoAdapterInterface::fetchAll()
+     */
+    public function fetchAll($type = 'assoc')
+    {
+        $this->run();
+        return $this->stmt->fetchAll($this->getFetchType($type));
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \Avenue\Database\PdoAdapterInterface::fetchOne()
+     */
+    public function fetchOne($type = 'assoc')
+    {
+        $this->run();
+        return $this->stmt->fetch($this->getFetchType($type));
     }
     
     /**
@@ -135,6 +168,16 @@ class PdoAdapter extends Connection implements PdoAdapterInterface
     public function getInsertedId()
     {
         return $this->conn->lastInsertId();
+    }
+    
+    /**
+     * Get the fetch type based on the name.
+     * 
+     * @param mixed $name
+     */
+    private function getFetchType($name)
+    {
+        return $this->app->arrGet($name, $this->fetchTypes, PDO::FETCH_ASSOC);
     }
     
     /**
