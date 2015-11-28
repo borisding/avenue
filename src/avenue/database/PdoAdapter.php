@@ -184,15 +184,15 @@ class PdoAdapter extends Connection implements PdoAdapterInterface
      * Deciding the fetch mode based on the fetch type.
      * 
      * @param mixed $type
-     * @param mixed $clasName
+     * @param mixed $className
      * @return \Avenue\Database\PdoAdapter
      */
-    private function getFetchMode($type, $clasName = null)
+    private function getFetchMode($type, $className = null)
     {
         $fetchType = $this->getFetchType($type);
         
-        if (!empty($clasName) && $type === 'class') {
-            $this->stmt->setFetchMode($fetchType | PDO::FETCH_PROPS_LATE, $clasName);
+        if (!empty($className) && $type === 'class') {
+            $this->stmt->setFetchMode($fetchType | PDO::FETCH_PROPS_LATE, $className);
         } else {
             $this->stmt->setFetchMode($fetchType);
         }
