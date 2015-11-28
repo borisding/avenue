@@ -289,8 +289,6 @@ final class App implements AppInterface
             return $this->singleton($name);
         }
         
-        if (!method_exists($this, $name)) {
-            throw new \Exception('Calling invalid App class method [' . $name . ']');
-        }
+        return call_user_func_array($name, $params);
     }
 }
