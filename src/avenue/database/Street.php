@@ -34,11 +34,7 @@ class Street extends PdoAdapter implements StreetInterface
     {
         parent::__construct();
         
-        // assume table name is based on the defined model class name
-        // unless it is clearly defined in model class with $table property itself
-        if (empty($this->table)) {
-            $this->setTableName();
-        }
+        $this->setTableName();
     }
     
     /**
@@ -81,19 +77,6 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
-     * {@inheritDoc}
-     * @see \Avenue\Database\StreetInterface::remove()
-     */
-    public function remove($id = null)
-    {
-        try {
-            // TODO
-        } catch (\PDOException $e) {
-            throw new \RuntimeException($e->getMessage(), $e->getCode());
-        }
-    }
-    
-    /**
      * Create new record into database.
      * Last inserted ID will be returned.
      * 
@@ -133,19 +116,7 @@ class Street extends PdoAdapter implements StreetInterface
             
             $sql = 'UPDATE ' . $this->table . ' SET ';
             $sql .= $columns . ' WHERE ' . $this->getPk();
-            
-            // if $id is passed as a list
-            // then use IN for multiple records update
-            // else, go to one-to-one update
-            // respective ids is escaped here
-            if (is_array($id)) {
-                $ids = $id;
-                $ids = $this->app->escapeEach($ids);
-                $ids = implode(', ', $ids);
-                $sql .= ' IN (' . $ids . ')';
-            } else {
-                $sql .= ' = ' . $this->app->escape($id);
-            }
+            $sql .= $this->getWhereIdCondition($id);
             
             $this->cmd($sql)->batch($values)->run();
             $this->data = [];
@@ -157,12 +128,76 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
+     * {@inheritDoc}
+     * @see \Avenue\Database\StreetInterface::remove()
+     */
+    public function remove($id = null)
+    {
+        try {
+            $sql = 'DELETE FROM ' . $this->table;
+            $sql .= ' WHERE ' . $this->getPk();
+            $sql .= $this->getWhereIdCondition($id);
+            
+            $this->cmd($sql)->run();
+            
+            return true;
+        } catch (\PDOException $e) {
+            throw new \RuntimeException($e->getMessage(), $e->getCode());
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \Avenue\Database\StreetInterface::removeAll()
+     */
+    public function removeAll()
+    {
+        try {
+            $sql = 'DELETE FROM ' . $this->table;
+            $this->cmd($sql)->run();
+            
+            return true;
+        } catch (\PDOException $e) {
+            throw new \RuntimeException($e->getMessage(), $e->getCode());
+        }
+    }
+    
+    /**
+     * Get the where condition based on the id type.
+     * 
+     * @param mixed $id
+     */
+    private function getWhereIdCondition($id)
+    {
+        // if $id is passed as a list
+        // then use IN for multiple records action
+        // else, go to one-to-one action instead
+        // respective ids is escaped here
+        
+        if (is_array($id)) {
+            $ids = $id;
+            $ids = $this->app->escapeEach($ids);
+            $ids = implode(', ', $ids);
+            $condition = ' IN (' . $ids . ')';
+        } else {
+            $condition = ' = ' . $this->app->escape($id);
+        }
+        
+        return $condition;
+    }
+    
+    /**
      * set the table name based on the model class name.
      * Wrapped with the table prefix syntax.
      */
     private function setTableName()
     {
-        $this->table = strtolower($this->getModelName());
+        // assume table name is based on the defined model class name
+        // unless it is clearly defined in model class with $table property itself
+        if (empty($this->table)) {
+            $this->table = strtolower($this->getModelName());
+        }
+        
         $this->table = '{' . $this->table . '}';
     }
     

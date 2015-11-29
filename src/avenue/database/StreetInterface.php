@@ -31,4 +31,9 @@ interface StreetInterface
      * Remove record based on the passed in ID value.
      */
     public function remove($id);
+    
+    /**
+     * Remove all records of the table.
+     */
+    public function removeAll();
 }
