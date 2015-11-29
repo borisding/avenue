@@ -35,6 +35,18 @@ class PdoAdapter extends Connection implements PdoAdapterInterface
     ];
     
     /**
+     * Fetch alias method.
+     * 
+     * @var array
+     */
+    private $fetchAlias = [
+        'fetchBoth'  => 'both',
+        'fetchObj'   => 'obj',
+        'fetchNum'   => 'num',
+        'fetchAssoc' => 'assoc'
+    ];
+    
+    /**
      * PdoAdapter class constructor.
      */
     public function __construct()
@@ -263,5 +275,21 @@ class PdoAdapter extends Connection implements PdoAdapterInterface
         $sql = str_replace('}', '', $sql);
         
         return $sql;
+    }
+    
+    /**
+     * Fetch alias method via magic call method.
+     * If none is found, throw invalid method exception.
+     * 
+     * @param mixed $method
+     * @param array $params
+     */
+    public function __call($method, array $params = [])
+    {
+        if (!isset($this->fetchAlias[$method])) {
+            throw new \PDOException('Calling invalid method ['. $method .']');
+        }
+        
+        return $this->fetchAll($this->fetchAlias[$method]);
     }
 }
