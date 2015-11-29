@@ -14,6 +14,13 @@ class Street extends PdoAdapter implements StreetInterface
     protected $table;
     
     /**
+     * Table primary key.
+     * 
+     * @var mixed
+     */
+    protected $pk;
+    
+    /**
      * List of data values.
      * 
      * @var array
@@ -113,6 +120,7 @@ class Street extends PdoAdapter implements StreetInterface
     
     /**
      * Update record based on the passed in ID.
+     * ID can be a list or a value.
      * 
      * @param mixed $id
      * @throws \RuntimeException
@@ -120,7 +128,29 @@ class Street extends PdoAdapter implements StreetInterface
     private function update($id)
     {
         try {
-            // TODO
+            $columns = implode(' = ?, ', array_keys($this->data)) . ' = ?';
+            $values = array_values($this->data);
+            
+            $sql = 'UPDATE ' . $this->table . ' SET ';
+            $sql .= $columns . ' WHERE ' . $this->getPk();
+            
+            // if $id is passed as a list
+            // then use IN for multiple records update
+            // else, go to one-to-one update
+            // respective ids is escaped here
+            if (is_array($id)) {
+                $ids = $id;
+                $ids = $this->app->escapeEach($ids);
+                $ids = implode(', ', $ids);
+                $sql .= ' IN (' . $ids . ')';
+            } else {
+                $sql .= ' = ' . $this->app->escape($id);
+            }
+            
+            $this->cmd($sql)->batch($values)->run();
+            $this->data = [];
+            
+            return true;
         } catch (\PDOException $e) {
             throw new \RuntimeException($e->getMessage(), $e->getCode());
         }
@@ -149,6 +179,15 @@ class Street extends PdoAdapter implements StreetInterface
         }
         
         return $model;
+    }
+    
+    /**
+     * Get the primary key of the table.
+     * If none is set, return id as default.
+     */
+    private function getPk()
+    {
+        return (!empty($this->pk)) ? $this->pk : 'id';
     }
     
     /**
