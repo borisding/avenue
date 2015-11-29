@@ -40,7 +40,11 @@ class Street extends PdoAdapter implements StreetInterface
      */
     public function findOne($params = null)
     {
+        try {
         
+        } catch (\PDOException $e) {
+            throw new \RuntimeException($e->getMessage(), $e->getCode());
+        }
     }
     
     /**
@@ -49,7 +53,11 @@ class Street extends PdoAdapter implements StreetInterface
      */
     public function findAll($params = null)
     {
+        try {
         
+        } catch (\PDOException $e) {
+            throw new \RuntimeException($e->getMessage(), $e->getCode());
+        }
     }
     
     /**
@@ -58,41 +66,11 @@ class Street extends PdoAdapter implements StreetInterface
      */
     public function save($id = null)
     {
-        
-    }
-    
-    /**
-     * {@inheritDoc}
-     * @see \Avenue\Database\StreetInterface::create()
-     */
-    public function create()
-    {
-        try {
-            if ($this->data) {
-                $columns = implode(', ', array_keys($this->data));
-                $values = array_values($this->data);
-                $placeholders = implode(', ', array_fill(0, count($values), '?'));
-            
-                $sql = 'INSERT INTO ' . $this->table . ' (' . $columns . ') ';
-                $sql .= 'VALUES (' . $placeholders . ')';
-                
-                $this->cmd($sql)->batch($values)->run();
-                $this->data = [];
-                
-                return $this->getInsertedId();
-            }
-        } catch (\PDOException $e) {
-            throw new \RuntimeException($e->getMessage(), $e->getCode());
+        if (!empty($id)) {
+            return $this->update($id);
         }
-    }
-    
-    /**
-     * {@inheritDoc}
-     * @see \Avenue\Database\StreetInterface::update()
-     */
-    public function update($params = null)
-    {
         
+        return $this->create();
     }
     
     /**
@@ -101,7 +79,47 @@ class Street extends PdoAdapter implements StreetInterface
      */
     public function remove($params = null)
     {
+    
+    }
+    
+    /**
+     * Create new record into database.
+     * Last inserted ID will be returned.
+     * 
+     * @throws \RuntimeException
+     */
+    private function create()
+    {
+        try {
+            $columns = implode(', ', array_keys($this->data));
+            $values = array_values($this->data);
+            $placeholders = implode(', ', array_fill(0, count($values), '?'));
         
+            $sql = 'INSERT INTO ' . $this->table . ' (' . $columns . ') ';
+            $sql .= 'VALUES (' . $placeholders . ')';
+            
+            $this->cmd($sql)->batch($values)->run();
+            $this->data = [];
+            
+            return $this->getInsertedId();
+        } catch (\PDOException $e) {
+            throw new \RuntimeException($e->getMessage(), $e->getCode());
+        }
+    }
+    
+    /**
+     * Update record based on the passed in ID.
+     * 
+     * @param mixed $id
+     * @throws \RuntimeException
+     */
+    private function update($id)
+    {
+        try {
+            echo 'going to update record';
+        } catch (\PDOException $e) {
+            throw new \RuntimeException($e->getMessage(), $e->getCode());
+        }
     }
     
     /**
