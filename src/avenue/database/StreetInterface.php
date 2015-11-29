@@ -4,20 +4,14 @@ namespace Avenue\Database;
 interface StreetInterface
 {
     /**
-     * Return one row of record.
-     * Parameter is optional.
-     * 
-     * @param mixed $params
+     * Return one row of found record(s).
      */
-    public function findOne($params = null);
+    public function findOne();
     
     /**
-     * Should return found records.
-     * Parameter is optional.
-     * 
-     * @param mixed $params
+     * Return all found records.
      */
-    public function findAll($params = null);
+    public function findAll();
     
     /**
      * Alias method for both create and update.

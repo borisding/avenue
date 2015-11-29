@@ -41,7 +41,7 @@ class Street extends PdoAdapter implements StreetInterface
      * {@inheritDoc}
      * @see \Avenue\Database\StreetInterface::findOne()
      */
-    public function findOne($params = null)
+    public function findOne()
     {
         try {
             // TODO
@@ -54,10 +54,15 @@ class Street extends PdoAdapter implements StreetInterface
      * {@inheritDoc}
      * @see \Avenue\Database\StreetInterface::findAll()
      */
-    public function findAll($params = null)
+    public function findAll()
     {
         try {
-            // TODO
+            $args = func_get_args();
+            $numArgs = count($args);
+            
+            if ($this->methodParamIsValid($args)) {
+                // TODO
+            }
         } catch (\PDOException $e) {
             throw new \RuntimeException($e->getMessage(), $e->getCode());
         }
@@ -160,6 +165,30 @@ class Street extends PdoAdapter implements StreetInterface
         } catch (\PDOException $e) {
             throw new \RuntimeException($e->getMessage(), $e->getCode());
         }
+    }
+    
+    /**
+     * Check if number of arguments passed to method is valid,
+     * and also, meet the condition.
+     * 
+     * @param mixed $args
+     * @throws \InvalidArgumentException
+     */
+    private function methodParamIsValid($args)
+    {
+        // maximum 2 arguments
+        if (count($args) > 2) {
+            $fromMethod = debug_backtrace();
+            $fn = $fromMethod[1]['function'];
+            throw new \InvalidArgumentException('Maximum 2 arguments for [' . $fn .'].');
+        }
+        
+        // second must be callable
+        if (count($args) == 2 && !is_callable($args[1])) {
+            throw new \InvalidArgumentException('Second argument must be a callable function.');
+        }
+        
+        return true;
     }
     
     /**
