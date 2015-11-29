@@ -41,7 +41,7 @@ class Street extends PdoAdapter implements StreetInterface
     public function findOne($params = null)
     {
         try {
-        
+            // TODO
         } catch (\PDOException $e) {
             throw new \RuntimeException($e->getMessage(), $e->getCode());
         }
@@ -54,7 +54,7 @@ class Street extends PdoAdapter implements StreetInterface
     public function findAll($params = null)
     {
         try {
-        
+            // TODO
         } catch (\PDOException $e) {
             throw new \RuntimeException($e->getMessage(), $e->getCode());
         }
@@ -77,9 +77,9 @@ class Street extends PdoAdapter implements StreetInterface
      * {@inheritDoc}
      * @see \Avenue\Database\StreetInterface::remove()
      */
-    public function remove($params = null)
+    public function remove($id = null)
     {
-    
+        // TODO
     }
     
     /**
@@ -116,7 +116,7 @@ class Street extends PdoAdapter implements StreetInterface
     private function update($id)
     {
         try {
-            echo 'going to update record';
+            // TODO
         } catch (\PDOException $e) {
             throw new \RuntimeException($e->getMessage(), $e->getCode());
         }

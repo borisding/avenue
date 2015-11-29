@@ -28,7 +28,7 @@ interface StreetInterface
     public function save($id = null);
     
     /**
-     * Remove record based on the passed in value.
+     * Remove record based on the passed in ID value.
      */
-    public function remove($params);
+    public function remove($id);
 }
