@@ -29,6 +29,7 @@ interface StreetInterface
     
     /**
      * Create new record into database.
+     * Last inserted ID will be returned.
      */
     public function create();
     
