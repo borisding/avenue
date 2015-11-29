@@ -79,7 +79,11 @@ class Street extends PdoAdapter implements StreetInterface
      */
     public function remove($id = null)
     {
-        // TODO
+        try {
+            // TODO
+        } catch (\PDOException $e) {
+            throw new \RuntimeException($e->getMessage(), $e->getCode());
+        }
     }
     
     /**
@@ -93,8 +97,8 @@ class Street extends PdoAdapter implements StreetInterface
         try {
             $columns = implode(', ', array_keys($this->data));
             $values = array_values($this->data);
-            $placeholders = implode(', ', array_fill(0, count($values), '?'));
-        
+            $placeholders = $this->app->arrFillJoin(', ', '?', 0, count($values));
+            
             $sql = 'INSERT INTO ' . $this->table . ' (' . $columns . ') ';
             $sql .= 'VALUES (' . $placeholders . ')';
             
