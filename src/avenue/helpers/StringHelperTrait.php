@@ -63,8 +63,13 @@ trait StringHelperTrait
             foreach ($data as $key => $value) {
                 $escapedData[$key] = $this->escape($value);
             }
+        } else {
+            
+            for ($i = 0, $len = count($data); $i < $len; $i++) {
+                $escapedData[$i] = $this->escape($data[$i]);
+            }
         }
-    
+        
         return $escapedData;
     }
 
