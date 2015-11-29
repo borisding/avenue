@@ -41,7 +41,9 @@ class PdoAdapter extends Connection implements PdoAdapterInterface
     {
         parent::__construct();
         
-        $this->conn = $this->getDatabaseConnection();
+        if (empty($this->conn)) {
+            $this->conn = $this->getDatabaseConnection();
+        }
     }
     
     /**
@@ -124,12 +126,21 @@ class PdoAdapter extends Connection implements PdoAdapterInterface
      */
     public function batch(array $params = [], $reference = false)
     {
-        if (!$this->app->arrIsAssoc($params)) {
-            throw new \InvalidArgumentException('Parameters must be in associative array.');
-        }
-        
-        foreach ($params as $key => $value) {
-            $this->bind($key, $value, $reference);
+        // for ':param' binding
+        if ($this->app->arrIsAssoc($params)) {
+            foreach ($params as $key => $value) {
+                $this->bind($key, $value, $reference);
+            }
+        // for '?' binding
+        } else {
+            $i = 0;
+            $column = 1;
+            
+            while ($i < count($params)) {
+                $this->bind($column, $params[$i], $reference);
+                $i++;
+                $column++;
+            }
         }
         
         return $this;
