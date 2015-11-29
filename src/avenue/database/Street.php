@@ -136,7 +136,7 @@ class Street extends PdoAdapter implements StreetInterface
      * {@inheritDoc}
      * @see \Avenue\Database\StreetInterface::remove()
      */
-    public function remove($id = null)
+    public function remove($id)
     {
         try {
             $sql = 'DELETE FROM ' . $this->table;
