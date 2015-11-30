@@ -12,7 +12,12 @@ interface StreetInterface
      * Return all found records.
      */
     public function findAll();
-    
+
+    /**
+     * Return select raw SQL query.
+     */
+    public function findQuery();
+
     /**
      * Alias method for both create and update.
      * When ID is not null, update method will be invoked instead.

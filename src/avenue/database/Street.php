@@ -67,7 +67,20 @@ class Street extends PdoAdapter implements StreetInterface
             throw new \RuntimeException($e->getMessage(), $e->getCode());
         }
     }
-    
+
+    /**
+     * {@inheritDoc}
+     * @see \Avenue\Database\StreetInterface::findQuery()
+     */
+    public function findQuery()
+    {
+        try {
+            // TODO
+        } catch (\PDOException $e) {
+            throw new \RuntimeException($e->getMessage(), $e->getCode());
+        }
+    }
+
     /**
      * {@inheritDoc}
      * @see \Avenue\Database\StreetInterface::save()
