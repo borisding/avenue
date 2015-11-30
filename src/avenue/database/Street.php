@@ -240,7 +240,7 @@ class Street extends PdoAdapter implements StreetInterface
             $this->table = strtolower($this->getModelName());
         }
         
-        $this->table = '{' . $this->table . '}';
+        $this->table = '{' . $this->app->escape($this->table) . '}';
     }
     
     /**
@@ -264,7 +264,7 @@ class Street extends PdoAdapter implements StreetInterface
      */
     private function getPk()
     {
-        return (!empty($this->pk)) ? $this->pk : 'id';
+        return (!empty($this->pk)) ? $this->app->escape($pk) : 'id';
     }
     
     /**
