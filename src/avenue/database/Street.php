@@ -71,9 +71,12 @@ class Street extends PdoAdapter implements StreetInterface
     public function findQuery()
     {
         try {
-            // TODO
+            $sql = $this->getSelectQuery(func_get_args());
+            $sql = $this->replaceTablePrefix($sql);
+            
+            return $sql;
         } catch (\PDOException $e) {
-            throw new \RuntimeException($e->getMessage(), $e->getCode());
+            throw new \RuntimeException('Failed to populate SQL statement.');
         }
     }
     

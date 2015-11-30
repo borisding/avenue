@@ -269,7 +269,7 @@ class PdoAdapter extends Connection implements PdoAdapterInterface
      * @param mixed $sql
      * @return mixed
      */
-    private function replaceTablePrefix($sql)
+    protected function replaceTablePrefix($sql)
     {
         $sql = str_replace('{', $this->getTablePrefix(), $sql);
         $sql = str_replace('}', '', $sql);
