@@ -3,9 +3,12 @@ namespace Avenue\Database;
 
 use Avenue\Database\PdoAdapter;
 use Avenue\Database\StreetInterface;
+use Avenue\Database\StreetRelationTrait;
 
 class Street extends PdoAdapter implements StreetInterface
 {
+    use StreetRelationTrait;
+    
     /**
      * Targeted table.
      * 
