@@ -33,7 +33,6 @@ class Street extends PdoAdapter implements StreetInterface
     public function __construct()
     {
         parent::__construct();
-        
         $this->setTableName();
     }
     
@@ -86,9 +85,9 @@ class Street extends PdoAdapter implements StreetInterface
     {
         if (!empty($id)) {
             return $this->update($id);
+        } else {
+            return $this->create();
         }
-    
-        return $this->create();
     }
     
     /**
@@ -103,7 +102,6 @@ class Street extends PdoAdapter implements StreetInterface
             $sql .= $this->getWhereIdCondition($id);
     
             $this->cmd($sql)->run();
-    
             return true;
         } catch (\PDOException $e) {
             throw new \RuntimeException($e->getMessage(), $e->getCode());
@@ -127,8 +125,7 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
-     * Build the select SQL statement
-     * based on the passed in parameter(s).
+     * Build the select SQL statement based on the passed in parameter(s).
      * 
      * @param array $arrArgs
      */
@@ -166,9 +163,9 @@ class Street extends PdoAdapter implements StreetInterface
                         $sql .= ' ' . $condition;
                     }
                     
-                // if first param is NOT callback and second is a callback function
+                // if first param is NOT callback and second is a callback
                 // populate ID condition and concate with returned condition
-                } else if (!is_callable($param1) && is_callable($param2)) {
+                } elseif (!is_callable($param1) && is_callable($param2)) {
                     $id = $param1;
                     $callback = $param2;
                     $condition = trim($callback());
