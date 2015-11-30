@@ -98,7 +98,7 @@ class Street extends PdoAdapter implements StreetInterface
             $sql .= 'VALUES (' . $placeholders . ')';
             
             $this->cmd($sql)->batch($values)->run();
-            $this->data = [];
+            $this->flush();
             
             return $this->getInsertedId();
         } catch (\PDOException $e) {
@@ -124,7 +124,7 @@ class Street extends PdoAdapter implements StreetInterface
             $sql .= $this->getWhereIdCondition($id);
             
             $this->cmd($sql)->batch($values)->run();
-            $this->data = [];
+            $this->flush();
             
             return true;
         } catch (\PDOException $e) {
@@ -254,6 +254,14 @@ class Street extends PdoAdapter implements StreetInterface
         return (!empty($this->pk)) ? $this->pk : 'id';
     }
     
+    /**
+     * Clear the data property with empty array.
+     */
+    private function flush()
+    {
+        $this->data = [];
+    }
+
     /**
      * Magic set method.
      * 
