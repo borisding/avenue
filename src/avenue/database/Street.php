@@ -44,7 +44,8 @@ class Street extends PdoAdapter implements StreetInterface
     public function findOne()
     {
         try {
-            // TODO
+            $sql = $this->getSelectQuery(func_get_args());
+            return $this->cmd($sql)->fetchOne();
         } catch (\PDOException $e) {
             throw new \RuntimeException($e->getMessage(), $e->getCode());
         }
@@ -57,17 +58,13 @@ class Street extends PdoAdapter implements StreetInterface
     public function findAll()
     {
         try {
-            $args = func_get_args();
-            $numArgs = count($args);
-            
-            if ($this->methodParamIsValid($args)) {
-                // TODO
-            }
+            $sql = $this->getSelectQuery(func_get_args());
+            return $this->cmd($sql)->fetchAll();
         } catch (\PDOException $e) {
             throw new \RuntimeException($e->getMessage(), $e->getCode());
         }
     }
-
+    
     /**
      * {@inheritDoc}
      * @see \Avenue\Database\StreetInterface::findQuery()
@@ -80,7 +77,7 @@ class Street extends PdoAdapter implements StreetInterface
             throw new \RuntimeException($e->getMessage(), $e->getCode());
         }
     }
-
+    
     /**
      * {@inheritDoc}
      * @see \Avenue\Database\StreetInterface::save()
@@ -90,8 +87,105 @@ class Street extends PdoAdapter implements StreetInterface
         if (!empty($id)) {
             return $this->update($id);
         }
-        
+    
         return $this->create();
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \Avenue\Database\StreetInterface::remove()
+     */
+    public function remove($id)
+    {
+        try {
+            $sql = 'DELETE FROM ' . $this->table;
+            $sql .= ' WHERE ' . $this->getPk();
+            $sql .= $this->getWhereIdCondition($id);
+    
+            $this->cmd($sql)->run();
+    
+            return true;
+        } catch (\PDOException $e) {
+            throw new \RuntimeException($e->getMessage(), $e->getCode());
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \Avenue\Database\StreetInterface::removeAll()
+     */
+    public function removeAll()
+    {
+        try {
+            $sql = 'DELETE FROM ' . $this->table;
+            $this->cmd($sql)->run();
+    
+            return true;
+        } catch (\PDOException $e) {
+            throw new \RuntimeException($e->getMessage(), $e->getCode());
+        }
+    }
+    
+    /**
+     * Build the select SQL statement
+     * based on the passed in parameter(s).
+     * 
+     * @param array $arrArgs
+     */
+    private function getSelectQuery(array $arrArgs)
+    {
+        $numArgs = count($arrArgs);
+        $param1 = null;
+        $param2 = null;
+        
+        if ($this->methodParamIsValid($arrArgs)) {
+            $sql = 'SELECT * FROM ' . $this->table;
+            
+            // list out the parameters
+            if ($numArgs == 1) {
+                list($param1) = $arrArgs;
+            } elseif ($numArgs === 2) {
+                list($param1, $param2) = $arrArgs;
+            }
+            
+            // if there is parameter(s)
+            if ($numArgs) {
+                // if first param is NOT a callback
+                // populate the ID condition
+                if (!is_callable($param1) && empty($param2)) {
+                    $id = $param1;
+                    $sql .= ' WHERE ' . $this->getPk();
+                    $sql .= $this->getWhereIdCondition($id);
+        
+                    // if first param is a callback
+                    // then invoke it to get the returned condition
+                } elseif (is_callable($param1) && empty($param2)) {
+                    $callback = $param1;
+                    $condition = trim($callback());
+                    
+                    if (!empty($condition)) {
+                        $sql .= ' ' . $condition;
+                    }
+                    
+                    // if first param is NOT callback and,
+                    // second is a callback function
+                    // populate ID condition and concate with returned condition
+                } else if (!is_callable($param1) && is_callable($param2)) {
+                    $id = $param1;
+                    $callback = $param2;
+                    $condition = trim($callback());
+        
+                    $sql .= ' WHERE ' . $this->getPk();
+                    $sql .= $this->getWhereIdCondition($id);
+        
+                    if (!empty($condition)) {
+                        $sql .= ' ' . $condition;
+                    }
+                }
+            }
+        }
+        
+        return $sql;
     }
     
     /**
@@ -146,41 +240,6 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
-     * {@inheritDoc}
-     * @see \Avenue\Database\StreetInterface::remove()
-     */
-    public function remove($id)
-    {
-        try {
-            $sql = 'DELETE FROM ' . $this->table;
-            $sql .= ' WHERE ' . $this->getPk();
-            $sql .= $this->getWhereIdCondition($id);
-            
-            $this->cmd($sql)->run();
-            
-            return true;
-        } catch (\PDOException $e) {
-            throw new \RuntimeException($e->getMessage(), $e->getCode());
-        }
-    }
-    
-    /**
-     * {@inheritDoc}
-     * @see \Avenue\Database\StreetInterface::removeAll()
-     */
-    public function removeAll()
-    {
-        try {
-            $sql = 'DELETE FROM ' . $this->table;
-            $this->cmd($sql)->run();
-            
-            return true;
-        } catch (\PDOException $e) {
-            throw new \RuntimeException($e->getMessage(), $e->getCode());
-        }
-    }
-    
-    /**
      * Check if number of arguments passed to method is valid,
      * and also, meet the condition.
      * 
@@ -191,9 +250,7 @@ class Street extends PdoAdapter implements StreetInterface
     {
         // maximum 2 arguments
         if (count($args) > 2) {
-            $fromMethod = debug_backtrace();
-            $fn = $fromMethod[1]['function'];
-            throw new \InvalidArgumentException('Maximum 2 arguments for [' . $fn .'].');
+            throw new \InvalidArgumentException('Expecting maximum 2 arguments.');
         }
         
         // second must be callable
