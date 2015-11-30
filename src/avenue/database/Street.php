@@ -134,11 +134,11 @@ class Street extends PdoAdapter implements StreetInterface
      */
     private function getSelectQuery(array $arrArgs)
     {
-        $numArgs = count($arrArgs);
-        $param1 = null;
-        $param2 = null;
-        
         if ($this->methodParamIsValid($arrArgs)) {
+            $numArgs = count($arrArgs);
+            $param1 = null;
+            $param2 = null;
+            
             $sql = 'SELECT * FROM ' . $this->table;
             
             // list out the parameters
@@ -148,17 +148,16 @@ class Street extends PdoAdapter implements StreetInterface
                 list($param1, $param2) = $arrArgs;
             }
             
-            // if there is parameter(s)
             if ($numArgs) {
-                // if first param is NOT a callback
+                // if first param is NOT a callback and second is empty
                 // populate the ID condition
                 if (!is_callable($param1) && empty($param2)) {
                     $id = $param1;
                     $sql .= ' WHERE ' . $this->getPk();
                     $sql .= $this->getWhereIdCondition($id);
-        
-                    // if first param is a callback
-                    // then invoke it to get the returned condition
+                    
+                // if first param is a callback and second is empty
+                // then invoke it to get the returned condition
                 } elseif (is_callable($param1) && empty($param2)) {
                     $callback = $param1;
                     $condition = trim($callback());
@@ -167,14 +166,13 @@ class Street extends PdoAdapter implements StreetInterface
                         $sql .= ' ' . $condition;
                     }
                     
-                    // if first param is NOT callback and,
-                    // second is a callback function
-                    // populate ID condition and concate with returned condition
+                // if first param is NOT callback and second is a callback function
+                // populate ID condition and concate with returned condition
                 } else if (!is_callable($param1) && is_callable($param2)) {
                     $id = $param1;
                     $callback = $param2;
                     $condition = trim($callback());
-        
+                    
                     $sql .= ' WHERE ' . $this->getPk();
                     $sql .= $this->getWhereIdCondition($id);
         
