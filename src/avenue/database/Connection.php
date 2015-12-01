@@ -3,8 +3,9 @@ namespace Avenue\Database;
 
 use \PDO;
 use Avenue\App;
+use Avenue\Database\ConnectionInterface;
 
-class Connection
+class Connection implements ConnectionInterface
 {
     /**
      * App class instance.
@@ -50,9 +51,8 @@ class Connection
     }
     
     /**
-     * Get PDO database connection object.
-     * 
-     * @return mixed
+     * {@inheritDoc}
+     * @see \Avenue\Database\ConnectionInterface::getDatabaseConnection()
      */
     public function getDatabaseConnection()
     {
@@ -93,9 +93,8 @@ class Connection
     }
     
     /**
-     * Disconnect database connection by destroying PDO object.
-     * 
-     * @return NULL
+     * {@inheritDoc}
+     * @see \Avenue\Database\ConnectionInterface::disconnectDatabase()
      */
     public function disconnectDatabase()
     {
@@ -103,7 +102,8 @@ class Connection
     }
     
     /**
-     * Get database configuration.
+     * {@inheritDoc}
+     * @see \Avenue\Database\ConnectionInterface::getDatabaseConfig()
      */
     public function getDatabaseConfig()
     {
@@ -114,7 +114,8 @@ class Connection
     }
     
     /**
-     * Get database username attribute.
+     * {@inheritDoc}
+     * @see \Avenue\Database\ConnectionInterface::getDatabaseUsername()
      */
     public function getDatabaseUsername()
     {
@@ -122,7 +123,8 @@ class Connection
     }
     
     /**
-     * Get database password attribute.
+     * {@inheritDoc}
+     * @see \Avenue\Database\ConnectionInterface::getDatabasePassword()
      */
     public function getDatabasePassword()
     {
@@ -130,7 +132,8 @@ class Connection
     }
     
     /**
-     * Get database dsn attribute.
+     * {@inheritDoc}
+     * @see \Avenue\Database\ConnectionInterface::getDatabaseDsn()
      */
     public function getDatabaseDsn()
     {
@@ -138,7 +141,8 @@ class Connection
     }
     
     /**
-     * Get database persist attribute.
+     * {@inheritDoc}
+     * @see \Avenue\Database\ConnectionInterface::getDatabasePersist()
      */
     public function getDatabasePersist()
     {
@@ -146,7 +150,8 @@ class Connection
     }
     
     /**
-     * Get database emulate attribute.
+     * {@inheritDoc}
+     * @see \Avenue\Database\ConnectionInterface::getDatabaseEmulate()
      */
     public function getDatabaseEmulate()
     {
@@ -154,7 +159,8 @@ class Connection
     }
     
     /**
-     * Get database table prefix.
+     * {@inheritDoc}
+     * @see \Avenue\Database\ConnectionInterface::getTablePrefix()
      */
     public function getTablePrefix()
     {
@@ -162,9 +168,8 @@ class Connection
     }
     
     /**
-     * Get the current PDO driver to be used.
-     * 
-     * @return mixed
+     * {@inheritDoc}
+     * @see \Avenue\Database\ConnectionInterface::getCurrentPdoDriver()
      */
     public function getCurrentPdoDriver()
     {
@@ -180,7 +185,8 @@ class Connection
     }
     
     /**
-     * Get all available PDO drivers.
+     * {@inheritDoc}
+     * @see \Avenue\Database\ConnectionInterface::getPdoDrivers()
      */
     public function getPdoDrivers()
     {
