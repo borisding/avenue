@@ -38,13 +38,13 @@ class Street extends PdoAdapter implements StreetInterface
     private $data = [];
     
     /**
-     * Base model class constructor.
+     * Street class constructor.
      */
     public function __construct()
     {
         parent::__construct();
 
-        $this->defineTable()->definePk();
+        $this->defineTable()->definePrimaryKey();
     }
     
     /**
@@ -334,7 +334,7 @@ class Street extends PdoAdapter implements StreetInterface
      * Define the primary key of the table.
      * If none is set, return id as default.
      */
-    private function definePk()
+    private function definePrimaryKey()
     {
         return $this->pk = (!empty($this->pk)) ? $this->app->escape($this->pk) : 'id';
     }
