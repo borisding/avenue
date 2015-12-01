@@ -36,7 +36,8 @@ class Street extends PdoAdapter implements StreetInterface
     public function __construct()
     {
         parent::__construct();
-        $this->setTableName();
+
+        $this->defineTable()->definePk();
     }
     
     /**
@@ -69,9 +70,9 @@ class Street extends PdoAdapter implements StreetInterface
     
     /**
      * {@inheritDoc}
-     * @see \Avenue\Database\StreetInterface::findQuery()
+     * @see \Avenue\Database\StreetInterface::findRaw()
      */
-    public function findQuery()
+    public function findRaw()
     {
         try {
             $sql = $this->getSelectQuery(func_get_args());
@@ -104,10 +105,11 @@ class Street extends PdoAdapter implements StreetInterface
     {
         try {
             $sql = 'DELETE FROM ' . $this->table;
-            $sql .= ' WHERE ' . $this->getPk();
+            $sql .= ' WHERE ' . $this->pk;
             $sql .= $this->getWhereIdCondition($id);
     
             $this->cmd($sql)->run();
+            
             return true;
         } catch (\PDOException $e) {
             throw new \RuntimeException($e->getMessage(), $e->getCode());
@@ -156,7 +158,7 @@ class Street extends PdoAdapter implements StreetInterface
                 // populate the ID condition
                 if (!is_callable($param1) && empty($param2)) {
                     $id = $param1;
-                    $sql .= ' WHERE ' . $this->getPk();
+                    $sql .= ' WHERE ' . $this->pk;
                     $sql .= $this->getWhereIdCondition($id);
                     
                 // if first param is a callback and second is empty
@@ -176,7 +178,7 @@ class Street extends PdoAdapter implements StreetInterface
                     $callback = $param2;
                     $condition = trim($callback());
                     
-                    $sql .= ' WHERE ' . $this->getPk();
+                    $sql .= ' WHERE ' . $this->pk;
                     $sql .= $this->getWhereIdCondition($id);
         
                     if (!empty($condition)) {
@@ -228,7 +230,7 @@ class Street extends PdoAdapter implements StreetInterface
             $values = array_values($this->data);
             
             $sql = 'UPDATE ' . $this->table . ' SET ';
-            $sql .= $columns . ' WHERE ' . $this->getPk();
+            $sql .= $columns . ' WHERE ' . $this->pk;
             $sql .= $this->getWhereIdCondition($id);
             
             $this->cmd($sql)->batch($values)->run();
@@ -287,10 +289,10 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
-     * set the table name based on the model class name.
+     * Define the table name based on the model class name.
      * Wrapped with the table prefix syntax.
      */
-    private function setTableName()
+    private function defineTable()
     {
         // assume table name is based on the defined model class name
         // unless it is clearly defined in model class with $table property itself
@@ -299,8 +301,19 @@ class Street extends PdoAdapter implements StreetInterface
         }
         
         $this->table = '{' . $this->app->escape($this->table) . '}';
+
+        return $this;
     }
-    
+
+    /**
+     * Define the primary key of the table.
+     * If none is set, return id as default.
+     */
+    private function definePk()
+    {
+        return $this->pk = (!empty($this->pk)) ? $this->app->escape($this->pk) : 'id';
+    }
+
     /**
      * Get the model class name without the namespace.
      */
@@ -314,15 +327,6 @@ class Street extends PdoAdapter implements StreetInterface
         }
         
         return $model;
-    }
-    
-    /**
-     * Get the primary key of the table.
-     * If none is set, return id as default.
-     */
-    private function getPk()
-    {
-        return (!empty($this->pk)) ? $this->app->escape($pk) : 'id';
     }
     
     /**

@@ -16,7 +16,7 @@ interface StreetInterface
     /**
      * Return select raw SQL query.
      */
-    public function findQuery();
+    public function findRaw();
 
     /**
      * Alias method for both create and update.
