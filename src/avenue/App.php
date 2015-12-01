@@ -112,6 +112,10 @@ final class App implements AppInterface
      */
     public function container($name, Closure $callback)
     {
+        if (!$this->isInputAlnum($name)) {
+            throw new \InvalidArgumentException('Invalid registered name! Alphanumeric only.');
+        }
+
         static::$services[$name] = $callback;
     }
     

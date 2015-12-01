@@ -93,7 +93,7 @@ class View
             throw new \InvalidArgumentException('Helper name already registered!');
         }
         
-        if (preg_match('/^[a-zA-Z0-9-_]+$/', $name) !== 1) {
+        if (!$this->app->isInputAlnum($name)) {
             throw new \InvalidArgumentException('Invalid helper name! Alphanumeric only.');
         }
         

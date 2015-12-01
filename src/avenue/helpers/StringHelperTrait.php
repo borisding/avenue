@@ -82,4 +82,15 @@ trait StringHelperTrait
     {
         return $this->escapeEach($data);
     }
+
+    /**
+     * Return true if the input value is in expected alphanumeric form.
+     * 
+     * @param  mixed $value
+     * @return boolean
+     */
+    public function isInputAlnum($value)
+    {
+        return preg_match('/^[a-zA-Z0-9-_]+$/', $value) === 1;
+    }
 }
