@@ -24,6 +24,13 @@ class Street extends PdoAdapter implements StreetInterface
     protected $pk;
     
     /**
+     * List of tabel columns.
+     * 
+     * @var array
+     */
+    private $columns = [];
+    
+    /**
      * List of data values.
      * 
      * @var array
@@ -133,6 +140,16 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
+     * {@inheritDoc}
+     * @see \Avenue\Database\StreetInterface::withColumns()
+     */
+    public function withColumns(array $columns = [])
+    {
+        $this->columns = $columns;
+        return $this;
+    }
+    
+    /**
      * Build the select SQL statement based on the passed in parameter(s).
      * 
      * @param array $arrArgs
@@ -144,7 +161,13 @@ class Street extends PdoAdapter implements StreetInterface
             $param1 = null;
             $param2 = null;
             
-            $sql = 'SELECT * FROM ' . $this->table;
+            // glue list of columns if any
+            // else just select for all columns
+            if (!empty($this->columns)) {
+                $sql = 'SELECT ' . implode(', ', $this->columns) . ' FROM ' . $this->table;
+            } else {
+                $sql = 'SELECT * FROM ' . $this->table;
+            }
             
             // list out the parameters
             if ($numArgs == 1) {
@@ -187,6 +210,8 @@ class Street extends PdoAdapter implements StreetInterface
                 }
             }
         }
+        
+        $this->flush();
         
         return $sql;
     }
@@ -330,10 +355,11 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
-     * Clear the data property with empty array.
+     * Clear the properties with empty array.
      */
     private function flush()
     {
+        $this->columns = [];
         $this->data = [];
     }
 

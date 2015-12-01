@@ -35,4 +35,11 @@ interface StreetInterface
      * Remove all records of the table.
      */
     public function removeAll();
+    
+    /**
+     * With selected table column(s) in the query.
+     * 
+     * @param array $columns
+     */
+    public function withColumns(array $columns = []);
 }
