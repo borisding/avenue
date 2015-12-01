@@ -24,7 +24,7 @@ class Street extends PdoAdapter implements StreetInterface
     protected $pk;
     
     /**
-     * List of tabel columns.
+     * List of table columns.
      * 
      * @var array
      */
