@@ -171,7 +171,8 @@ class Street extends PdoAdapter implements StreetInterface
             // glue list of columns if any
             // else just select for all columns
             if (!empty($this->columns)) {
-                $sql = 'SELECT ' . implode(', ', $this->columns) . ' FROM ' . $this->table;
+                $this->columns = $this->app->escape(implode(', ', $this->columns));
+                $sql = 'SELECT ' . $this->columns . ' FROM ' . $this->table;
             } else {
                 $sql = 'SELECT * FROM ' . $this->table;
             }
