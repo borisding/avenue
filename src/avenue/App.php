@@ -94,20 +94,22 @@ final class App implements AppInterface
     }
     
     /**
-     * {@inheritDoc}
+     * Adding route's rule for particular request.
+     * 
      * @see \Avenue\AppInterface::addRoute()
      */
     public function addRoute()
     {
         if (!$this->route->isFulfilled()) {
             return $this->route->init(func_get_args());
+        } else {
+            return true;
         }
-        
-        return true;
     }
     
     /**
-     * {@inheritDoc}
+     * Container that registers specific service for later usage.
+     * 
      * @see \Avenue\AppInterface::container()
      */
     public function container($name, Closure $callback)
@@ -120,7 +122,8 @@ final class App implements AppInterface
     }
     
     /**
-     * {@inheritDoc}
+     * Resolving registered services via callback.
+     * 
      * @see \Avenue\Interfaces\AppInterface::resolve()
      */
     public function resolve($name, $args = null)
@@ -136,7 +139,9 @@ final class App implements AppInterface
     }
     
     /**
-     * {@inheritDoc}
+     * Making sure only one class instance created at one time.
+     * Class instance returned by resolving the registered service.
+     * 
      * @see \Avenue\Interfaces\AppInterface::singleton()
      */
     public function singleton($name, $args = null)
@@ -147,13 +152,14 @@ final class App implements AppInterface
         
         if (!is_object(static::$instances[$name])) {
             return null;
+        } else {
+            return static::$instances[$name];
         }
-        
-        return static::$instances[$name];
     }
     
     /**
-     * {@inheritDoc}
+     * Rendering the response body output.
+     * 
      * @see \Avenue\Interfaces\AppInterface::render()
      */
     public function render()
@@ -302,8 +308,8 @@ final class App implements AppInterface
     {
         if (array_key_exists($name, static::$services)) {
             return $this->singleton($name);
+        } else {
+            return call_user_func_array($name, $params);
         }
-        
-        return call_user_func_array($name, $params);
     }
 }
