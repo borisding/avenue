@@ -93,6 +93,26 @@ class Street extends PdoAdapter implements StreetInterface
     
     /**
      * {@inheritDoc}
+     * @see \Avenue\Database\StreetInterface::findUnion()
+     */
+    public function findUnion(array $queries = [], \Closure $callback = null)
+    {
+        try {
+            $unionSql = implode(' UNION ', $queries);
+            
+            if (is_callable($callback)) {
+                $condition = trim($callback());
+                $unionSql .= ' ' . $condition;
+            }
+            
+            return $this->cmd($unionSql)->fetchAll();
+        } catch (\PDOException $e) {
+            throw new \RuntimeException($e->getMessage(), $e->getCode());
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
      * @see \Avenue\Database\StreetInterface::save()
      */
     public function save($id = null)

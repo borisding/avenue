@@ -17,7 +17,15 @@ interface StreetInterface
      * Return select raw SQL query.
      */
     public function findRaw();
-
+    
+    /**
+     * Return found result via union.
+     * 
+     * @param array $queries
+     * @param mixed $callback
+     */
+    public function findUnion(array $queries = [], \Closure $callback = null);
+    
     /**
      * Alias method for both create and update.
      * When ID is not null, update method will be invoked instead.
