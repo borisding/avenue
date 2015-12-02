@@ -320,12 +320,10 @@ class Street extends PdoAdapter implements StreetInterface
         // if $id is passed as a list
         // then use IN for multiple records action
         // else, go to one-to-one action instead
-        // respective ids is escaped here
         
         if (is_array($id)) {
             $ids = $id;
-            $ids = $this->app->escapeEach($ids);
-            $ids = implode(', ', $ids);
+            $ids = $this->app->escape(implode(', ', $ids));
             $condition = ' IN (' . $ids . ')';
         } else {
             $condition = ' = ' . $this->app->escape($id);
