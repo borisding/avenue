@@ -332,11 +332,17 @@ class Street extends PdoAdapter implements StreetInterface
 
     /**
      * Define the primary key of the table.
-     * If none is set, return id as default.
+     * If none is defined, use default 'id' instead.
      */
     private function definePrimaryKey()
     {
-        return $this->pk = (!empty($this->pk)) ? $this->app->escape($this->pk) : 'id';
+        if (!empty($this->pk)) {
+            $this->pk = $this->app->escape($this->pk);
+        } else {
+            $this->pk = 'id';
+        }
+
+        return $this;
     }
 
     /**
