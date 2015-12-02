@@ -35,6 +35,18 @@ interface StreetInterface
     public function save($id = null);
     
     /**
+     * Create a new table record.
+     */
+    public function create();
+    
+    /**
+     * Update an existing record.
+     *
+     * @param mixed $id
+     */
+    public function update($id);
+    
+    /**
      * Remove record based on the passed in ID value.
      */
     public function remove($id);

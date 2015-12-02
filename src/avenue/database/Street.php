@@ -113,19 +113,6 @@ class Street extends PdoAdapter implements StreetInterface
     
     /**
      * {@inheritDoc}
-     * @see \Avenue\Database\StreetInterface::save()
-     */
-    public function save($id = null)
-    {
-        if (!empty($id)) {
-            return $this->update($id);
-        } else {
-            return $this->create();
-        }
-    }
-    
-    /**
-     * {@inheritDoc}
      * @see \Avenue\Database\StreetInterface::remove()
      */
     public function remove($id)
@@ -237,12 +224,25 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
+     * {@inheritDoc}
+     * @see \Avenue\Database\StreetInterface::save()
+     */
+    public function save($id = null)
+    {
+        if (!empty($id)) {
+            return $this->update($id);
+        } else {
+            return $this->create();
+        }
+    }
+    
+    /**
      * Create new record into database.
      * Last inserted ID will be returned.
      * 
      * @throws \RuntimeException
      */
-    private function create()
+    public function create()
     {
         try {
             $columns = implode(', ', array_keys($this->data));
@@ -268,7 +268,7 @@ class Street extends PdoAdapter implements StreetInterface
      * @param mixed $id
      * @throws \RuntimeException
      */
-    private function update($id)
+    public function update($id)
     {
         try {
             $columns = implode(' = ?, ', array_keys($this->data)) . ' = ?';
