@@ -164,7 +164,10 @@ class Street extends PdoAdapter implements StreetInterface
      */
     public function orderBy($sorting)
     {
-        $this->sql .= ' ORDER BY ' . $sorting;
+        if (!empty($sorting)) {
+            $this->sql .= ' ORDER BY ' . $this->app->escape($sorting);
+        }
+        
         return $this;
     }
     
@@ -209,7 +212,8 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
-     * {@inheritDoc}
+     * Remove record(s) based on the passed in ID(s)
+     * 
      * @see \Avenue\Database\StreetInterface::remove()
      */
     public function remove($id)
@@ -228,7 +232,8 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
-     * {@inheritDoc}
+     * Remove all records.
+     * 
      * @see \Avenue\Database\StreetInterface::removeAll()
      */
     public function removeAll()
@@ -244,7 +249,8 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
-     * {@inheritDoc}
+     * Save by either creating or updating record(s) based on the ID(s).
+     * 
      * @see \Avenue\Database\StreetInterface::save()
      */
     public function save($id = null)
@@ -260,7 +266,7 @@ class Street extends PdoAdapter implements StreetInterface
      * Create new record into database.
      * Last inserted ID will be returned.
      * 
-     * @throws \RuntimeException
+     * @see \Avenue\Database\StreetInterface::create()
      */
     public function create()
     {
@@ -285,8 +291,7 @@ class Street extends PdoAdapter implements StreetInterface
      * Update record based on the passed in ID.
      * ID can be a list or a value.
      * 
-     * @param mixed $id
-     * @throws \RuntimeException
+     * @see \Avenue\Database\StreetInterface::update()
      */
     public function update($id)
     {
@@ -320,7 +325,7 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
-     * // TODO
+     * // TODO refactoring
      * Get the where condition based on the id type.
      *
      * @param mixed $id

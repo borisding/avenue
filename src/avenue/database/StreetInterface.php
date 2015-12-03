@@ -4,6 +4,11 @@ namespace Avenue\Database;
 interface StreetInterface
 {
     /**
+     * Select statement.
+     */
+    public function find();
+    
+    /**
      * Return one row of found record(s).
      */
     public function findOne();
@@ -12,19 +17,47 @@ interface StreetInterface
      * Return all found records.
      */
     public function findAll();
-
-    /**
-     * Return select raw SQL query.
-     */
-    public function findRaw();
     
     /**
-     * Return found result via union.
+     * Where statemet condition.
      * 
-     * @param array $queries
-     * @param mixed $callback
+     * @param mixed $column
+     * @param mixed $value
      */
-    public function findUnion(array $queries = [], \Closure $callback = null);
+    public function where($column, $value);
+    
+    /**
+     * AND where condition.
+     * 
+     * @param mixed $column
+     * @param mixed $value
+     */
+    public function andWhere($column, $value);
+    
+    /**
+     * OR where condition.
+     * 
+     * @param mixed $column
+     * @param mixed $value
+     */
+    public function orWhere($column, $value);
+    
+    /**
+     * Order by statement.
+     * 
+     * @param mixed $sorting
+     */
+    public function orderBy($sorting);
+    
+    /**
+     * Get all the found records.
+     */
+    public function getAll();
+    
+    /**
+     * Get one found record.
+     */
+    public function getOne();
     
     /**
      * Alias method for both create and update.
@@ -61,5 +94,5 @@ interface StreetInterface
      * 
      * @param array $columns
      */
-    public function withColumns(array $columns = []);
+    public function column(array $columns = []);
 }
