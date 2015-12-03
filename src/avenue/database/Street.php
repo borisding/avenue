@@ -31,20 +31,6 @@ class Street extends PdoAdapter implements StreetInterface
     private $sql;
     
     /**
-     * Where condition.
-     * 
-     * @var mixed
-     */
-    private $where;
-    
-    /**
-     * Order by.
-     * 
-     * @var mixed
-     */
-    private $orderBy;
-    
-    /**
      * List of table columns.
      * 
      * @var array
