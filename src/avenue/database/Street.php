@@ -24,11 +24,39 @@ class Street extends PdoAdapter implements StreetInterface
     protected $pk;
     
     /**
+     * SQL statement.
+     * 
+     * @var mixed
+     */
+    private $sql;
+    
+    /**
+     * Where condition.
+     * 
+     * @var mixed
+     */
+    private $where;
+    
+    /**
+     * Order by.
+     * 
+     * @var mixed
+     */
+    private $orderBy;
+    
+    /**
      * List of table columns.
      * 
      * @var array
      */
     private $columns = [];
+    
+    /**
+     * List of respective assigned values.
+     * 
+     * @var array
+     */
+    private $values = [];
     
     /**
      * List of data values.
@@ -48,64 +76,133 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
-     * {@inheritDoc}
-     * @see \Avenue\Database\StreetInterface::findOne()
+     * Select statement preparation.
+     * 
+     * @return \Avenue\Database\Street
      */
-    public function findOne()
+    public function find()
     {
-        try {
-            $sql = $this->getSelectQuery(func_get_args());
-            return $this->cmd($sql)->fetchOne();
-        } catch (\PDOException $e) {
-            throw new \RuntimeException($e->getMessage(), $e->getCode());
+        if (is_array($this->columns) && !empty($this->columns)) {
+            $this->sql = 'SELECT ' . implode(', ', $this->columns) . ' FROM ' . $this->table;
+        } else {
+            $this->sql = 'SELECT * FROM ' . $this->table;
         }
+        
+        return $this;
     }
     
     /**
-     * {@inheritDoc}
-     * @see \Avenue\Database\StreetInterface::findAll()
+     * Shortcut of finding all records.
+     * 
+     * @return mixed
      */
     public function findAll()
     {
+        return $this->find()->getAll();
+    }
+    
+    /**
+     * Shortcut of find one record.
+     * 
+     * @return mixed
+     */
+    public function findOne()
+    {
+        return $this->find()->getOne();
+    }
+    
+    /**
+     * Where condition accepts column and its value.
+     * 
+     * @param mixed $column
+     * @param mixed $value
+     * @return \Avenue\Database\Street
+     */
+    public function where($column, $value)
+    {
+        $this->sql .= ' WHERE ' . $column . ' = ?';
+        array_push($this->values, $value);
+        
+        return $this;
+    }
+    
+    /**
+     * Where and condition accepts column and its value.
+     * 
+     * @param mixed $column
+     * @param mixed $value
+     * @return \Avenue\Database\Street
+     */
+    public function andWhere($column, $value)
+    {
+        $this->sql .= ' AND ' . $column . ' = ? ';
+        array_push($this->values, $value);
+        
+        return $this;
+    }
+    
+    /**
+     * Where or condition accepts column and its value.
+     * 
+     * @param mixed $column
+     * @param mixed $value
+     * @return \Avenue\Database\Street
+     */
+    public function orWhere($column, $value)
+    {
+        $this->sql .= ' OR ' . $column . ' = ? ';
+        array_push($this->values, $value);
+        
+        return $this;
+    }
+    
+    /**
+     * Order by the column(s) and sort type.
+     * 
+     * @param mixed $sorting
+     * @return \Avenue\Database\Street
+     */
+    public function orderBy($sorting)
+    {
+        $this->sql .= ' ORDER BY ' . $sorting;
+        return $this;
+    }
+    
+    /**
+     * Return all found records in associative array.
+     * 
+     * @return mixed
+     */
+    public function getAll()
+    {
         try {
-            $sql = $this->getSelectQuery(func_get_args());
-            return $this->cmd($sql)->fetchAll();
+            $result = $this
+            ->cmd($this->sql)
+            ->batch($this->values)
+            ->fetchAll();
+            
+            $this->flush();
+            return $result;
         } catch (\PDOException $e) {
             throw new \RuntimeException($e->getMessage(), $e->getCode());
         }
     }
     
     /**
-     * {@inheritDoc}
-     * @see \Avenue\Database\StreetInterface::findRaw()
+     * Return one record in associative array.
+     * 
+     * @return mixed
      */
-    public function findRaw()
+    public function getOne()
     {
         try {
-            $sql = $this->getSelectQuery(func_get_args());
-            $sql = $this->replaceTablePrefix($sql);
+            $result = $this
+            ->cmd($this->sql)
+            ->batch($this->values)
+            ->fetchOne();
             
-            return $sql;
-        } catch (\PDOException $e) {
-            throw new \RuntimeException('Failed to populate SQL statement.');
-        }
-    }
-    
-    /**
-     * {@inheritDoc}
-     * @see \Avenue\Database\StreetInterface::findUnion()
-     */
-    public function findUnion(array $queries = [], \Closure $callback = null)
-    {
-        try {
-            $unionSql = implode(' UNION ', $queries);
-            
-            if (is_callable($callback)) {
-                $condition = trim($callback());
-                $unionSql .= ' ' . $condition;
-            }
-            
-            return $this->cmd($unionSql)->fetchAll();
+            $this->flush();
+            return $result;
         } catch (\PDOException $e) {
             throw new \RuntimeException($e->getMessage(), $e->getCode());
         }
@@ -121,7 +218,7 @@ class Street extends PdoAdapter implements StreetInterface
             $sql = 'DELETE FROM ' . $this->table;
             $sql .= ' WHERE ' . $this->pk;
             $sql .= $this->getWhereIdCondition($id);
-    
+            
             $this->cmd($sql)->run();
             
             return true;
@@ -144,84 +241,6 @@ class Street extends PdoAdapter implements StreetInterface
         } catch (\PDOException $e) {
             throw new \RuntimeException($e->getMessage(), $e->getCode());
         }
-    }
-    
-    /**
-     * {@inheritDoc}
-     * @see \Avenue\Database\StreetInterface::withColumns()
-     */
-    public function withColumns(array $columns = [])
-    {
-        $this->columns = $columns;
-        return $this;
-    }
-    
-    /**
-     * Build the select SQL statement based on the passed in parameter(s).
-     * 
-     * @param array $arrArgs
-     */
-    private function getSelectQuery(array $arrArgs)
-    {
-        if ($this->methodParamIsValid($arrArgs)) {
-            $numArgs = count($arrArgs);
-            $param1 = null;
-            $param2 = null;
-            
-            // glue list of columns if any
-            // else just select for all columns
-            if (!empty($this->columns)) {
-                $this->columns = $this->app->escape(implode(', ', $this->columns));
-                $sql = 'SELECT ' . $this->columns . ' FROM ' . $this->table;
-            } else {
-                $sql = 'SELECT * FROM ' . $this->table;
-            }
-            
-            // list out the parameters
-            if ($numArgs == 1) {
-                list($param1) = $arrArgs;
-            } elseif ($numArgs === 2) {
-                list($param1, $param2) = $arrArgs;
-            }
-            
-            if ($numArgs) {
-                // if first param is NOT a callback and second is empty
-                // populate the ID condition
-                if (!is_callable($param1) && empty($param2)) {
-                    $id = $param1;
-                    $sql .= ' WHERE ' . $this->pk;
-                    $sql .= $this->getWhereIdCondition($id);
-                    
-                // if first param is a callback and second is empty
-                // then invoke it to get the returned condition
-                } elseif (is_callable($param1) && empty($param2)) {
-                    $callback = $param1;
-                    $condition = trim($callback());
-                    
-                    if (!empty($condition)) {
-                        $sql .= ' ' . $condition;
-                    }
-                    
-                // if first param is NOT callback and second is a callback
-                // populate ID condition and concate with returned condition
-                } elseif (!is_callable($param1) && is_callable($param2)) {
-                    $id = $param1;
-                    $callback = $param2;
-                    $condition = trim($callback());
-                    
-                    $sql .= ' WHERE ' . $this->pk;
-                    $sql .= $this->getWhereIdCondition($id);
-        
-                    if (!empty($condition)) {
-                        $sql .= ' ' . $condition;
-                    }
-                }
-            }
-        }
-        
-        $this->flush();
-        
-        return $sql;
     }
     
     /**
@@ -289,30 +308,21 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
-     * Check if number of arguments passed to method is valid,
-     * and also, meet the condition.
+     * List of selected table columns.
      * 
-     * @param mixed $args
-     * @throws \InvalidArgumentException
+     * @param array $columns
+     * @return \Avenue\Database\Street
      */
-    private function methodParamIsValid($args)
+    public function column(array $columns = [])
     {
-        // maximum 2 arguments
-        if (count($args) > 2) {
-            throw new \InvalidArgumentException('Expecting maximum 2 arguments.');
-        }
-        
-        // second must be callable
-        if (count($args) == 2 && !is_callable($args[1])) {
-            throw new \InvalidArgumentException('Second argument must be a callable function.');
-        }
-        
-        return true;
+        $this->columns = $columns;
+        return $this;
     }
     
     /**
+     * // TODO
      * Get the where condition based on the id type.
-     * 
+     *
      * @param mixed $id
      */
     private function getWhereIdCondition($id)
@@ -320,7 +330,7 @@ class Street extends PdoAdapter implements StreetInterface
         // if $id is passed as a list
         // then use IN for multiple records action
         // else, go to one-to-one action instead
-        
+    
         if (is_array($id)) {
             $ids = $id;
             $ids = $this->app->escape(implode(', ', $ids));
@@ -363,7 +373,7 @@ class Street extends PdoAdapter implements StreetInterface
 
         return $this;
     }
-
+    
     /**
      * Get the model class name without the namespace.
      */
@@ -384,10 +394,12 @@ class Street extends PdoAdapter implements StreetInterface
      */
     private function flush()
     {
+        $this->sql = null;
         $this->columns = [];
+        $this->values = [];
         $this->data = [];
     }
-
+    
     /**
      * Magic set method.
      * 
