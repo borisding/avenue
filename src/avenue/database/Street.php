@@ -395,12 +395,11 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
-     * List of selected table columns.
+     * With selected columns for table.
      * 
-     * @param array $columns
-     * @return \Avenue\Database\Street
+     * @see \Avenue\Database\StreetInterface::with()
      */
-    public function column(array $columns = [])
+    public function with(array $columns = [])
     {
         $this->columns = $columns;
         return $this;

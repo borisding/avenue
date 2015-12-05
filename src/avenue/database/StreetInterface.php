@@ -124,5 +124,5 @@ interface StreetInterface
      * 
      * @param array $columns
      */
-    public function column(array $columns = []);
+    public function with(array $columns = []);
 }
