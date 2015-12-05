@@ -43,10 +43,9 @@ class Connection implements ConnectionInterface
     public function __construct()
     {
         $this->app = App::getInstance();
-        $this->dbConfig = $this->getDatabaseConfig();
         
         if (empty($this->dbConfig)) {
-            throw new \InvalidArgumentException('Database configuration is empty!');
+            $this->dbConfig = $this->getDatabaseConfig();
         }
     }
     
