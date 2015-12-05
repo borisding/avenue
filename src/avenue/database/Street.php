@@ -278,6 +278,7 @@ class Street extends PdoAdapter implements StreetInterface
             $this->sql = sprintf('%s %s', 'DELETE FROM', $this->table);
             $this->cmd($this->sql)->run();
             
+            $this->flush();
             return true;
         } catch (\PDOException $e) {
             throw new \RuntimeException($e->getMessage(), $e->getCode());
