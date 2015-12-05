@@ -61,10 +61,10 @@ class Street extends PdoAdapter implements StreetInterface
         $this->defineTable()->definePrimaryKey();
     }
     
-    /**
+    /**     
      * Select statement preparation.
      * 
-     * @return \Avenue\Database\Street
+     * @see \Avenue\Database\StreetInterface::find()
      */
     public function find()
     {
@@ -80,7 +80,7 @@ class Street extends PdoAdapter implements StreetInterface
     /**
      * Shortcut of finding all records.
      * 
-     * @return mixed
+     * @see \Avenue\Database\StreetInterface::findAll()
      */
     public function findAll()
     {
@@ -88,9 +88,9 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
-     * Shortcut of find one record.
+     * Shortcut of finding one record.
      * 
-     * @return mixed
+     * @see \Avenue\Database\StreetInterface::findOne()
      */
     public function findOne()
     {
@@ -100,9 +100,7 @@ class Street extends PdoAdapter implements StreetInterface
     /**
      * Where condition accepts column and its value.
      * 
-     * @param mixed $column
-     * @param mixed $value
-     * @return \Avenue\Database\Street
+     * @see \Avenue\Database\StreetInterface::where()
      */
     public function where($column, $value)
     {
@@ -115,9 +113,7 @@ class Street extends PdoAdapter implements StreetInterface
     /**
      * Where column IN statement based on the list of values.
      * 
-     * @param mixed $column
-     * @param array $values
-     * @return \Avenue\Database\Street
+     * @see \Avenue\Database\StreetInterface::whereIn()
      */
     public function whereIn($column, array $values = [])
     {
@@ -131,9 +127,7 @@ class Street extends PdoAdapter implements StreetInterface
     /**
      * Where and condition accepts column and its value.
      * 
-     * @param mixed $column
-     * @param mixed $value
-     * @return \Avenue\Database\Street
+     * @see \Avenue\Database\StreetInterface::andWhere()
      */
     public function andWhere($column, $value)
     {
@@ -146,9 +140,7 @@ class Street extends PdoAdapter implements StreetInterface
     /**
      * Where or condition accepts column and its value.
      * 
-     * @param mixed $column
-     * @param mixed $value
-     * @return \Avenue\Database\Street
+     * @see \Avenue\Database\StreetInterface::orWhere()
      */
     public function orWhere($column, $value)
     {
@@ -161,8 +153,7 @@ class Street extends PdoAdapter implements StreetInterface
     /**
      * Order by the column(s) and sort type.
      * 
-     * @param mixed $sorting
-     * @return \Avenue\Database\Street
+     * @see \Avenue\Database\StreetInterface::orderBy()
      */
     public function orderBy($sorting)
     {
@@ -174,9 +165,20 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
+     * Limit row offset statement.
+     * 
+     * @see \Avenue\Database\StreetInterface::limit()
+     */
+    public function limit($row, $offset = 0)
+    {
+        $this->sql .= sprintf(' %s %d, %d', 'LIMIT', $offset, $row);
+        return $this;
+    }
+    
+    /**
      * Return all found records in associative array.
      * 
-     * @return mixed
+     * @see \Avenue\Database\StreetInterface::getAll()
      */
     public function getAll()
     {
@@ -196,7 +198,7 @@ class Street extends PdoAdapter implements StreetInterface
     /**
      * Return one record in associative array.
      * 
-     * @return mixed
+     * @see \Avenue\Database\StreetInterface::getOne()
      */
     public function getOne()
     {
@@ -336,7 +338,6 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
-     * // TODO refactoring
      * Get the where condition based on the id type.
      *
      * @param mixed $id

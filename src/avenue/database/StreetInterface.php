@@ -58,6 +58,14 @@ interface StreetInterface
     public function orderBy($sorting);
     
     /**
+     * Limit offset statement.
+     * 
+     * @param mixed $row
+     * @param mixed $offset
+     */
+    public function limit($row, $offset);
+    
+    /**
      * Get all the found records.
      */
     public function getAll();
