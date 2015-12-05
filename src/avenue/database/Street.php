@@ -69,9 +69,9 @@ class Street extends PdoAdapter implements StreetInterface
     public function find()
     {
         if (is_array($this->columns) && !empty($this->columns)) {
-            $this->sql = sprintf('%s %s %s %s', 'SELECT', implode(', ', $this->columns), 'FROM', $this->table);
+            $this->sql = sprintf('SELECT %s FROM %s', implode(', ', $this->columns), $this->table);
         } else {
-            $this->sql = sprintf('%s %s', 'SELECT * FROM', $this->table);
+            $this->sql = sprintf('SELECT * FROM %s', $this->table);
         }
         
         return $this;
@@ -194,7 +194,7 @@ class Street extends PdoAdapter implements StreetInterface
     public function in($column, array $values)
     {
         $placeholders = $this->app->arrFillJoin(', ', '?', 0, count($values));
-        $sql = sprintf(' %s %s %s', $column, 'IN', '(' . $placeholders . ')');
+        $sql = sprintf(' %s IN (%s)', $column, $placeholders);
         $this->values = array_merge($this->values, $values);
         
         return $sql;
@@ -291,7 +291,7 @@ class Street extends PdoAdapter implements StreetInterface
     public function remove($id)
     {
         try {
-            $this->sql = sprintf('%s %s', 'DELETE FROM', $this->table);
+            $this->sql = sprintf('DELETE FROM %s', $this->table);
             $this->where($this->pk, $id);
             
             $this
@@ -314,7 +314,7 @@ class Street extends PdoAdapter implements StreetInterface
     public function removeAll()
     {
         try {
-            $this->sql = sprintf('%s %s', 'DELETE FROM', $this->table);
+            $this->sql = sprintf('DELETE FROM %s', $this->table);
             $this->cmd($this->sql)->run();
             
             $this->flush();
@@ -351,9 +351,7 @@ class Street extends PdoAdapter implements StreetInterface
             $this->values = array_values($this->data);
             
             $placeholders = $this->app->arrFillJoin(', ', '?', 0, count($this->values));
-            
-            $this->sql = sprintf('%s %s %s ', 'INSERT INTO', $this->table, '(' . $this->columns . ')');
-            $this->sql .= sprintf('%s %s', 'VALUES', '(' . $placeholders . ')');
+            $this->sql = sprintf('INSERT INTO %s (%s) VALUES (%s)', $this->table, $this->columns, $placeholders);
             
             $this
             ->cmd($this->sql)
@@ -379,7 +377,7 @@ class Street extends PdoAdapter implements StreetInterface
             $this->columns = implode(' = ?, ', array_keys($this->data)) . ' = ?';
             $this->values = array_values($this->data);
             
-            $this->sql = sprintf('%s %s %s %s', 'UPDATE', $this->table, 'SET', $this->columns);
+            $this->sql = sprintf('UPDATE %s SET %s', $this->table, $this->columns);
             $this->where($this->pk, $id);
             
             $this
