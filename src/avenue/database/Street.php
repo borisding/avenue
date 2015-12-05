@@ -157,7 +157,7 @@ class Street extends PdoAdapter implements StreetInterface
         
         if (is_array($value)) {
             $values = $value;
-            $this->in($column, $values);
+            $this->sql .= $this->in($column, $values);
         } else {
             $this->sql .= sprintf('%s %s', $column, '= ?');
             array_push($this->values, $value);
@@ -177,7 +177,7 @@ class Street extends PdoAdapter implements StreetInterface
         
         if (is_array($value)) {
             $values = $value;
-            $this->in($column, $values);
+            $this->sql .= $this->in($column, $values);
         } else {
             $this->sql .= sprintf('%s %s', $column, '= ?');
             array_push($this->values, $value);
@@ -194,8 +194,10 @@ class Street extends PdoAdapter implements StreetInterface
     public function in($column, array $values)
     {
         $placeholders = $this->app->arrFillJoin(', ', '?', 0, count($values));
-        $this->sql .= sprintf(' %s %s %s', $column, 'IN', '(' . $placeholders . ')');
+        $sql = sprintf(' %s %s %s', $column, 'IN', '(' . $placeholders . ')');
         $this->values = array_merge($this->values, $values);
+        
+        return $sql;
     }
     
     /**
