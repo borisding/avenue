@@ -414,7 +414,7 @@ class Street extends PdoAdapter implements StreetInterface
      * Define the table name based on the model class name.
      * Wrapped with the table prefix syntax.
      */
-    private function defineTable()
+    protected function defineTable()
     {
         // assume table name is based on the defined model class name
         // unless it is clearly defined in model class with $table property itself
@@ -431,7 +431,7 @@ class Street extends PdoAdapter implements StreetInterface
      * Define the primary key of the table.
      * If none is defined, use default 'id' instead.
      */
-    private function definePrimaryKey()
+    protected function definePrimaryKey()
     {
         if (!empty($this->pk)) {
             $this->pk = $this->app->escape($this->pk);
@@ -445,7 +445,7 @@ class Street extends PdoAdapter implements StreetInterface
     /**
      * Get the model class name without the namespace.
      */
-    private function getModelName()
+    protected function getModelName()
     {
         $model = $namespace = get_class($this);
         
@@ -463,7 +463,7 @@ class Street extends PdoAdapter implements StreetInterface
      * @param object $model
      * @throws \InvalidArgumentException
      */
-    private function getModelFk($model)
+    protected function getModelFk($model)
     {
         if (!is_object($model)) {
             throw new \InvalidArgumentException('Model is not an object.');
@@ -479,7 +479,7 @@ class Street extends PdoAdapter implements StreetInterface
     /**
      * Clear the properties with empty array.
      */
-    private function flush()
+    protected function flush()
     {
         $this->sql = null;
         $this->columns = [];
