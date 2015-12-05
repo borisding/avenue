@@ -58,11 +58,18 @@ interface StreetInterface
     public function in($column, array $values);
     
     /**
+     * Group by statement for column.
+     * 
+     * @param array $columns
+     */
+    public function groupBy(array $columns);
+    
+    /**
      * Order by statement.
      * 
-     * @param mixed $sorting
+     * @param array $sorting
      */
-    public function orderBy($sorting);
+    public function orderBy(array $sorting);
     
     /**
      * Limit offset statement.

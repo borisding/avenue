@@ -201,12 +201,30 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
+     * Group by column statement.
+     * 
+     * @see \Avenue\Database\StreetInterface::groupBy()
+     */
+    public function groupBy(array $columns)
+    {
+        $columns = implode(', ', $columns);
+        
+        if (!empty($columns)) {
+            $this->sql .= sprintf(' %s %s', 'GROUP BY', $this->app->escape($columns));
+        }
+        
+        return $this;
+    }
+    
+    /**
      * Order by the column(s) and sort type.
      * 
      * @see \Avenue\Database\StreetInterface::orderBy()
      */
-    public function orderBy($sorting)
+    public function orderBy(array $sorting)
     {
+        $sorting = implode(', ', $sorting);
+        
         if (!empty($sorting)) {
             $this->sql .= sprintf(' %s %s', 'ORDER BY', $this->app->escape($sorting));
         }

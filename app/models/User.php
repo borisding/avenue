@@ -8,9 +8,10 @@ class User extends Model
     public function getUsers()
     {        
         $result = $this
-        ->column(['id', 'first_name', 'last_name'])
+        ->column(['id', 'first_name', 'last_name', 'age'])
         ->find()
-        ->where('id', 222)
+        ->groupBy(['last_name', 'first_name'])
+        ->orderBy(['age DESC', 'last_name DESC'])
         ->getAll();
         
         return $result;
