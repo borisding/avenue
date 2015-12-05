@@ -278,6 +278,14 @@ class PdoAdapter extends Connection implements PdoAdapterInterface
     }
     
     /**
+     * Shortcut of dumping parameters for debugging purpose.
+     */
+    public function ddp()
+    {
+        print_r($this->stmt->debugDumpParams());
+    }
+    
+    /**
      * Fetch alias method via magic call method.
      * If none is found, throw invalid method exception.
      * 
