@@ -19,6 +19,13 @@ interface StreetInterface
     public function findAll();
     
     /**
+     * Return all record(s) for union sql statements.
+     * 
+     * @param array $objects
+     */
+    public function findUnion(array $objects);
+    
+    /**
      * Where statemet condition.
      * 
      * @param mixed $column

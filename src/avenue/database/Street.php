@@ -98,6 +98,35 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
+     * Get all found record(s) via union by passing respective model objects
+     * 
+     * @see \Avenue\Database\StreetInterface::findUnion()
+     */
+    public function findUnion(array $objects)
+    {
+        $queries = [];
+        $values = [];
+        $i = 0;
+        
+        // iterate each model objects
+        // store respective sql and values for placeholders, if any
+        while ($i < count($objects)) {
+            $that = $objects[$i];
+            array_push($queries, $that->sql);
+            $values = array_merge($values, $that->values);
+            $i++;
+        }
+        
+        // compute populated queries and values
+        // so that can be invoked via prepared statement from the model that calls it
+        $this->sql = '(' . implode(') UNION (', $queries) . ')';
+        $this->values = $values;
+        
+        unset($that, $queries, $values);
+        return $this;
+    }
+    
+    /**
      * Where condition accepts column and its value.
      * 
      * @see \Avenue\Database\StreetInterface::where()
