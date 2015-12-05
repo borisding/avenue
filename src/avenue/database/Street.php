@@ -133,22 +133,15 @@ class Street extends PdoAdapter implements StreetInterface
      */
     public function where($column, $value)
     {
-        $this->sql .= sprintf(' %s %s %s', 'WHERE', $column, '= ?');
-        array_push($this->values, $value);
+        $this->sql .= sprintf(' %s ', 'WHERE');
         
-        return $this;
-    }
-    
-    /**
-     * Where column IN statement based on the list of values.
-     * 
-     * @see \Avenue\Database\StreetInterface::whereIn()
-     */
-    public function whereIn($column, array $values = [])
-    {
-        $placeholders = $this->app->arrFillJoin(', ', '?', 0, count($values));
-        $this->sql .= sprintf(' %s %s %s %s', 'WHERE', $column, 'IN', '(' . $placeholders . ')');
-        $this->values = array_merge($this->values, $values);
+        if (is_array($value)) {
+            $values = $value;
+            $this->sql .= $this->in($column, $values);
+        } else {
+            $this->sql .= sprintf('%s %s', $column, '= ?');
+            array_push($this->values, $value);
+        }
         
         return $this;
     }
@@ -160,8 +153,15 @@ class Street extends PdoAdapter implements StreetInterface
      */
     public function andWhere($column, $value)
     {
-        $this->sql .= sprintf(' %s %s %s', 'AND', $column, '= ?');
-        array_push($this->values, $value);
+        $this->sql .= sprintf(' %s ', 'AND');
+        
+        if (is_array($value)) {
+            $values = $value;
+            $this->in($column, $values);
+        } else {
+            $this->sql .= sprintf('%s %s', $column, '= ?');
+            array_push($this->values, $value);
+        }
         
         return $this;
     }
@@ -173,10 +173,29 @@ class Street extends PdoAdapter implements StreetInterface
      */
     public function orWhere($column, $value)
     {
-        $this->sql .= sprintf(' %s %s %s', 'OR', $column, '= ?');
-        array_push($this->values, $value);
+        $this->sql .= sprintf(' %s ', 'OR');
+        
+        if (is_array($value)) {
+            $values = $value;
+            $this->in($column, $values);
+        } else {
+            $this->sql .= sprintf('%s %s', $column, '= ?');
+            array_push($this->values, $value);
+        }
         
         return $this;
+    }
+    
+    /**
+     * In statement for multiple values.
+     * 
+     * @see \Avenue\Database\StreetInterface::in()
+     */
+    public function in($column, array $values)
+    {
+        $placeholders = $this->app->arrFillJoin(', ', '?', 0, count($values));
+        $this->sql .= sprintf(' %s %s %s', $column, 'IN', '(' . $placeholders . ')');
+        $this->values = array_merge($this->values, $values);
     }
     
     /**
@@ -253,7 +272,7 @@ class Street extends PdoAdapter implements StreetInterface
     {
         try {
             $this->sql = sprintf('%s %s', 'DELETE FROM', $this->table);
-            $this->getWhereIdCondition($id);
+            $this->where($this->pk, $id);
             
             $this
             ->cmd($this->sql)
@@ -341,7 +360,7 @@ class Street extends PdoAdapter implements StreetInterface
             $this->values = array_values($this->data);
             
             $this->sql = sprintf('%s %s %s %s', 'UPDATE', $this->table, 'SET', $this->columns);
-            $this->getWhereIdCondition($id);
+            $this->where($this->pk, $id);
             
             $this
             ->cmd($this->sql)
@@ -365,25 +384,6 @@ class Street extends PdoAdapter implements StreetInterface
     {
         $this->columns = $columns;
         return $this;
-    }
-    
-    /**
-     * Get the where condition based on the id type.
-     *
-     * @param mixed $id
-     */
-    private function getWhereIdCondition($id)
-    {
-        // if $id is passed as a list
-        // then use IN for multiple records action
-        // else, go to one-to-one action instead
-    
-        if (is_array($id)) {
-            $ids = $id;
-            $this->whereIn($this->pk, $ids);
-        } else {
-            $this->where($this->pk, $id);
-        }
     }
     
     /**
