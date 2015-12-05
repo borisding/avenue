@@ -125,4 +125,11 @@ interface StreetInterface
      * @param array $columns
      */
     public function with(array $columns = []);
+    
+    /**
+     * One to one relationship.
+     * 
+     * @param mixed $model
+     */
+    public function hasOne($model);
 }

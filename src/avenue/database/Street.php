@@ -24,6 +24,13 @@ class Street extends PdoAdapter implements StreetInterface
     protected $pk;
     
     /**
+     * Table foreign key.
+     * 
+     * @var mixed
+     */
+    protected $fk;
+    
+    /**
      * SQL statement.
      * 
      * @var mixed
@@ -451,6 +458,25 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
+     * Get the targeted model class foreign key.
+     * 
+     * @param object $model
+     * @throws \InvalidArgumentException
+     */
+    private function getModelFk($model)
+    {
+        if (!is_object($model)) {
+            throw new \InvalidArgumentException('Model is not an object.');
+        }
+        
+        if (empty($model->fk)) {
+            $model->fk = $this->table . '_id';
+        }
+        
+        return $model->fk;
+    }
+    
+    /**
      * Clear the properties with empty array.
      */
     private function flush()
@@ -459,6 +485,16 @@ class Street extends PdoAdapter implements StreetInterface
         $this->columns = [];
         $this->values = [];
         $this->data = [];
+    }
+    
+    /**
+     * Get the current cached sql.
+     * 
+     * @return mixed
+     */
+    public function getSql()
+    {
+        return $this->sql;
     }
     
     /**
