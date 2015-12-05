@@ -69,9 +69,9 @@ class Street extends PdoAdapter implements StreetInterface
     public function find()
     {
         if (is_array($this->columns) && !empty($this->columns)) {
-            $this->sql = 'SELECT ' . implode(', ', $this->columns) . ' FROM ' . $this->table;
+            $this->sql = sprintf('%s %s %s %s', 'SELECT', implode(', ', $this->columns), 'FROM', $this->table);
         } else {
-            $this->sql = 'SELECT * FROM ' . $this->table;
+            $this->sql = sprintf('%s %s', 'SELECT * FROM', $this->table);
         }
         
         return $this;
@@ -106,8 +106,24 @@ class Street extends PdoAdapter implements StreetInterface
      */
     public function where($column, $value)
     {
-        $this->sql .= ' WHERE ' . $column . ' = ?';
+        $this->sql .= sprintf(' %s %s %s', 'WHERE', $column, '= ?');
         array_push($this->values, $value);
+        
+        return $this;
+    }
+    
+    /**
+     * Where column IN statement based on the list of values.
+     * 
+     * @param mixed $column
+     * @param array $values
+     * @return \Avenue\Database\Street
+     */
+    public function whereIn($column, array $values = [])
+    {
+        $placeholders = $this->app->arrFillJoin(', ', '?', 0, count($values));
+        $this->sql .= sprintf(' %s %s %s %s', 'WHERE', $column, 'IN', '(' . $placeholders . ')');
+        $this->values = array_merge($this->values, $values);
         
         return $this;
     }
@@ -121,7 +137,7 @@ class Street extends PdoAdapter implements StreetInterface
      */
     public function andWhere($column, $value)
     {
-        $this->sql .= ' AND ' . $column . ' = ? ';
+        $this->sql .= sprintf(' %s %s %s', 'AND', $column, '= ?');
         array_push($this->values, $value);
         
         return $this;
@@ -136,7 +152,7 @@ class Street extends PdoAdapter implements StreetInterface
      */
     public function orWhere($column, $value)
     {
-        $this->sql .= ' OR ' . $column . ' = ? ';
+        $this->sql .= sprintf(' %s %s %s', 'OR', $column, '= ?');
         array_push($this->values, $value);
         
         return $this;
@@ -151,7 +167,7 @@ class Street extends PdoAdapter implements StreetInterface
     public function orderBy($sorting)
     {
         if (!empty($sorting)) {
-            $this->sql .= ' ORDER BY ' . $this->app->escape($sorting);
+            $this->sql .= sprintf(' %s %s', 'ORDER BY', $this->app->escape($sorting));
         }
         
         return $this;
@@ -205,12 +221,15 @@ class Street extends PdoAdapter implements StreetInterface
     public function remove($id)
     {
         try {
-            $sql = 'DELETE FROM ' . $this->table;
-            $sql .= ' WHERE ' . $this->pk;
-            $sql .= $this->getWhereIdCondition($id);
+            $this->sql = sprintf('%s %s', 'DELETE FROM', $this->table);
+            $this->getWhereIdCondition($id);
             
-            $this->cmd($sql)->run();
+            $this
+            ->cmd($this->sql)
+            ->batch($this->values)
+            ->run();
             
+            $this->flush();
             return true;
         } catch (\PDOException $e) {
             throw new \RuntimeException($e->getMessage(), $e->getCode());
@@ -225,9 +244,9 @@ class Street extends PdoAdapter implements StreetInterface
     public function removeAll()
     {
         try {
-            $sql = 'DELETE FROM ' . $this->table;
-            $this->cmd($sql)->run();
-    
+            $this->sql = sprintf('%s %s', 'DELETE FROM', $this->table);
+            $this->cmd($this->sql)->run();
+            
             return true;
         } catch (\PDOException $e) {
             throw new \RuntimeException($e->getMessage(), $e->getCode());
@@ -257,16 +276,20 @@ class Street extends PdoAdapter implements StreetInterface
     public function create()
     {
         try {
-            $columns = implode(', ', array_keys($this->data));
-            $values = array_values($this->data);
-            $placeholders = $this->app->arrFillJoin(', ', '?', 0, count($values));
+            $this->columns = implode(', ', array_keys($this->data));
+            $this->values = array_values($this->data);
             
-            $sql = 'INSERT INTO ' . $this->table . ' (' . $columns . ') ';
-            $sql .= 'VALUES (' . $placeholders . ')';
+            $placeholders = $this->app->arrFillJoin(', ', '?', 0, count($this->values));
             
-            $this->cmd($sql)->batch($values)->run();
-            $this->flush();
+            $this->sql = sprintf('%s %s %s ', 'INSERT INTO', $this->table, '(' . $this->columns . ')');
+            $this->sql .= sprintf('%s %s', 'VALUES', '(' . $placeholders . ')');
             
+            $this
+            ->cmd($this->sql)
+            ->batch($this->values)
+            ->run();
+            
+            $this->flush();            
             return $this->getInsertedId();
         } catch (\PDOException $e) {
             throw new \RuntimeException($e->getMessage(), $e->getCode());
@@ -282,16 +305,18 @@ class Street extends PdoAdapter implements StreetInterface
     public function update($id)
     {
         try {
-            $columns = implode(' = ?, ', array_keys($this->data)) . ' = ?';
-            $values = array_values($this->data);
+            $this->columns = implode(' = ?, ', array_keys($this->data)) . ' = ?';
+            $this->values = array_values($this->data);
             
-            $sql = 'UPDATE ' . $this->table . ' SET ';
-            $sql .= $columns . ' WHERE ' . $this->pk;
-            $sql .= $this->getWhereIdCondition($id);
+            $this->sql = sprintf('%s %s %s %s', 'UPDATE', $this->table, 'SET', $this->columns);
+            $this->getWhereIdCondition($id);
             
-            $this->cmd($sql)->batch($values)->run();
+            $this
+            ->cmd($this->sql)
+            ->batch($this->values)
+            ->run();
+            
             $this->flush();
-            
             return true;
         } catch (\PDOException $e) {
             throw new \RuntimeException($e->getMessage(), $e->getCode());
@@ -324,13 +349,10 @@ class Street extends PdoAdapter implements StreetInterface
     
         if (is_array($id)) {
             $ids = $id;
-            $ids = $this->app->escape(implode(', ', $ids));
-            $condition = ' IN (' . $ids . ')';
+            $this->whereIn($this->pk, $ids);
         } else {
-            $condition = ' = ' . $this->app->escape($id);
+            $this->where($this->pk, $id);
         }
-        
-        return $condition;
     }
     
     /**

@@ -27,6 +27,14 @@ interface StreetInterface
     public function where($column, $value);
     
     /**
+     * Where in statement condition.
+     * 
+     * @param mixed $column
+     * @param array $values
+     */
+    public function whereIn($column, array $values = []);
+    
+    /**
      * AND where condition.
      * 
      * @param mixed $column
