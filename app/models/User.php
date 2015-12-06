@@ -19,13 +19,6 @@ class User extends Model
     
     public function getProfile()
     {
-        $profile = new Profile();
-        
-        $result = $this
-        ->hasOne($profile)
-        ->where($profile->fk, 233)
-        ->getOne();
-        
-        return $result;
+        // TODO
     }
 }

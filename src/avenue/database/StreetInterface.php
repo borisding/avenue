@@ -140,11 +140,4 @@ interface StreetInterface
      * @param mixed $on
      */
     public function join($model, $on);
-    
-    /**
-     * One to one relationship.
-     * 
-     * @param mixed $model
-     */
-    public function hasOne($model);
 }
