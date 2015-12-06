@@ -140,13 +140,11 @@ class Street extends PdoAdapter implements StreetInterface
      */
     public function where($column, $value)
     {
-        $this->sql .= sprintf(' %s ', 'WHERE');
-        
         if (is_array($value)) {
             $values = $value;
-            $this->sql .= $this->in($column, $values);
+            $this->whereIn($column, $values);
         } else {
-            $this->sql .= sprintf('%s %s', $column, '= ?');
+            $this->sql .= sprintf(' WHERE %s %s', $column, '= ?');
             array_push($this->values, $value);
         }
         
@@ -164,7 +162,7 @@ class Street extends PdoAdapter implements StreetInterface
         
         if (is_array($value)) {
             $values = $value;
-            $this->sql .= $this->in($column, $values);
+            $this->sql .= $this->getIn($column, $values);
         } else {
             $this->sql .= sprintf('%s %s', $column, '= ?');
             array_push($this->values, $value);
@@ -184,7 +182,7 @@ class Street extends PdoAdapter implements StreetInterface
         
         if (is_array($value)) {
             $values = $value;
-            $this->sql .= $this->in($column, $values);
+            $this->sql .= $this->getIn($column, $values);
         } else {
             $this->sql .= sprintf('%s %s', $column, '= ?');
             array_push($this->values, $value);
@@ -194,16 +192,60 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
-     * In statement for multiple values.
+     * Where in statement for multiple values.
      * 
-     * @see \Avenue\Database\StreetInterface::in()
+     * @see \Avenue\Database\StreetInterface::whereIn()
      */
-    public function in($column, array $values)
+    public function whereIn($column, array $values)
     {
-        $placeholders = $this->app->arrFillJoin(', ', '?', 0, count($values));
+        $placeholders = $this->getPlaceholders($values);
+        $this->sql .= sprintf(' WHERE %s IN (%s)', $column, $placeholders);
+        $this->values = array_merge($this->values, $values);
+        
+        return $this;
+    }
+    
+    /**
+     * Where not in statement for multiple values.
+     * 
+     * @see \Avenue\Database\StreetInterface::whereNotIn()
+     */
+    public function whereNotIn($column, array $values)
+    {
+        $placeholders = $this->getPlaceholders($values);
+        $this->sql .= sprintf(' WHERE %s NOT IN (%s)', $column, $placeholders);
+        $this->values = array_merge($this->values, $values);
+        
+        return $this;
+    }
+    
+    /**
+     * Get in statement.
+     * 
+     * @param mixed $column
+     * @param array $values
+     */
+    protected function getIn($column, array $values)
+    {
+        $placeholders = $this->getPlaceholders($values);
         $sql = sprintf(' %s IN (%s)', $column, $placeholders);
         $this->values = array_merge($this->values, $values);
         
+        return $sql;
+    }
+    
+    /**
+     * Get not in statement.
+     * 
+     * @param mixed $column
+     * @param array $values
+     */
+    protected function getNotIn($column, array $values)
+    {
+        $placeholders = $this->getPlaceholders($values);
+        $sql = sprintf(' %s NOT IN (%s)', $column, $placeholders);
+        $this->values = array_merge($this->values, $values);
+    
         return $sql;
     }
     
@@ -474,6 +516,16 @@ class Street extends PdoAdapter implements StreetInterface
         }
         
         return $model->fk;
+    }
+    
+    /**
+     * Get the placeholders based on the values.
+     * 
+     * @param array $values
+     */
+    protected function getPlaceholders(array $values = [])
+    {
+        return $this->app->arrFillJoin(', ', '?', 0, count($values));
     }
     
     /**

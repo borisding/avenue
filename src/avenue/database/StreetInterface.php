@@ -50,12 +50,20 @@ interface StreetInterface
     public function orWhere($column, $value);
     
     /**
-     * In statement for multiple values.
+     * Where in statement.
      * 
      * @param mixed $column
      * @param array $values
      */
-    public function in($column, array $values);
+    public function whereIn($column, array $values);
+    
+    /**
+     * Where not in statement.
+     * 
+     * @param mixed $column
+     * @param array $values
+     */
+    public function whereNotIn($column, array $values);
     
     /**
      * Group by statement for column.
