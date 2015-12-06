@@ -551,7 +551,6 @@ class Street extends PdoAdapter implements StreetInterface
         $this->sql = null;
         $this->columns = [];
         $this->values = [];
-        $this->joinQueries = [];
         $this->data = [];
     }
     
