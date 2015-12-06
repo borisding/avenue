@@ -447,6 +447,27 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
+     * Inner join statement.
+     * 
+     * @see \Avenue\Database\StreetInterface::join()
+     */
+    public function join($model, $on)
+    {
+        // if model passed in as model class object
+        // try to get with model table property
+        if (is_object($model)) {
+            $table = $model->table;
+        } else {
+            $table = $model;
+        }
+        
+        $this->sql .= sprintf(' INNER JOIN %s ON %s', $table, $on);
+        unset($table);
+        
+        return $this;
+    }
+    
+    /**
      * Define the table name based on the model class name.
      * Wrapped with the table prefix syntax.
      */
@@ -530,6 +551,7 @@ class Street extends PdoAdapter implements StreetInterface
         $this->sql = null;
         $this->columns = [];
         $this->values = [];
+        $this->joinQueries = [];
         $this->data = [];
     }
     

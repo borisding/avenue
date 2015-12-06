@@ -132,7 +132,15 @@ interface StreetInterface
      * Remove all records of the table.
      */
     public function removeAll();
-        
+    
+    /**
+     * Inner join statement.
+     * 
+     * @param mixed $model
+     * @param mixed $on
+     */
+    public function join($model, $on);
+    
     /**
      * One to one relationship.
      * 
