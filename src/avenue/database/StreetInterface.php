@@ -25,6 +25,13 @@ interface StreetInterface
     public function findAll(array $columns = []);
     
     /**
+     * Select distinct statement.
+     * 
+     * @param array $columns
+     */
+    public function findDistinct(array $columns);
+    
+    /**
      * Return all record(s) for union sql statements.
      * 
      * @param array $objects

@@ -110,6 +110,19 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
+     * Select distinct statement.
+     * 
+     * @see \Avenue\Database\StreetInterface::findDistinct()
+     */
+    public function findDistinct(array $columns)
+    {
+        $this->columns = $columns;
+        $this->sql = sprintf('SELECT DISTINCT %s FROM %s', implode(', ', $this->columns), $this->table);
+        
+        return $this;
+    }
+    
+    /**
      * Get all found record(s) via union by passing respective model objects
      * 
      * @see \Avenue\Database\StreetInterface::findUnion()
