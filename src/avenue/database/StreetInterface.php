@@ -134,10 +134,35 @@ interface StreetInterface
     public function removeAll();
     
     /**
-     * Inner join statement.
+     * Join statement based on type.
+     * 
+     * @param mixed $model
+     * @param mixed $on
+     * @param string $type
+     */
+    public function join($model, $on, $type = 'inner');
+    
+    /**
+     * Alias of inner join.
      * 
      * @param mixed $model
      * @param mixed $on
      */
-    public function join($model, $on);
+    public function innerJoin($model, $on);
+    
+    /**
+     * Alias of left join.
+     *
+     * @param mixed $model
+     * @param mixed $on
+     */
+    public function leftJoin($model, $on);
+    
+    /**
+     * Alias of right join.
+     *
+     * @param mixed $model
+     * @param mixed $on
+     */
+    public function rightJoin($model, $on);
 }

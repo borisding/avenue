@@ -451,7 +451,7 @@ class Street extends PdoAdapter implements StreetInterface
      * 
      * @see \Avenue\Database\StreetInterface::join()
      */
-    public function join($model, $on)
+    public function join($model, $on, $type = 'inner')
     {
         // if model passed in as model class object
         // try to get with model table property
@@ -461,10 +461,54 @@ class Street extends PdoAdapter implements StreetInterface
             $table = $model;
         }
         
-        $this->sql .= sprintf(' INNER JOIN %s ON %s', $table, $on);
-        unset($table);
+        // decide the join type
+        // default is inner join
+        switch ($type) {
+            case 'left':
+                $join = 'LEFT JOIN';
+                break;
+            case 'right':
+                $join = 'RIGHT JOIN';
+                break;
+            default:
+                $join = 'INNER JOIN';
+                break;
+        }
+        
+        $this->sql .= sprintf(' %s %s ON %s', $join, $table, $on);
+        unset($table, $join);
         
         return $this;
+    }
+    
+    /**
+     * Inner join method.
+     * 
+     * @see \Avenue\Database\StreetInterface::innerJoin()
+     */
+    public function innerJoin($model, $on)
+    {
+        return $this->join($model, $on, 'inner');
+    }
+    
+    /**
+     * Left join method.
+     * 
+     * @see \Avenue\Database\StreetInterface::leftJoin()
+     */
+    public function leftJoin($model, $on)
+    {
+        return $this->join($model, $on, 'left');
+    }
+    
+    /**
+     * Right join method.
+     * 
+     * @see \Avenue\Database\StreetInterface::rightJoin()
+     */
+    public function rightJoin($model, $on)
+    {
+        return $this->join($model, $on, 'right');
     }
     
     /**
