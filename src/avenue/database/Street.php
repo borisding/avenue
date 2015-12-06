@@ -70,11 +70,14 @@ class Street extends PdoAdapter implements StreetInterface
     
     /**     
      * Select statement preparation.
+     * Columns are optional.
      * 
      * @see \Avenue\Database\StreetInterface::find()
      */
-    public function find()
+    public function find(array $columns = [])
     {
+        $this->columns = $columns;
+        
         if (is_array($this->columns) && !empty($this->columns)) {
             $this->sql = sprintf('SELECT %s FROM %s', implode(', ', $this->columns), $this->table);
         } else {
@@ -86,22 +89,24 @@ class Street extends PdoAdapter implements StreetInterface
     
     /**
      * Shortcut of finding all records.
+     * Columns are optional.
      * 
      * @see \Avenue\Database\StreetInterface::findAll()
      */
-    public function findAll()
+    public function findAll(array $columns = [])
     {
-        return $this->find()->getAll();
+        return $this->find($columns)->getAll();
     }
     
     /**
      * Shortcut of finding one record.
+     * Columns are optional.
      * 
      * @see \Avenue\Database\StreetInterface::findOne()
      */
-    public function findOne()
+    public function findOne(array $columns = [])
     {
-        return $this->find()->getOne();
+        return $this->find($columns)->getOne();
     }
     
     /**
@@ -439,17 +444,6 @@ class Street extends PdoAdapter implements StreetInterface
         } catch (\PDOException $e) {
             throw new \RuntimeException($e->getMessage(), $e->getCode());
         }
-    }
-    
-    /**
-     * With selected columns for table.
-     * 
-     * @see \Avenue\Database\StreetInterface::with()
-     */
-    public function with(array $columns = [])
-    {
-        $this->columns = $columns;
-        return $this;
     }
     
     /**

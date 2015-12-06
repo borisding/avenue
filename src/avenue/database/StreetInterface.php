@@ -5,18 +5,24 @@ interface StreetInterface
 {
     /**
      * Select statement.
+     * 
+     * @param array $columns
      */
-    public function find();
+    public function find(array $columns = []);
     
     /**
-     * Return one row of found record(s).
+     * Return one row of found record.
+     * 
+     * @param array $columns
      */
-    public function findOne();
+    public function findOne(array $columns = []);
     
     /**
      * Return all found records.
+     * 
+     * @param array $columns
      */
-    public function findAll();
+    public function findAll(array $columns = []);
     
     /**
      * Return all record(s) for union sql statements.
@@ -126,14 +132,7 @@ interface StreetInterface
      * Remove all records of the table.
      */
     public function removeAll();
-    
-    /**
-     * With selected table column(s) in the query.
-     * 
-     * @param array $columns
-     */
-    public function with(array $columns = []);
-    
+        
     /**
      * One to one relationship.
      * 
