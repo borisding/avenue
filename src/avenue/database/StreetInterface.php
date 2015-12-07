@@ -40,27 +40,18 @@ interface StreetInterface
     
     /**
      * Where statemet condition.
-     * 
-     * @param mixed $column
-     * @param mixed $value
      */
-    public function where($column, $value);
+    public function where();
     
     /**
      * AND where condition.
-     * 
-     * @param mixed $column
-     * @param mixed $value
      */
-    public function andWhere($column, $value);
+    public function andWhere();
     
     /**
      * OR where condition.
-     * 
-     * @param mixed $column
-     * @param mixed $value
      */
-    public function orWhere($column, $value);
+    public function orWhere();
     
     /**
      * Where in statement.

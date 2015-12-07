@@ -38,21 +38,21 @@ class Street extends PdoAdapter implements StreetInterface
     private $sql;
     
     /**
-     * List of table columns.
+     * Bind table columns.
      * 
      * @var array
      */
     private $columns = [];
     
     /**
-     * List of respective assigned values.
+     * Bind respective assigned values.
      * 
      * @var array
      */
     private $values = [];
     
     /**
-     * List of data values.
+     * Bind data values.
      * 
      * @var array
      */
@@ -156,13 +156,15 @@ class Street extends PdoAdapter implements StreetInterface
      * 
      * @see \Avenue\Database\StreetInterface::where()
      */
-    public function where($column, $value)
+    public function where()
     {
+        list($column, $operator, $value) = $this->getWhereParams(func_get_args());
+        
         if (is_array($value)) {
             $values = $value;
             $this->whereIn($column, $values);
         } else {
-            $this->sql .= sprintf(' WHERE %s %s', $column, '= ?');
+            $this->sql .= sprintf(' WHERE %s %s %s', $column, $operator, '?');
             array_push($this->values, $value);
         }
         
@@ -174,15 +176,16 @@ class Street extends PdoAdapter implements StreetInterface
      * 
      * @see \Avenue\Database\StreetInterface::andWhere()
      */
-    public function andWhere($column, $value)
+    public function andWhere()
     {
         $this->sql .= sprintf(' %s ', 'AND');
+        list($column, $operator, $value) = $this->getWhereParams(func_get_args());
         
         if (is_array($value)) {
             $values = $value;
             $this->sql .= $this->getIn($column, $values);
         } else {
-            $this->sql .= sprintf('%s %s', $column, '= ?');
+            $this->sql .= sprintf('%s %s %s', $column, $operator, '?');
             array_push($this->values, $value);
         }
         
@@ -194,15 +197,16 @@ class Street extends PdoAdapter implements StreetInterface
      * 
      * @see \Avenue\Database\StreetInterface::orWhere()
      */
-    public function orWhere($column, $value)
+    public function orWhere()
     {
         $this->sql .= sprintf(' %s ', 'OR');
+        list($column, $operator, $value) = $this->getWhereParams(func_get_args());
         
         if (is_array($value)) {
             $values = $value;
             $this->sql .= $this->getIn($column, $values);
         } else {
-            $this->sql .= sprintf('%s %s', $column, '= ?');
+            $this->sql .= sprintf('%s %s %s', $column, $operator, '?');
             array_push($this->values, $value);
         }
         
@@ -522,6 +526,28 @@ class Street extends PdoAdapter implements StreetInterface
     public function rightJoin($model, $on)
     {
         return $this->join($model, $on, 'right');
+    }
+    
+    /**
+     * Get the where params with operator inserted, if any.
+     * 
+     * @param array $params
+     * @throws \InvalidArgumentException
+     */
+    protected function getWhereParams(array $params)
+    {
+        $numParams = count($params);
+        
+        if ($numParams < 2 || $numParams > 3) {
+            throw new \InvalidArgumentException('Invalid number of parameters for where condition.');
+        }
+        
+        // default is equal sign by inserting as second element
+        if ($numParams === 2) {
+            array_splice($params, 1, 0, '=');
+        }
+        
+        return $params;
     }
     
     /**
