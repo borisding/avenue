@@ -493,7 +493,7 @@ class Street extends PdoAdapter implements StreetInterface
             $this->columns = implode(', ', array_keys($this->data));
             $this->values = array_values($this->data);
             
-            $placeholders = $this->app->arrFillJoin(', ', '?', 0, count($this->values));
+            $placeholders = $this->getPlaceholders($this->values);
             $this->sql = sprintf('INSERT INTO %s (%s) VALUES (%s)', $this->table, $this->columns, $placeholders);
             
             $this
