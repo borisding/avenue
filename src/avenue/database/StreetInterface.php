@@ -77,6 +77,11 @@ interface StreetInterface
     public function groupBy(array $columns);
     
     /**
+     * Having statement.
+     */
+    public function having();
+    
+    /**
      * Order by statement.
      * 
      * @param array $sorting

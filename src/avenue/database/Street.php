@@ -158,7 +158,7 @@ class Street extends PdoAdapter implements StreetInterface
      */
     public function where()
     {
-        list($column, $operator, $value) = $this->getWhereParams(func_get_args());
+        list($column, $operator, $value) = $this->getConditionParams(func_get_args());
         
         if (is_array($value)) {
             $values = $value;
@@ -179,7 +179,7 @@ class Street extends PdoAdapter implements StreetInterface
     public function andWhere()
     {
         $this->sql .= sprintf(' %s ', 'AND');
-        list($column, $operator, $value) = $this->getWhereParams(func_get_args());
+        list($column, $operator, $value) = $this->getConditionParams(func_get_args());
         
         if (is_array($value)) {
             $values = $value;
@@ -200,7 +200,7 @@ class Street extends PdoAdapter implements StreetInterface
     public function orWhere()
     {
         $this->sql .= sprintf(' %s ', 'OR');
-        list($column, $operator, $value) = $this->getWhereParams(func_get_args());
+        list($column, $operator, $value) = $this->getConditionParams(func_get_args());
         
         if (is_array($value)) {
             $values = $value;
@@ -281,8 +281,22 @@ class Street extends PdoAdapter implements StreetInterface
         $columns = implode(', ', $columns);
         
         if (!empty($columns)) {
-            $this->sql .= sprintf(' %s %s', 'GROUP BY', $this->app->escape($columns));
+            $this->sql .= sprintf(' %s %s', 'GROUP BY', $columns);
         }
+        
+        return $this;
+    }
+    
+    /**
+     * Having statement with condition.
+     * 
+     * @see \Avenue\Database\StreetInterface::having()
+     */
+    public function having()
+    {
+        list($column, $operator, $value) = $this->getConditionParams(func_get_args());
+        $this->sql .= sprintf(' HAVING %s %s %s', $column, $operator, '?');
+        array_push($this->values, $value);
         
         return $this;
     }
@@ -297,7 +311,7 @@ class Street extends PdoAdapter implements StreetInterface
         $sorting = implode(', ', $sorting);
         
         if (!empty($sorting)) {
-            $this->sql .= sprintf(' %s %s', 'ORDER BY', $this->app->escape($sorting));
+            $this->sql .= sprintf(' %s %s', 'ORDER BY', $sorting);
         }
         
         return $this;
@@ -529,17 +543,17 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
-     * Get the where params with operator inserted, if any.
+     * Get the conditional params with operator inserted, if any.
      * 
      * @param array $params
      * @throws \InvalidArgumentException
      */
-    protected function getWhereParams(array $params)
+    protected function getConditionParams(array $params)
     {
         $numParams = count($params);
         
         if ($numParams < 2 || $numParams > 3) {
-            throw new \InvalidArgumentException('Invalid number of parameters for where condition.');
+            throw new \InvalidArgumentException('Invalid number of parameters for condition.');
         }
         
         // default is equal sign by inserting as second element
@@ -562,7 +576,7 @@ class Street extends PdoAdapter implements StreetInterface
             $this->table = strtolower($this->getModelName());
         }
         
-        $this->table = '{' . $this->app->escape($this->table) . '}';
+        $this->table = '{' . $this->table . '}';
 
         return $this;
     }
@@ -573,12 +587,10 @@ class Street extends PdoAdapter implements StreetInterface
      */
     protected function definePrimaryKey()
     {
-        if (!empty($this->pk)) {
-            $this->pk = $this->app->escape($this->pk);
-        } else {
+        if (empty($this->pk)) {
             $this->pk = 'id';
         }
-
+        
         return $this;
     }
     
