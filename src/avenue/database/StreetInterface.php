@@ -102,9 +102,39 @@ interface StreetInterface
     public function getAll();
     
     /**
-     * Get one found record.
+     * Get all the found records in object.
+     */
+    public function getAllObj();
+    
+    /**
+     * Get all the found records in indexed.
+     */
+    public function getAllNum();
+    
+    /**
+     * Get all the found records in both associative and indexed.
+     */
+    public function getAllBoth();
+    
+    /**
+     * Get one record.
      */
     public function getOne();
+    
+    /**
+     * Get one found record in object.
+     */
+    public function getOneObj();
+    
+    /**
+     * Get a record in indexed.
+     */
+    public function getOneNum();
+    
+    /**
+     * Get a record in both associative and indexed.
+     */
+    public function getOneBoth();
     
     /**
      * Alias method for both create and update.

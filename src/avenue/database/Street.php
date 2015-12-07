@@ -329,17 +329,17 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
-     * Return all found records in associative array.
+     * Return all found records, default in associative array.
      * 
      * @see \Avenue\Database\StreetInterface::getAll()
      */
-    public function getAll()
+    public function getAll($type = 'assoc')
     {
         try {
             $result = $this
             ->cmd($this->sql)
             ->batch($this->values)
-            ->fetchAll();
+            ->fetchAll($type);
             
             $this->flush();
             return $result;
@@ -349,23 +349,81 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
+     * Get all the found records in object.
+     * 
+     * @see \Avenue\Database\StreetInterface::getAllObj()
+     */
+    public function getAllObj()
+    {
+        return $this->getAll('obj');
+    }
+    
+    /**
+     * Get all the found records in indexed.
+     * 
+     * @see \Avenue\Database\StreetInterface::getAllNum()
+     */
+    public function getAllNum()
+    {
+        return $this->getAll('num');
+    }
+    
+    /**
+     * Get all the found records in both associative and indexed.
+     * 
+     * @see \Avenue\Database\StreetInterface::getAllBoth()
+     */
+    public function getAllBoth()
+    {
+        return $this->getAll('both');
+    }
+    
+    /**
      * Return one record in associative array.
      * 
      * @see \Avenue\Database\StreetInterface::getOne()
      */
-    public function getOne()
+    public function getOne($type = 'assoc')
     {
         try {
             $result = $this
             ->cmd($this->sql)
             ->batch($this->values)
-            ->fetchOne();
+            ->fetchOne($type);
             
             $this->flush();
             return $result;
         } catch (\PDOException $e) {
             throw new \RuntimeException($e->getMessage(), $e->getCode());
         }
+    }
+    
+    /**
+     * Get one found record in object.
+     * 
+     * @see \Avenue\Database\StreetInterface::getOneObj()
+     */
+    public function getOneObj()
+    {
+        return $this->getOne('obj');
+    }
+    
+    /**
+     * Get a record in indexed.
+     * 
+     * @see \Avenue\Database\StreetInterface::getOneNum()
+     */
+    public function getOneNum()
+    {
+        return $this->getOne('num');
+    }
+    
+    /**
+     * Get a record in both associative and indexed.
+     */
+    public function getOneBoth()
+    {
+        return $this->getOne('both');
     }
     
     /**
