@@ -75,7 +75,7 @@ class View
         $PATH_TO_VIEW_FILE = AVENUE_APP_DIR . '/views/' . $name;
         
         if (!file_exists($PATH_TO_VIEW_FILE)) {
-            throw new \Exception('View [' . $PATH_TO_VIEW_FILE . '] not found!');
+            throw new \Exception(sprintf('View [%s] not found!', $PATH_TO_VIEW_FILE));
         }
         
         return $PATH_TO_VIEW_FILE;
@@ -111,7 +111,7 @@ class View
     public function __call($name, array $params = [])
     {
         if (!array_key_exists($name, $this->helpers)) {
-            throw new \LogicException('Calling invalid helper [' . $name . '].');
+            throw new \LogicException(sprintf('Calling invalid helper [%s]', $name));
         }
         
         return call_user_func_array($this->helpers[$name], $params);

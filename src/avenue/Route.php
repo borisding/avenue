@@ -206,7 +206,7 @@ class Route
         // throw exception if no controller class found
         if (!class_exists($ControllerClass)) {
             $this->app->response->setStatus(404);
-            throw new \LogicException('Controller [' . $ControllerClass . '] not found.');
+            throw new \LogicException(sprintf('Controller [%s] not found.', $ControllerClass));
         }
         
         // check if controller class has parent controller
@@ -261,7 +261,7 @@ class Route
             
             if (!method_exists($this->instance, $action)) {
                 $this->app->response->setStatus(404);
-                throw new \BadMethodCallException('Controller action method [' . $action. '] not found.');
+                throw new \BadMethodCallException(sprintf('Controller action method [%s] not found.', $action));
             }
             
             call_user_func([$this->instance, $action]);

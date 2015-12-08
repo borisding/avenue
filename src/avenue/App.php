@@ -130,7 +130,7 @@ final class App implements AppInterface
     {
         if (!array_key_exists($name, static::$services)) {
             $this->response->setStatus(500);
-            throw new \OutOfBoundsException('Service [' . $name . '] is not registered!');
+            throw new \OutOfBoundsException(sprintf('Service [%s] is not registered!', $name));
         }
         
         $resolver = static::$services[$name];

@@ -49,7 +49,7 @@ class Exception implements ExceptionInterface
         $PATH_TO_EXCEPTION_FILE = AVENUE_SRC_DIR . '/includes/exception_error.php';
         
         if (!file_exists($PATH_TO_EXCEPTION_FILE)) {
-            die('Exception view [' . $PATH_TO_EXCEPTION_FILE . '] not found!');
+            die(sprintf('Exception view [%s] not found!', $PATH_TO_EXCEPTION_FILE));
         }
         
         ob_start();
