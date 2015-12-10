@@ -207,6 +207,13 @@ interface StreetInterface
     public function crossJoin($model);
     
     /**
+     * Natural join method.
+     *
+     * @param mixed $model
+     */
+    public function naturalJoin($model);
+    
+    /**
      * Get the current model table name.
      */
     public function getTable();
