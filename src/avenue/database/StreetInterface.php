@@ -200,6 +200,13 @@ interface StreetInterface
     public function rightJoin($model, $on);
     
     /**
+     * Cross join method.
+     * 
+     * @param mixed $model
+     */
+    public function crossJoin($model);
+    
+    /**
      * Get the current model table name.
      */
     public function getTable();

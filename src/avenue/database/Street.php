@@ -591,6 +591,17 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
+     * Cross join method by passing the targeted model class object.
+     * 
+     * @see \Avenue\Database\StreetInterface::crossJoin()
+     */
+    public function crossJoin($model)
+    {
+        $this->sql .= sprintf(' %s %s', 'CROSS JOIN', $model->table);
+        return $this;
+    }
+    
+    /**
      * Right join method.
      * 
      * @see \Avenue\Database\StreetInterface::rightJoin()
