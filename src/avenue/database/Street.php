@@ -718,6 +718,36 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
+     * Get the current table name without the table prefix.
+     *
+     * @see \Avenue\Database\StreetInterface::getTable()
+     */
+    public function getTable()
+    {
+        return $this->replaceTablePrefix(($this->table));
+    }
+    
+    /**
+     * Get the current primary key.
+     *
+     * @see \Avenue\Database\StreetInterface::getPk()
+     */
+    public function getPk()
+    {
+        return $this->pk;
+    }
+    
+    /**
+     * Get the current model foreign key.
+     *
+     * @see \Avenue\Database\StreetInterface::getFk()
+     */
+    public function getFk()
+    {
+        return $this->fk;
+    }
+    
+    /**
      * Magic set method.
      * 
      * @param mixed $key

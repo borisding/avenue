@@ -198,4 +198,19 @@ interface StreetInterface
      * @param mixed $on
      */
     public function rightJoin($model, $on);
+    
+    /**
+     * Get the current model table name.
+     */
+    public function getTable();
+    
+    /**
+     * Get the current model primary key.
+     */
+    public function getPk();
+    
+    /**
+     * Get the current model foreign key.
+     */
+    public function getFk();
 }
