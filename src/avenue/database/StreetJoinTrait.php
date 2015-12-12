@@ -89,4 +89,23 @@ trait StreetJoinTrait
         $this->sql .= sprintf(' %s %s', 'NATURAL JOIN', $model->table);
         return $this;
     }
+    
+    /**
+     * Through join method with junction table.
+     * This is basically for many to many relationship.
+     * 
+     * @param mixed $model
+     * @param mixed $junction
+     * @param mixed $firstId
+     * @param mixed $secondId
+     * @return \Avenue\Database\StreetJoinTrait
+     */
+    public function throughJoin($model, $junction, $firstId, $secondId)
+    {
+        $firstOn = sprintf('%s = %s', $this->table . '.' . $this->pk, $junction . '.' . $firstId);
+        $secondOn = sprintf('%s = %s', $junction . '.' . $secondId, $model->table . '.' . $model->pk);
+        $this->sql .= sprintf(' LEFT JOIN %s ON %s LEFT JOIN %s ON %s ', $junction, $firstOn, $model->table, $secondOn);
+        
+        return $this;
+    }
 }
