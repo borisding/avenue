@@ -594,25 +594,6 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
-     * Get the targeted model class foreign key.
-     * 
-     * @param object $model
-     * @throws \InvalidArgumentException
-     */
-    protected function getModelFk($model)
-    {
-        if (!is_object($model)) {
-            throw new \InvalidArgumentException('Model is not an object.');
-        }
-        
-        if (empty($model->fk)) {
-            $model->fk = $this->table . '_id';
-        }
-        
-        return $model->fk;
-    }
-    
-    /**
      * Get the placeholders based on the values.
      * 
      * @param array $values
