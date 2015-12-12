@@ -351,17 +351,13 @@ class Street extends PdoAdapter implements StreetInterface
      */
     public function getAll($type = 'assoc')
     {
-        try {
-            $result = $this
-            ->cmd($this->sql)
-            ->batch($this->values)
-            ->fetchAll($type);
-            
-            $this->flush();
-            return $result;
-        } catch (\PDOException $e) {
-            throw new \RuntimeException($e->getMessage(), $e->getCode());
-        }
+        $result = $this
+        ->cmd($this->sql)
+        ->batch($this->values)
+        ->fetchAll($type);
+        
+        $this->flush();
+        return $result;
     }
     
     /**
@@ -401,17 +397,13 @@ class Street extends PdoAdapter implements StreetInterface
      */
     public function getOne($type = 'assoc')
     {
-        try {
-            $result = $this
-            ->cmd($this->sql)
-            ->batch($this->values)
-            ->fetchOne($type);
-            
-            $this->flush();
-            return $result;
-        } catch (\PDOException $e) {
-            throw new \RuntimeException($e->getMessage(), $e->getCode());
-        }
+        $result = $this
+        ->cmd($this->sql)
+        ->batch($this->values)
+        ->fetchOne($type);
+        
+        $this->flush();
+        return $result;
     }
     
     /**
@@ -449,20 +441,16 @@ class Street extends PdoAdapter implements StreetInterface
      */
     public function remove($id)
     {
-        try {
-            $this->sql = sprintf('DELETE FROM %s', $this->table);
-            $this->where($this->pk, $id);
-            
-            $this
-            ->cmd($this->sql)
-            ->batch($this->values)
-            ->run();
-            
-            $this->flush();
-            return true;
-        } catch (\PDOException $e) {
-            throw new \RuntimeException($e->getMessage(), $e->getCode());
-        }
+        $this->sql = sprintf('DELETE FROM %s', $this->table);
+        $this->where($this->pk, $id);
+        
+        $this
+        ->cmd($this->sql)
+        ->batch($this->values)
+        ->run();
+        
+        $this->flush();
+        return true;
     }
     
     /**
@@ -472,15 +460,11 @@ class Street extends PdoAdapter implements StreetInterface
      */
     public function removeAll()
     {
-        try {
-            $this->sql = sprintf('DELETE FROM %s', $this->table);
-            $this->cmd($this->sql)->run();
-            
-            $this->flush();
-            return true;
-        } catch (\PDOException $e) {
-            throw new \RuntimeException($e->getMessage(), $e->getCode());
-        }
+        $this->sql = sprintf('DELETE FROM %s', $this->table);
+        $this->cmd($this->sql)->run();
+        $this->flush();
+        
+        return true;
     }
     
     /**
@@ -505,23 +489,19 @@ class Street extends PdoAdapter implements StreetInterface
      */
     public function create()
     {
-        try {
-            $this->columns = implode(', ', array_keys($this->data));
-            $this->values = array_values($this->data);
-            
-            $placeholders = $this->getPlaceholders($this->values);
-            $this->sql = sprintf('INSERT INTO %s (%s) VALUES (%s)', $this->table, $this->columns, $placeholders);
-            
-            $this
-            ->cmd($this->sql)
-            ->batch($this->values)
-            ->run();
-            
-            $this->flush();            
-            return $this->getInsertedId();
-        } catch (\PDOException $e) {
-            throw new \RuntimeException($e->getMessage(), $e->getCode());
-        }
+        $this->columns = implode(', ', array_keys($this->data));
+        $this->values = array_values($this->data);
+        
+        $placeholders = $this->getPlaceholders($this->values);
+        $this->sql = sprintf('INSERT INTO %s (%s) VALUES (%s)', $this->table, $this->columns, $placeholders);
+        
+        $this
+        ->cmd($this->sql)
+        ->batch($this->values)
+        ->run();
+        
+        $this->flush();
+        return $this->getInsertedId();
     }
     
     /**
@@ -532,23 +512,19 @@ class Street extends PdoAdapter implements StreetInterface
      */
     public function update($id)
     {
-        try {
-            $this->columns = implode(' = ?, ', array_keys($this->data)) . ' = ?';
-            $this->values = array_values($this->data);
-            
-            $this->sql = sprintf('UPDATE %s SET %s', $this->table, $this->columns);
-            $this->where($this->pk, $id);
-            
-            $this
-            ->cmd($this->sql)
-            ->batch($this->values)
-            ->run();
-            
-            $this->flush();
-            return true;
-        } catch (\PDOException $e) {
-            throw new \RuntimeException($e->getMessage(), $e->getCode());
-        }
+        $this->columns = implode(' = ?, ', array_keys($this->data)) . ' = ?';
+        $this->values = array_values($this->data);
+        
+        $this->sql = sprintf('UPDATE %s SET %s', $this->table, $this->columns);
+        $this->where($this->pk, $id);
+        
+        $this
+        ->cmd($this->sql)
+        ->batch($this->values)
+        ->run();
+        
+        $this->flush();
+        return true;
     }
     
     /**
@@ -586,10 +562,9 @@ class Street extends PdoAdapter implements StreetInterface
         }
         
         $this->table = '{' . $this->table . '}';
-
         return $this;
     }
-
+    
     /**
      * Define the primary key of the table.
      * If none is defined, use default 'id' instead.
