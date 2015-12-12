@@ -250,6 +250,16 @@ interface StreetInterface
     public function hasMany($model, $on);
     
     /**
+     * Many to many through junction table.
+     * 
+     * @param mixed $model
+     * @param mixed $junction
+     * @param mixed $firstId
+     * @param mixed $secondId
+     */
+    public function hasManyThrough($model, $junction, $firstId, $secondId);
+    
+    /**
      * Get the current model table name.
      */
     public function getTable();

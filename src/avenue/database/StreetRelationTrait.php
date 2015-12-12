@@ -34,6 +34,38 @@ trait StreetRelationTrait
     }
     
     /**
+     * Shortcut of many to many through junction table.
+     * Default junction, first ID and second ID will be defined respectively,
+     * based on the table and id when it is not provied.
+     * 
+     * @param mixed $model
+     * @param mixed $junction
+     * @param mixed $firstId
+     * @param mixed $secondId
+     */
+    public function hasManyThrough($model, $junction = null, $firstId = null, $secondId = null)
+    {
+        // if empty, concat with first table and the latter with underscore
+        if (empty($junction)) {
+            $junction = $this->table . '_' . $model->table;
+        }
+        
+        // if first id is empty, define default with current model table and id
+        if (empty($firstId)) {
+            $firstId = $this->table . '_' . 'id';
+        }
+        
+        // if second id is empty, define default with model table and id
+        if (empty($secondId)) {
+            $secondId = $model->table . '_' . 'id';
+        }
+        
+        return $this
+        ->find()
+        ->throughJoin($model, $junction, $firstId, $secondId);
+    }
+    
+    /**
      * Get the on condition based on the current and targeted model.
      * 
      * @param mixed $model
