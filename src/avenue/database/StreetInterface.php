@@ -8,21 +8,21 @@ interface StreetInterface
      * 
      * @param array $columns
      */
-    public function find(array $columns = []);
+    public function find(array $columns);
     
     /**
      * Return one row of found record.
      * 
      * @param array $columns
      */
-    public function findOne(array $columns = []);
+    public function findOne(array $columns);
     
     /**
      * Return all found records.
      * 
      * @param array $columns
      */
-    public function findAll(array $columns = []);
+    public function findAll(array $columns);
     
     /**
      * Select distinct statement.
@@ -183,7 +183,7 @@ interface StreetInterface
      * @param mixed $on
      * @param string $type
      */
-    public function join($model, $on, $type = 'inner');
+    public function join($model, $on, $type);
     
     /**
      * Alias of inner join.
