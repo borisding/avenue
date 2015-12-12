@@ -11,7 +11,7 @@ trait StreetRelationTrait
      */
     public function hasOne($model, $on = null)
     {
-        $on = $this->getOnCondition($model);
+        $on = $this->getOnCondition($model, $on);
         
         return $this
         ->find()
@@ -37,6 +37,7 @@ trait StreetRelationTrait
      * Get the on condition based on the current and targeted model.
      * 
      * @param mixed $model
+     * @param mixed $on
      */
     protected function getOnCondition($model, $on)
     {
