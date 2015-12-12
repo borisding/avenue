@@ -224,6 +224,16 @@ interface StreetInterface
     public function naturalJoin($model);
     
     /**
+     * Through join method.
+     * 
+     * @param mixed $model
+     * @param mixed $junction
+     * @param mixed $firstId
+     * @param mixed $secondId
+     */
+    public function throughJoin($model, $junction, $firstId, $secondId);
+    
+    /**
      * Get the current model table name.
      */
     public function getTable();
