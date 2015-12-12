@@ -3,6 +3,12 @@ namespace Avenue\Database;
 
 trait StreetRelationTrait
 {
+    /**
+     * Shortcut of one to one relationship.
+     * 
+     * @param mixed $model
+     * @param mixed $on
+     */
     public function hasOne($model, $on = null)
     {
         $on = $this->getOnCondition($model);
@@ -12,6 +18,12 @@ trait StreetRelationTrait
         ->innerJoin($model, $on);
     }
     
+    /**
+     * Shortcut of one to many relationship.
+     * 
+     * @param mixed $model
+     * @param mixed $on
+     */
     public function hasMany($model, $on = null)
     {
         $on = $this->getOnCondition($model, $on);
@@ -19,21 +31,6 @@ trait StreetRelationTrait
         return $this
         ->find()
         ->leftJoin($model, $on);
-    }
-    
-    public function hasManyThrough($model, $junction = null, $on = null)
-    {
-        // if junction table is not defined
-        // then concat current model table with targeted model table
-        if (empty($junction)) {
-            $junction = $this->table . '_' . $model->table;
-        }
-        
-        $on = $this->getOnCondition($model, $on);
-        
-        $this->find();
-        $this->sql .= sprintf(' INNER JOIN %s ', $junction);
-        echo $this->sql;
     }
     
     /**

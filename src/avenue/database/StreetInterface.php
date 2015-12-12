@@ -234,6 +234,22 @@ interface StreetInterface
     public function throughJoin($model, $junction, $firstId, $secondId);
     
     /**
+     * One to one method.
+     * 
+     * @param mixed $model
+     * @param mixed $on
+     */
+    public function hasOne($model, $on);
+    
+    /**
+     * One to many method.
+     * 
+     * @param mixed $model
+     * @param mixed $on
+     */
+    public function hasMany($model, $on);
+    
+    /**
      * Get the current model table name.
      */
     public function getTable();
