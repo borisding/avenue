@@ -4,7 +4,7 @@ namespace Avenue\Database;
 trait StreetRelationTrait
 {
     /**
-     * Shortcut of one to one relationship.
+     * One to one relationship.
      * 
      * @param mixed $model
      * @param mixed $on
@@ -19,7 +19,7 @@ trait StreetRelationTrait
     }
     
     /**
-     * Shortcut of one to many relationship.
+     * One to many relationship.
      * 
      * @param mixed $model
      * @param mixed $on
@@ -31,6 +31,21 @@ trait StreetRelationTrait
         return $this
         ->find()
         ->leftJoin($model, $on);
+    }
+    
+    /**
+     * Belongs to relationship.
+     * 
+     * @param mixed $model
+     * @param mixed $on
+     */
+    public function belongsTo($model, $on = null)
+    {
+        $on = $this->getInverseOnCondition($model, $on);
+        
+        return $this
+        ->find()
+        ->innerJoin($model, $on);
     }
     
     /**
@@ -76,7 +91,24 @@ trait StreetRelationTrait
         if (empty($on)) {
             $on  = $this->table . '.' . $this->getPk();
             $on .= ' = ';
-            $on .= $model->table . '.' . $this->getModelFk($model);
+            $on .= $model->table . '.' . $this->getFk();
+        }
+        
+        return $on;
+    }
+    
+    /**
+     * Get the inverse on condition based on the current and targeted model.
+     * 
+     * @param mixed $model
+     * @param mixed $on
+     */
+    protected function getInverseOnCondition($model, $on)
+    {
+        if (empty($on)) {
+            $on  = $this->table . '.' . $this->getFk();
+            $on .= ' = ';
+            $on .= $model->table . '.' . $this->getPk();
         }
         
         return $on;
