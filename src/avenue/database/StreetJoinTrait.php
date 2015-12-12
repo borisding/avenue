@@ -5,8 +5,11 @@ trait StreetJoinTrait
 {
     /**
      * Inner join statement.
-     *
-     * @see \Avenue\Database\StreetInterface::join()
+     * 
+     * @param mixed $model
+     * @param mixed $on
+     * @param string $type
+     * @return \Avenue\Database\StreetJoinTrait
      */
     public function join($model, $on, $type = 'inner')
     {
@@ -40,8 +43,10 @@ trait StreetJoinTrait
     
     /**
      * Inner join method.
-     *
-     * @see \Avenue\Database\StreetInterface::innerJoin()
+     * 
+     * @param mixed $model
+     * @param mixed $on
+     * @return \Avenue\Database\StreetJoinTrait
      */
     public function innerJoin($model, $on)
     {
@@ -50,8 +55,10 @@ trait StreetJoinTrait
     
     /**
      * Left join method.
-     *
-     * @see \Avenue\Database\StreetInterface::leftJoin()
+     * 
+     * @param mixed $model
+     * @param mixed $on
+     * @return \Avenue\Database\StreetJoinTrait
      */
     public function leftJoin($model, $on)
     {
@@ -60,8 +67,10 @@ trait StreetJoinTrait
     
     /**
      * Right join method.
-     *
-     * @see \Avenue\Database\StreetInterface::rightJoin()
+     * 
+     * @param mixed $model
+     * @param mixed $on
+     * @return \Avenue\Database\StreetJoinTrait
      */
     public function rightJoin($model, $on)
     {
@@ -70,8 +79,9 @@ trait StreetJoinTrait
     
     /**
      * Cross join method by passing the targeted model class object.
-     *
-     * @see \Avenue\Database\StreetInterface::crossJoin()
+     * 
+     * @param mixed $model
+     * @return \Avenue\Database\StreetJoinTrait
      */
     public function crossJoin($model)
     {
@@ -81,8 +91,9 @@ trait StreetJoinTrait
     
     /**
      * Natural join method by passing the targeted model class object.
-     *
-     * @see \Avenue\Database\StreetInterface::naturalJoin()
+     * 
+     * @param mixed $model
+     * @return \Avenue\Database\StreetJoinTrait
      */
     public function naturalJoin($model)
     {
