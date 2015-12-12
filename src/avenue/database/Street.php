@@ -174,6 +174,20 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
+     * Where between method.
+     * Alternative of greater than equal and less than equal.
+     * 
+     * @see \Avenue\Database\StreetInterface::whereBetween()
+     */
+    public function whereBetween($column, $first, $second)
+    {
+        $this->sql .= sprintf(' WHERE %s BETWEEN %s AND %s ', $column, $first, $second);
+        array_push($this->values, $first, $second);
+        
+        return $this;
+    }
+    
+    /**
      * Where and condition accepts column and its value.
      * 
      * @see \Avenue\Database\StreetInterface::andWhere()

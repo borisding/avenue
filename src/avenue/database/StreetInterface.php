@@ -70,6 +70,16 @@ interface StreetInterface
     public function whereNotIn($column, array $values);
     
     /**
+     * Between method.
+     * Alternative of greater than equal and less than equal.
+     * 
+     * @param mixed $column
+     * @param mixed $first
+     * @param mixed $second
+     */
+    public function whereBetween($column, $first, $second);
+    
+    /**
      * Group by statement for column.
      * 
      * @param array $columns
