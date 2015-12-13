@@ -22,6 +22,27 @@ class Log implements LogInterface
     protected $monolog;
     
     /**
+     * Log channel.
+     * 
+     * @var mixed
+     */
+    protected $channel;
+    
+    /**
+     * List of handlers.
+     * 
+     * @var array
+     */
+    protected $handlers = [];
+    
+    /**
+     * List of processors.
+     * 
+     * @var unknown
+     */
+    protected $processors = [];
+    
+    /**
      * List of log level.
      * 
      * @var array
@@ -55,7 +76,13 @@ class Log implements LogInterface
         $this->app = $app;
         
         if (empty($this->monolog)) {
-            $this->boot();
+            $config = $this->app->getConfig('logging');
+            
+            $this->channel = $this->app->arrGet('channel', $config, 'avenue.logging');
+            $this->handlers = $this->app->arrGet('handlers', $config, []);
+            $this->processors = $this->app->arrGet('processors', $config, []);
+            
+            $this->boot(new Logger($this->channel));
         }
     }
     
@@ -169,28 +196,23 @@ class Log implements LogInterface
     }
     
     /**
-     * Boot the monolog based on the configuration.
+     * Boot the monolog based on the handlers and processors.
+     * 
+     * @param Logger $monolog
      */
-    protected function boot()
+    protected function boot(Logger $monolog)
     {
-        $config = $this->app->getConfig('logging');
-        $channel = $this->app->arrGet('channel', $config);
-        $handlers = $this->app->arrGet('handlers', $config, []);
-        $processors = $this->app->arrGet('processors', $config, []);
-        
         // instantiate monolog logger instance
-        $this->monolog = new Logger($channel);
+        $this->monolog = $monolog;
         
         // push each assigned handler
-        foreach ($handlers as $handler) {
+        foreach ($this->handlers as $handler) {
             $this->monolog->pushHandler($handler);
         }
         
         // push each assigned processor
-        foreach ($processors as $processor) {
+        foreach ($this->processors as $processor) {
             $this->monolog->pushProcessor($handler);
         }
-        
-        unset($config, $channel, $handlers, $processors);
     }
 }
