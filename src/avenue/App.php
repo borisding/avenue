@@ -8,6 +8,7 @@ use Avenue\Route;
 use Avenue\View;
 use Avenue\Log;
 use Avenue\Exception;
+use Avenue\Components\Encryption;
 use Avenue\AppInterface;
 use Avenue\Helpers\HelperBundleTrait;
 
@@ -228,6 +229,10 @@ final class App implements AppInterface
         
         $this->container('exception', function($exc) {
             return new Exception(static::getInstance(), $exc);
+        });
+        
+        $this->container('encryption', function() {
+            return new Encryption(static::getInstance());
         });
         
         return $this;
