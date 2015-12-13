@@ -18,9 +18,12 @@ return [
     // default controller to be assigned when @controller param is empty
     'defaultController' => 'default',
     
-    // logging configurations
+    // encryption configuration
+    'encryption' => require 'encryption.php',
+    
+    // logging configuration
     'logging' => require 'logging.php',
     
-    // database configurations
+    // database configuration
     'database' => require 'database.php'
 ];
