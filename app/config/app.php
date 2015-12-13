@@ -18,8 +18,8 @@ return [
     // default controller to be assigned when @controller param is empty
     'defaultController' => 'default',
     
-    // name for the log channel
-    'logChannel' => 'avenue.log',
+    // logging configurations
+    'logging' => require 'logging.php',
     
     // database configurations
     'database' => require 'database.php'
