@@ -11,5 +11,5 @@ return [
     'mode' => MCRYPT_MODE_CBC,
     
     // hashed key
-    'key' => 'change this to your own hashed key!'
+    'key' => 'change this to your own random string!'
 ];
