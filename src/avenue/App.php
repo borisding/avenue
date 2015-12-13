@@ -87,11 +87,8 @@ final class App implements AppInterface
             static::$app = $this;
         }
         
-        $this
-        ->setTimezone()
-        ->setErrorHandler()
-        ->addRegistry()
-        ->factory();
+        $this->setTimezone()->setErrorHandler();
+        $this->registry()->factory();
     }
     
     /**
@@ -207,7 +204,7 @@ final class App implements AppInterface
     /**
      * Add the respective application registries.
      */
-    protected function addRegistry()
+    protected function registry()
     {
         $this->container('request', function() {
             return new Request(static::getInstance());
@@ -313,8 +310,10 @@ final class App implements AppInterface
     {
         if (array_key_exists($name, static::$services)) {
             return $this->singleton($name);
-        } else {
+        } elseif (is_callable($name)) {
             return call_user_func_array($name, $params);
+        } else {
+            throw new \LogicException('Calling method that does not exist.');
         }
     }
 }
