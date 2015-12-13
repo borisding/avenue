@@ -10,7 +10,7 @@ interface LogInterface
      * @param string $level
      * @param array $context
      */
-    public function record($message, $level = 'warning', array $context);
+    public function record($message, $level, array $context);
     
     /**
      * Log for debug message.
