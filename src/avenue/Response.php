@@ -36,7 +36,7 @@ class Response
      *
      * @var mixed
      */
-    protected $httpVersion;
+    protected $http;
 
     /**
      * Response class constructor.
@@ -45,7 +45,7 @@ class Response
     public function __construct(App $app)
     {
         $this->app = $app;
-        $this->httpVersion = $this->app->getConfig('httpVersion');
+        $this->http = $this->app->getConfig('http');
         $this->setStatus(200);
         $this->setHeader(['Content-Type' => 'text/html']);
     }
@@ -84,7 +84,7 @@ class Response
     {
         $statusCode = $this->getStatus();
         $statusDesc = $this->getStatusDesc($statusCode);
-        $httpProtocol = 'HTTP/' . (!empty($this->httpVersion) ? $this->httpVersion : '1.1');
+        $httpProtocol = 'HTTP/' . (!empty($this->http) ? $this->http : '1.1');
 
         if (strpos(php_sapi_name(), 'cgi') !== false) {
             header(sprintf('Status: %d %s', $statusCode, $statusDesc), true);

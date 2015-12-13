@@ -4,10 +4,10 @@
  */
 return [
     // current application's version
-    'appVersion' => '1.0',
+    'version' => '1.0',
     
     // http version that is used
-    'httpVersion' => '1.1',
+    'http' => '1.1',
     
     // application's timezone
     'timezone' => 'UTC',
