@@ -18,6 +18,9 @@ return [
     // default controller to be assigned when @controller param is empty
     'defaultController' => 'default',
     
+    // cookie configuration
+    'cookie' => require 'cookie.php',
+    
     // encryption configuration
     'encryption' => require 'encryption.php',
     
