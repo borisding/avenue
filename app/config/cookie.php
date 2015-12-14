@@ -17,7 +17,7 @@ return [
     'secure' => false,
     
     // only for http protocol, not allowed for javascript
-    'httpOnly' => false,
+    'httpOnly' => true,
     
     // encrypt cookie's value
     'encrypt' => true

@@ -9,6 +9,7 @@ use Avenue\View;
 use Avenue\Log;
 use Avenue\Exception;
 use Avenue\Components\Encryption;
+use Avenue\Components\Cookie;
 use Avenue\AppInterface;
 use Avenue\Helpers\HelperBundleTrait;
 
@@ -233,6 +234,10 @@ final class App implements AppInterface
         
         $this->container('encryption', function() {
             return new Encryption(static::getInstance());
+        });
+        
+        $this->container('cookie', function() {
+            return new Cookie(static::getInstance());
         });
         
         return $this;
