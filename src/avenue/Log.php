@@ -43,6 +43,17 @@ class Log implements LogInterface
     protected $processors = [];
     
     /**
+     * Default logging configuration.
+     * 
+     * @var array
+     */
+    protected $config = [
+        'channel' => 'avenue.logging',
+        'handlers' => [],
+        'processors' => []
+    ];
+    
+    /**
      * List of log level.
      * 
      * @var array
@@ -76,12 +87,10 @@ class Log implements LogInterface
         $this->app = $app;
         
         if (empty($this->monolog)) {
-            $config = $this->app->getConfig('logging');
-            
-            $this->channel = $this->app->arrGet('channel', $config, 'avenue.logging');
-            $this->handlers = $this->app->arrGet('handlers', $config, []);
-            $this->processors = $this->app->arrGet('processors', $config, []);
-            
+            $this->config = array_merge($this->config, $this->app->getConfig('logging'));
+            $this->channel = $this->config['channel'];
+            $this->handlers = $this->config['handlers'];
+            $this->processors = $this->config['processors'];
             $this->boot(new Logger($this->channel));
         }
     }
