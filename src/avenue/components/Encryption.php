@@ -34,6 +34,17 @@ class Encryption
     protected $mode;
     
     /**
+     * Default encryption configuration.
+     * 
+     * @var array
+     */
+    protected $config = [
+        'key' => '',
+        'cipher' => MCRYPT_RIJNDAEL_256,
+        'mode' => MCRYPT_MODE_CBC
+    ];
+    
+    /**
      * Encryption class constructor.
      * 
      * @param App $app
@@ -41,10 +52,11 @@ class Encryption
     public function __construct(App $app)
     {
         $this->app = $app;
-        $config = $this->app->getConfig('encryption');
-        $this->key = $this->app->arrGet('key', $config);
-        $this->cipher = $this->app->arrGet('cipher', $config, MCRYPT_RIJNDAEL_256);
-        $this->mode = $this->app->arrGet('mode', $config, MCRYPT_MODE_CBC);
+        $this->config = array_merge($this->config, $this->app->getConfig('encryption'));
+        
+        $this->key = $this->config['key'];
+        $this->cipher = $this->config['cipher'];
+        $this->mode = $this->config['mode'];
     }
     
     /**
