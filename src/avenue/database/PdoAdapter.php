@@ -12,21 +12,21 @@ class PdoAdapter extends Connection implements PdoAdapterInterface
      * 
      * @var mixed
      */
-    private $conn;
+    protected $conn;
     
     /**
      * Query statement.
      * 
      * @var mixed
      */
-    private $stmt;
+    protected $stmt;
     
     /**
      * Supported fetch types.
      * 
      * @var array
      */
-    private $fetchTypes = [
+    protected $fetchTypes = [
         'both' 	=> PDO::FETCH_BOTH,
         'obj'	=> PDO::FETCH_OBJ,
         'class'	=> PDO::FETCH_CLASS,
@@ -39,7 +39,7 @@ class PdoAdapter extends Connection implements PdoAdapterInterface
      * 
      * @var array
      */
-    private $fetchAlias = [
+    protected $fetchAlias = [
         'fetchBoth'  => 'both',
         'fetchObj'   => 'obj',
         'fetchNum'   => 'num',
@@ -210,7 +210,7 @@ class PdoAdapter extends Connection implements PdoAdapterInterface
      * @param mixed $className
      * @return \Avenue\Database\PdoAdapter
      */
-    private function getFetchMode($type, $className = null)
+    protected function getFetchMode($type, $className = null)
     {
         $fetchType = $this->getFetchType($type);
         
@@ -228,7 +228,7 @@ class PdoAdapter extends Connection implements PdoAdapterInterface
      * 
      * @param mixed $name
      */
-    private function getFetchType($name)
+    protected function getFetchType($name)
     {
         return $this->app->arrGet($name, $this->fetchTypes, PDO::FETCH_ASSOC);
     }
@@ -239,7 +239,7 @@ class PdoAdapter extends Connection implements PdoAdapterInterface
      * @param mixed $value
      * @throws \InvalidArgumentException
      */
-    private function getParamScalar($value)
+    protected function getParamScalar($value)
     {
         if (!is_scalar($value)) {
             throw new \InvalidArgumentException('Failed to bind parameter. Invalid scalar type.');
