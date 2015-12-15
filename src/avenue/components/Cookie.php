@@ -85,6 +85,8 @@ class Cookie
         // extract respective config keys as parameters
         extract($this->config);
         setcookie($key, $value, time() + $expire, $path, $domain, $secure, $httpOnly);
+        // for immediate cookie assignment
+        $_COOKIE[$key] = $value;
     }
     
     /**
@@ -111,7 +113,7 @@ class Cookie
     {
         if (isset($_COOKIE[$key])) {
             unset($_COOKIE[$key]);
-            setcookie($key, '', time() - 3600, $this->config['path']);
+            setcookie($key, '', time() - 3600, $this->config['path'], $this->config['domain']);
         }
     }
     
