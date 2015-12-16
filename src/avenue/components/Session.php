@@ -55,6 +55,29 @@ class Session
     }
     
     /**
+     * Remove sepcific session based on the key.
+     * 
+     * @param mixed $key
+     */
+    public function remove($key)
+    {
+        if (isset($_SESSION[$key])) {
+            unset($_SESSION[$key]);
+        }
+    }
+    
+    /**
+     * Remove all defined session variables.
+     */
+    public function removeAll()
+    {
+        if (session_status() == PHP_SESSION_ACTIVE) {
+            session_unset();
+            session_destroy();
+        }
+    }
+    
+    /**
      * Regenerate new session id.
      */
     public function regenerateId()
