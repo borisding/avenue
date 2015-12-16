@@ -21,6 +21,9 @@ return [
     // cookie configuration
     'cookie' => require 'cookie.php',
     
+    // session configuration
+    'session' => require 'session.php',
+    
     // encryption configuration
     'encryption' => require 'encryption.php',
     

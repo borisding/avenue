@@ -10,6 +10,8 @@ use Avenue\Log;
 use Avenue\Exception;
 use Avenue\Components\Encryption;
 use Avenue\Components\Cookie;
+use Avenue\Components\Session;
+use Avenue\Components\SessionDatabase;
 use Avenue\AppInterface;
 use Avenue\Helpers\HelperBundleTrait;
 
@@ -134,7 +136,6 @@ final class App implements AppInterface
         }
         
         $resolver = static::$services[$name];
-        
         return $resolver($args);
     }
     
@@ -238,6 +239,10 @@ final class App implements AppInterface
         
         $this->container('cookie', function() {
             return new Cookie(static::getInstance());
+        });
+        
+        $this->container('session', function() {
+            return new Session(new SessionDatabase());
         });
         
         return $this;
