@@ -124,17 +124,17 @@ class SessionDatabase extends PdoAdapter
         $this->ssdata = [':id' => $id, ':data' => $data, ':timestamp' => time()];
         
         if ($this->state) {
-            $query = $this
-            ->cmd(sprintf('UPDATE %s SET data = :data, timestamp = :timestamp WHERE id = :id', $this->table))
-            ->batch($this->ssdata);
+            $sql = sprintf('UPDATE %s SET data = :data, timestamp = :timestamp WHERE id = :id', $this->table);
         } else {
-            $query = $this
-            ->cmd(sprintf('INSERT INTO %s VALUES (:id, :data, :timestamp)', $this->table))
-            ->batch($this->ssdata);
+            $sql = sprintf('INSERT INTO %s VALUES (:id, :data, :timestamp)', $this->table);
         }
         
-        $this->state = true;
-        return $query->run();
+        $query = $this
+        ->cmd($sql)
+        ->batch($this->ssdata)
+        ->run();
+        
+        return $this->state = true;
     }
     
     /**
