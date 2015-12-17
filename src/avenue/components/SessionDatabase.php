@@ -35,6 +35,13 @@ class SessionDatabase extends PdoAdapter
     protected $state;
     
     /**
+     * For garbage collection.
+     * 
+     * @var integer
+     */
+    protected $gc = 500;
+
+    /**
      * Encryption class instance.
      *
      * @var mixed
@@ -70,14 +77,18 @@ class SessionDatabase extends PdoAdapter
     
     /**
      * Invoked when session is being opened.
-     * Remove any expired session, if any.
+     * Remove any expired session occasionally, if any.
      */
     public function ssopen()
     {
-        $lifetime = (int) $this->config['lifetime'];
-        return $this->ssgc($lifetime);
+        if (mt_rand(0, $this->gc) === $this->gc) {
+            $lifetime = (int) $this->config['lifetime'];
+            $this->ssgc($lifetime);
+        }
+
+        return true;
     }
-    
+
     /**
      * Invoked once session is written.
      *
@@ -96,8 +107,9 @@ class SessionDatabase extends PdoAdapter
      */
     public function ssread($id)
     {
+        $expired = $this->getExpired();
         $result = $this
-        ->cmd(sprintf('SELECT data FROM %s WHERE id = :id', $this->table))
+        ->cmd(sprintf('SELECT data FROM %s WHERE id = :id AND timestamp > :expired', $this->table))
         ->bind(':id', $id)
         ->fetchOne();
         
@@ -129,7 +141,7 @@ class SessionDatabase extends PdoAdapter
             $sql = sprintf('INSERT INTO %s VALUES (:id, :data, :timestamp)', $this->table);
         }
         
-        $query = $this
+        $this
         ->cmd($sql)
         ->batch($this->ssdata)
         ->run();
@@ -158,12 +170,27 @@ class SessionDatabase extends PdoAdapter
      */
     public function ssgc($lifetime)
     {
-        $expired = time() - $lifetime;
+        $expired = $this->getExpired($lifetime);
         $query = $this
         ->cmd(sprintf('DELETE FROM %s WHERE timestamp <= :expired', $this->table))
         ->bind(':expired', $expired);
         
         return $query->run();
+    }
+    
+    /**
+     * Get expired timestamp.
+     * 
+     * @return integer $expired
+     */
+    protected function getExpired($lifetime = null)
+    {
+        if (empty($lifetime)) {
+            $lifetime = $this->config['lifetime'];
+        }
+
+        $expired = time() - (int) $lifetime;
+        return $expired;
     }
     
     /**
