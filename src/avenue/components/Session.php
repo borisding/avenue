@@ -50,7 +50,7 @@ class Session
         if (isset($_SESSION[$key])) {
             return $_SESSION[$key];
         } else {
-            return null;
+            return '';
         }
     }
     
@@ -79,10 +79,25 @@ class Session
     
     /**
      * Regenerate new session id.
+     * 
+     * @return boolean
      */
     public function regenerateId()
     {
-        session_regenerate_id();
+        if (!headers_sent()) {
+            return session_regenerate_id();
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Get session ID.
+     * 
+     * @return string
+     */
+    public function getId()
+    {
         return session_id();
     }
     
