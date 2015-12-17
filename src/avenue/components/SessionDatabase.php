@@ -11,14 +11,7 @@ class SessionDatabase extends PdoAdapter
      *
      * @var string
      */
-    protected $table = 'session';
-    
-    /**
-     * Primary key for session table.
-     *
-     * @var string
-     */
-    protected $pk = 'id';
+    protected $table;
     
     /**
      * Session data.
@@ -28,19 +21,12 @@ class SessionDatabase extends PdoAdapter
     protected $ssdata;
     
     /**
-     * Flag for session state.
+     * Session ID.
      *
      * @var boolean
      */
-    protected $state;
+    protected $ssid;
     
-    /**
-     * For garbage collection.
-     * 
-     * @var integer
-     */
-    protected $gc = 500;
-
     /**
      * Encryption class instance.
      *
@@ -54,6 +40,9 @@ class SessionDatabase extends PdoAdapter
      * @var array
      */
     protected $config = [
+        // table name
+        'table' => 'session',
+        
         // session lifetime
         'lifetime' => 1200,
         
@@ -73,21 +62,20 @@ class SessionDatabase extends PdoAdapter
         if ($this->config['encrypt']) {
             $this->encryption = $this->app->encryption();
         }
+        
+        // get the table
+        $this->table = $this->config['table'];
     }
     
     /**
      * Invoked when session is being opened.
-     * Remove any expired session occasionally.
+     * Remove any expired session.
      */
     public function ssopen()
     {
-        if (mt_rand(0, $this->gc) === $this->gc) {
-            $this->ssgc($this->config['lifetime']);
-        }
-
-        return true;
+        return $this->ssgc($this->config['lifetime']);
     }
-
+    
     /**
      * Invoked once session is written.
      *
@@ -107,16 +95,16 @@ class SessionDatabase extends PdoAdapter
     public function ssread($id)
     {
         $result = $this
-        ->cmd(sprintf('SELECT data FROM %s WHERE id = :id AND timestamp > :expired', $this->table))
-        ->batch([':id' => $id, ':expired' => $this->getExpired()])
+        ->cmd(sprintf('SELECT data FROM %s WHERE id = :id', $this->table))
+        ->bind(':id', $id)
         ->fetchOne();
         
         if ($this->getTotalRows()) {
             $this->ssdata = $this->decrypt($result['data']);
-            $this->state = true;
+            $this->ssid = $id;
         } else {
             $this->ssdata = '';
-            $this->state = false;
+            $this->ssid = '';
         }
         
         return $this->ssdata;
@@ -133,18 +121,17 @@ class SessionDatabase extends PdoAdapter
         $data = $this->encrypt($data);
         $this->ssdata = [':id' => $id, ':data' => $data, ':timestamp' => time()];
         
-        if ($this->state) {
-            $sql = sprintf('UPDATE %s SET data = :data, timestamp = :timestamp WHERE id = :id', $this->table);
-        } else {
+        if (empty($this->ssid)) {
             $sql = sprintf('INSERT INTO %s VALUES (:id, :data, :timestamp)', $this->table);
+        } else {
+            $sql = sprintf('UPDATE %s SET data = :data, timestamp = :timestamp WHERE id = :id', $this->table);
         }
         
-        $this
+        $query = $this
         ->cmd($sql)
-        ->batch($this->ssdata)
-        ->run();
+        ->batch($this->ssdata);
         
-        return $this->state = true;
+        return $query->run();
     }
     
     /**
@@ -168,27 +155,12 @@ class SessionDatabase extends PdoAdapter
      */
     public function ssgc($lifetime)
     {
-        $expired = $this->getExpired($lifetime);
+        $expired = time() - intval($lifetime);
         $query = $this
         ->cmd(sprintf('DELETE FROM %s WHERE timestamp <= :expired', $this->table))
         ->bind(':expired', $expired);
         
         return $query->run();
-    }
-    
-    /**
-     * Get expired timestamp.
-     * 
-     * @return integer $expired
-     */
-    protected function getExpired($lifetime = null)
-    {
-        if (empty($lifetime)) {
-            $lifetime = $this->config['lifetime'];
-        }
-
-        $expired = time() - (int) $lifetime;
-        return $expired;
     }
     
     /**

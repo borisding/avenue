@@ -4,6 +4,9 @@
  * This will be used for application session state purposes.
  */
 return [
+    // table name
+    'table' => 'session',
+    
     // session lifetime in seconds
     'lifetime' => 1200,
     
