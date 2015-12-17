@@ -83,6 +83,7 @@ class SessionDatabase extends PdoAdapter
      */
     public function ssclose()
     {
+        session_write_close();
         return true;
     }
     
