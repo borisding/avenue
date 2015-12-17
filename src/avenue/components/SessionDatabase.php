@@ -77,13 +77,12 @@ class SessionDatabase extends PdoAdapter
     
     /**
      * Invoked when session is being opened.
-     * Remove any expired session occasionally, if any.
+     * Remove any expired session occasionally.
      */
     public function ssopen()
     {
         if (mt_rand(0, $this->gc) === $this->gc) {
-            $lifetime = (int) $this->config['lifetime'];
-            $this->ssgc($lifetime);
+            $this->ssgc($this->config['lifetime']);
         }
 
         return true;
