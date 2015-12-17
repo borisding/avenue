@@ -106,10 +106,9 @@ class SessionDatabase extends PdoAdapter
      */
     public function ssread($id)
     {
-        $expired = $this->getExpired();
         $result = $this
         ->cmd(sprintf('SELECT data FROM %s WHERE id = :id AND timestamp > :expired', $this->table))
-        ->bind(':id', $id)
+        ->batch([':id' => $id, ':expired' => $this->getExpired()])
         ->fetchOne();
         
         if ($this->getTotalRows()) {
