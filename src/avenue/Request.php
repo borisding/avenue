@@ -15,49 +15,42 @@ class Request
      * 
      * @var mixed
      */
-    const HTTP_GET = 'GET';
+    const GET_METHOD = 'GET';
     
     /**
      * Http post method.
      * 
      * @var mixed
      */
-    const HTTP_POST = 'POST';
+    const POST_METHOD = 'POST';
     
     /**
      * Http put method.
      * 
      * @var mixed
      */
-    const HTTP_PUT = 'PUT';
+    const PUT_METHOD = 'PUT';
     
     /**
      * Http delete method.
      * 
      * @var mixed
      */
-    const HTTP_DELETE = 'DELETE';
+    const DELETE_METHOD = 'DELETE';
     
     /**
      * Http options method.
      *
      * @var mixed
      */
-    const HTTP_OPTIONS = 'OPTIONS';
+    const OPTIONS_METHOD = 'OPTIONS';
     
     /**
      * Http patch method.
      *
      * @var mixed
      */
-    const HTTP_PATCH = 'PATCH';
-    
-    /**
-     * The entry script file name.
-     * 
-     * @var mixed
-     */
-    const ENTRY_SCRIPT = 'index.php';
+    const PATCH_METHOD = 'PATCH';
     
     /**
      * Request class constructor.
@@ -76,7 +69,7 @@ class Request
      */
     public function isGet()
     {
-        return $this->getMethod() === static::HTTP_GET;    
+        return $this->getRequestMethod() === static::GET_METHOD;    
     }
     
     /**
@@ -86,7 +79,7 @@ class Request
      */
     public function isPost()
     {
-        return $this->getMethod() === static::HTTP_POST;
+        return $this->getRequestMethod() === static::POST_METHOD;
     }
     
     /**
@@ -96,7 +89,7 @@ class Request
      */
     public function isPut()
     {
-        return $this->getMethod() === static::HTTP_PUT;
+        return $this->getRequestMethod() === static::PUT_METHOD;
     }
     
     /**
@@ -106,7 +99,7 @@ class Request
      */
     public function isDelete()
     {
-        return $this->getMethod() === static::HTTP_DELETE;
+        return $this->getRequestMethod() === static::DELETE_METHOD;
     }
     
     /**
@@ -116,7 +109,7 @@ class Request
      */
     public function isOptions()
     {
-        return $this->getMethod() === static::HTTP_OPTIONS;
+        return $this->getRequestMethod() === static::OPTIONS_METHOD;
     }
     
     /**
@@ -126,33 +119,29 @@ class Request
      */
     public function isPatch()
     {
-        return $this->getMethod() === static::HTTP_PATCH;
+        return $this->getRequestMethod() === static::PATCH_METHOD;
     }
     
     /**
      * Return http request method.
-     * PUT, DELETE and OPTIONS methods can be checked via _method in POST.
+     * Check against 'X-HTTP-Method-Override' and '_method' as well.
      * If none was found, then using GET as default. 
      * If lower case is true, returned as lower case instead.
      * 
      * @param string $lowerCase
      * @return mixed
      */
-    public function getMethod($lowerCase = false)
+    public function getRequestMethod($lowerCase = false)
     {
-        $arrHttpMethods = [static::HTTP_PUT, static::HTTP_DELETE, static::HTTP_OPTIONS];
-        
-        if (isset($_POST['_method']) && in_array($_POST['_method'], $arrHttpMethods)) {
-            $httpMethod = $_POST['_method'];
+        if ($this->getHeader('X-HTTP-Method-Override')) {
+            $requestMethod = $this->getHeader('X-HTTP-Method-Override');
+        } elseif (isset($_POST['_method']) && !empty($_POST['_method'])) {
+            $requestMethod = $_POST['_method'];
         } else {
-            $httpMethod = $this->app->arrGet('REQUEST_METHOD', $_SERVER, self::HTTP_GET);
+            $requestMethod = $this->app->arrGet('REQUEST_METHOD', $_SERVER, static::GET_METHOD);
         }
         
-        if ($lowerCase) {
-            return strtolower($httpMethod);
-        } else {
-            return $httpMethod;
-        }
+        return ($lowerCase) ? strtolower($requestMethod) : $requestMethod;
     }
     
     /**
@@ -203,7 +192,6 @@ class Request
     
     /**
      * Returning nginx http request headers.
-     * Credit: http://php.net/manual/en/function.getallheaders.php#84262
      */
     public function getAllNginxHeaders()
     {
@@ -289,8 +277,8 @@ class Request
      */
     public function getBaseUrl()
     {
-        $entryScript = str_replace('/' . static::ENTRY_SCRIPT, '', $this->getScriptName());
-        return $this->getScheme(). '://' . $this->getHost() . $entryScript;
+        $appDir = str_replace(basename($this->getScriptName()), '', $this->getScriptName());
+        return sprintf('%s://%s%s', $this->getScheme(), $this->getHost(), $appDir);
     }
     
     /**
