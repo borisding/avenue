@@ -183,7 +183,7 @@ class Request
      */
     public function getAllHeaders()
     {
-        if (!function_exists('getallheaders')) {
+        if (!$this->app->hasFunction('getallheaders')) {
             return $this->getAllNginxHeaders();
         } else {
             return getallheaders();
