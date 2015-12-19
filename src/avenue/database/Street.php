@@ -112,6 +112,26 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
+     * Select count statement.
+     * Default is count all with total as alias.
+     * 
+     * @see \Avenue\Database\StreetInterface::findCount()
+     */
+    public function findCount($column = '*', $alias = 'total')
+    {
+        if (empty($column)) {
+            throw new \InvalidArgumentException('Column name is not specified!');
+        }
+        
+        if (empty($alias)) {
+            throw new \InvalidArgumentException('Alias is not specified!');
+        }
+        
+        $this->sql = sprintf('SELECT COUNT(%s) AS %s FROM %s', $column, $alias, $this->table);
+        return $this;
+    }
+    
+    /**
      * Select distinct statement.
      * 
      * @see \Avenue\Database\StreetInterface::findDistinct()
