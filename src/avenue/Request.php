@@ -277,7 +277,9 @@ class Request
      */
     public function getBaseUrl()
     {
-        $appDir = str_replace(basename($this->getScriptName()), '', $this->getScriptName());
+        $scriptName = $this->getScriptName();
+        $appDir = str_replace(basename($scriptName), '', $scriptName);
+        
         return sprintf('%s://%s%s', $this->getScheme(), $this->getHost(), $appDir);
     }
     
