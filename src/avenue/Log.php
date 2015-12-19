@@ -104,7 +104,7 @@ class Log implements LogInterface
     }
     
     /**
-     * Add log record by passing message, level and contect, if any.
+     * Add log record by passing message, level and context, if any.
      * 
      * @see \Avenue\LogInterface::record()
      */
