@@ -13,13 +13,6 @@ class Route
     protected $app;
     
     /**
-     * Controller instance.
-     * 
-     * @var object
-     */
-    protected $instance;
-    
-    /**
      * The route rule.
      * 
      * @var mixed
@@ -85,13 +78,6 @@ class Route
     const CONTROLLER_SUFFIX = 'Controller';
     
     /**
-     * Suffix of controller action.
-     *
-     * @var string
-     */
-    const ACTION_SUFFIX = 'Action';
-    
-    /**
      * Default action method.
      * 
      * @var string
@@ -127,12 +113,7 @@ class Route
         $this->filters = $args[1]();
         
         if ($this->fulfill = $this->matchRoute()) {
-            $this
-            ->setRouteParams()
-            ->withController()
-            ->invokeBefore()
-            ->invokeAction()
-            ->invokeAfter();
+            $this->setRouteParams()->initController();
         }
     }
     
@@ -196,12 +177,11 @@ class Route
     /**
      * Get the controller namespace and do the instantiation.
      * 
-     * @throws \RuntimeException
      * @throws \LogicException
      */
-    protected function withController()
+    protected function initController()
     {
-        $ControllerClass = $this->buildNamespaceController();
+        $ControllerClass = $this->getControllerNamespace();
         
         // throw exception if no controller class found
         if (!class_exists($ControllerClass)) {
@@ -215,22 +195,20 @@ class Route
             throw new \LogicException('Controller must be extending the base controller!');
         }
         
-        $this->instance = new $ControllerClass($this->app);
-        
-        return $this;
+        return new $ControllerClass($this->app);
     }
     
     /**
      * Build the controller namespace for the matched route.
      * If no controller is specified, the default controller will always be used.
      */
-    protected function buildNamespaceController()
+    protected function getControllerNamespace()
     {
         $fs = '/';
         $bs = '\\';
         $namespace = '';
-        $directory = $this->app->escape($this->getParams('@directory'));
-        $controller = $this->app->escape($this->getParams('@controller'));
+        $directory = $this->getParams('@directory');
+        $controller = $this->getParams('@controller');
         $controller = ucfirst($controller . static::CONTROLLER_SUFFIX);
         
         // check directory
@@ -243,59 +221,7 @@ class Route
         }
         
         $namespace .= $controller;
-        
         return static::NAMESPACE_PREFIX . $bs . $namespace;
-    }
-    
-    /**
-     * Invoke controller targeted action method.
-     * If not found the default action will be invoked instead.
-     * 
-     * @throws \InvalidArgumentException
-     */
-    protected function invokeAction()
-    {
-        if (is_object($this->instance)) {
-            $action = $this->app->escape($this->getParams('@action'));
-            $action .= static::ACTION_SUFFIX;
-            
-            if (!method_exists($this->instance, $action)) {
-                $this->app->response->setStatus(404);
-                throw new \BadMethodCallException(sprintf('Controller action method [%s] not found.', $action));
-            }
-            
-            call_user_func([$this->instance, $action]);
-        }
-        
-        return $this;
-    }
-    
-    /**
-     * Invoke controller before action method.
-     * This will be called before any action.
-     */
-    protected function invokeBefore()
-    {
-        if (is_object($this->instance)) {
-            $action = 'before' . static::ACTION_SUFFIX;
-            call_user_func([$this->instance, $action]);
-        }
-        
-        return $this;
-    }
-    
-    /**
-     * Invoke controller after action method.
-     * This will be called after any action.
-     */
-    protected function invokeAfter()
-    {
-        if (is_object($this->instance)) {
-            $action = 'after' . static::ACTION_SUFFIX;
-            call_user_func([$this->instance, $action]);
-        }
-        
-        return $this;
     }
     
     /**

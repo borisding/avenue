@@ -48,6 +48,13 @@ abstract class Controller
     protected $params = [];
     
     /**
+     * Suffix of controller action.
+     * 
+     * @var string
+     */
+    const ACTION_SUFFIX = 'Action';
+    
+    /**
      * Controller class constructor.
      *
      * @param App $app
@@ -55,14 +62,14 @@ abstract class Controller
     public function __construct(App $app)
     {
         $this->app = $app;
-        $this->factory();
+        $this->factory()->invoke();
     }
     
     /**
      * Controller's before action method.
      * Invoked before the controller action is called.
      */
-    public function beforeAction()
+    protected function beforeAction()
     {
         // do nothing
     }
@@ -71,11 +78,51 @@ abstract class Controller
      * Controller's after action method.
      * Invoke after the controller action is called.
      */
-    public function afterAction()
+    protected function afterAction()
     {
         // do nothing
     }
-
+    
+    /**
+     * Invoke targeted controller's action.
+     */
+    protected function controllerAction()
+    {
+        $action = $this->request->getAction() . static::ACTION_SUFFIX;
+        
+        // check if controller action does exit before invoking action
+        if (!method_exists($this, $action)) {
+            $this->response->setStatus(404);
+            throw new \BadMethodCallException(sprintf('Controller action method [%s] not found.', $action));
+        }
+        
+        call_user_func_array([$this, $action], []);
+    }
+    
+    /**
+     * Create respective class instances for controller usage.
+     * Mapped and re-assign to the core instances.
+     */
+    protected function factory()
+    {
+        $this->request = $this->app->request();
+        $this->response = $this->app->response();
+        $this->route = $this->app->route();
+        $this->view = $this->app->view();
+    
+        return $this;
+    }
+    
+    /**
+     * Invoke respective controller actions in sequence.
+     */
+    protected function invoke()
+    {
+        $this->beforeAction();
+        $this->controllerAction();
+        $this->afterAction();
+    }
+    
     /**
      * Set magic method of controller.
      *
@@ -96,18 +143,6 @@ abstract class Controller
     public function __get($key)
     {
         return $this->app->arrGet($key, $this->params);
-    }
-    
-    /**
-     * Create respective class instances for controller usage.
-     * Mapped and re-assign to the core instances.
-     */
-    protected function factory()
-    {
-        $this->request = $this->app->request();
-        $this->response = $this->app->response();
-        $this->route = $this->app->route();
-        $this->view = $this->app->view();
     }
     
     /**
