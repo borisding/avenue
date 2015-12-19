@@ -112,9 +112,23 @@ class Session
     }
     
     /**
+     * Generate unique random hashed string for csrf token.
+     * Then persisted by assigning to session.
+     * 
+     * @return string
+     */
+    public function getCsrfToken()
+    {
+        $csrfToken = hash('sha256', uniqid(mt_rand()));
+        $this->set('csrfToken', $csrfToken);
+        
+        return $csrfToken;
+    }
+    
+    /**
      * Set user level session storage functions.
      */
-    public function assign()
+    protected function assign()
     {
         session_set_save_handler(
         [$this->ssdb, 'ssopen'],
