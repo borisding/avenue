@@ -67,6 +67,13 @@ class Request
     const TRACE_METHOD = 'TRACE';
     
     /**
+     * Http connect method.
+     *
+     * @var mixed
+     */
+    const CONNECT_METHOD = 'CONNECT';
+    
+    /**
      * Request class constructor.
      * 
      * @param App $app
@@ -154,6 +161,16 @@ class Request
     public function isTrace()
     {
         return $this->getRequestMethod() === static::TRACE_METHOD;
+    }
+    
+    /**
+     * Return true if http request method is CONNECT.
+     *
+     * @return boolean
+     */
+    public function isConnect()
+    {
+        return $this->getRequestMethod() === static::CONNECT_METHOD;
     }
     
     /**
