@@ -64,7 +64,7 @@ class Request
      *
      * @var mixed
      */
-    const TRACE_METHOD = 'HEAD';
+    const TRACE_METHOD = 'TRACE';
     
     /**
      * Request class constructor.
