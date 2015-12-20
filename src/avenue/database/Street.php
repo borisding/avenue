@@ -570,7 +570,10 @@ class Street extends PdoAdapter implements StreetInterface
         } else {
             // temp store for later usage
             $data = $this->data;
-            $result = $this->findCount()->where($this->pk, $id)->getOne();
+            $result = $this
+            ->findCount()
+            ->where($this->pk, $id)
+            ->getOne();
             
             // reassign after data cleared
             $this->data = $data;
