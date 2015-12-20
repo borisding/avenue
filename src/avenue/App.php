@@ -12,8 +12,8 @@ use Avenue\Components\Encryption;
 use Avenue\Components\Cookie;
 use Avenue\Components\Session;
 use Avenue\Components\SessionDatabase;
-use Avenue\AppInterface;
 use Avenue\Helpers\HelperBundleTrait;
+use Avenue\AppInterface;
 
 final class App implements AppInterface
 {
@@ -53,6 +53,13 @@ final class App implements AppInterface
      * @var object
      */
     public $route;
+    
+    /**
+     * Exception instance.
+     *
+     * @var object
+     */
+    public $exc;
     
     /**
      * App instance.
@@ -104,9 +111,9 @@ final class App implements AppInterface
     {
         if (!$this->route->isFulfilled()) {
             return $this->route->init(func_get_args());
-        } else {
-            return true;
         }
+        
+        return true;
     }
     
     /**
@@ -128,7 +135,7 @@ final class App implements AppInterface
      * 
      * @see \Avenue\Interfaces\AppInterface::resolve()
      */
-    public function resolve($name, $args = null)
+    public function resolve($name)
     {
         if (!array_key_exists($name, static::$services)) {
             $this->response->setStatus(500);
@@ -136,7 +143,7 @@ final class App implements AppInterface
         }
         
         $resolver = static::$services[$name];
-        return $resolver($args);
+        return $resolver();
     }
     
     /**
@@ -145,17 +152,17 @@ final class App implements AppInterface
      * 
      * @see \Avenue\Interfaces\AppInterface::singleton()
      */
-    public function singleton($name, $args = null)
+    public function singleton($name)
     {
         if (!array_key_exists($name, static::$instances)) {
-            static::$instances[$name] = $this->resolve($name, $args);
+            static::$instances[$name] = $this->resolve($name);
         }
         
         if (!is_object(static::$instances[$name])) {
             return null;
-        } else {
-            return static::$instances[$name];
         }
+        
+        return static::$instances[$name];
     }
     
     /**
@@ -183,13 +190,8 @@ final class App implements AppInterface
     protected function setErrorHandler()
     {
         set_exception_handler(function(\Exception $exc) {
-            // resolving exception service
-            // by passing the native exception class instance
-            $exception = $this->resolve('exception', $exc);
-            
-            // passing the custom exception class instance
-            // into the error service
-            return $this->resolve('error', $exception);
+            $this->exc = $exc;
+            return $this->error();
         });
         
         set_error_handler(function($severity, $message, $file, $line) {
@@ -229,8 +231,8 @@ final class App implements AppInterface
             return new Log(static::getInstance());
         });
         
-        $this->container('exception', function($exc) {
-            return new Exception(static::getInstance(), $exc);
+        $this->container('exception', function() {
+            return new Exception(static::getInstance(), $this->exc);
         });
         
         $this->container('encryption', function() {
@@ -315,20 +317,24 @@ final class App implements AppInterface
     
     /**
      * App call magic method.
-     * Shortcut of creating instance via singleton and user defined function.
+     * Shortcut of creating instance via singleton,
+     * and also the user defined function, if any
      * 
      * @param mixed $name
      * @param array $params
-     * @return NULL|NULL
+     * @throws \LogicException
+     * @return NULL|mixed
      */
     public function __call($name, array $params = [])
     {
         if (array_key_exists($name, static::$services)) {
             return $this->singleton($name);
-        } elseif (is_callable($name)) {
-            return call_user_func_array($name, $params);
-        } else {
-            throw new \LogicException('Calling method that does not exist.');
         }
+        
+        if (is_callable($name)) {
+            return call_user_func_array($name, $params);
+        }
+        
+        throw new \LogicException(sprintf('Method [%s] does not exist!', $name));
     }
 }
