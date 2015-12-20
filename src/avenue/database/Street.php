@@ -547,23 +547,30 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
-     * Update if row already exisiting or do insert instead if no row affected. 
+     * Update if row already exisiting or do insert instead if no row exist. 
      * 
      * @see \Avenue\Database\StreetInterface::upsert()
      */
     public function upsert($id)
     {
-        // temp store data to retain for insert if no update takes effect
+        // temp store for later usage
         $data = $this->data;
-        $affectedRows = $this->update($id);
         
-        // proceed to insertion if no affected row
-        if ($affectedRows === 0) {
-            $this->data = $data;
+        $result = $this
+        ->findCount()
+        ->where($this->pk, $id)
+        ->getOne();
+        
+        // reassign after data cleared
+        $this->data = $data;
+        
+        if (isset($result['total']) && $result['total']) {
+            $this->update($id);
+        } else {
             $this->create();
         }
         
-        unset($data, $totalRows);
+        unset($data, $result);
         return true;
     }
     
