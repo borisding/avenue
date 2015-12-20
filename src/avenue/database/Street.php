@@ -553,24 +553,37 @@ class Street extends PdoAdapter implements StreetInterface
      */
     public function upsert($id)
     {
-        // temp store for later usage
-        $data = $this->data;
-        
-        $result = $this
-        ->findCount()
-        ->where($this->pk, $id)
-        ->getOne();
-        
-        // reassign after data cleared
-        $this->data = $data;
-        
-        if (isset($result['total']) && $result['total']) {
-            $this->update($id);
+        if ($this->getCurrentPdoDriver() === 'mysql') {
+            $this->data[$this->pk] = $id;
+            $this->columns = implode(', ', array_keys($this->data));
+            $this->values = array_values($this->data);
+            
+            $placeholders = $this->getPlaceholders($this->values);
+            $this->sql = sprintf('REPLACE INTO %s (%s) VALUES (%s)', $this->table, $this->columns, $placeholders);
+            
+            $this
+            ->cmd($this->sql)
+            ->batch($this->values)
+            ->run();
+            
+            $this->flush();
         } else {
-            $this->create();
+            // temp store for later usage
+            $data = $this->data;
+            $result = $this->findCount()->where($this->pk, $id)->getOne();
+            
+            // reassign after data cleared
+            $this->data = $data;
+            
+            if (isset($result['total']) && $result['total']) {
+                $this->update($id);
+            } else {
+                $this->create();
+            }
+            
+            unset($data, $result);
         }
         
-        unset($data, $result);
         return true;
     }
     
