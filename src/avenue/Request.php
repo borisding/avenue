@@ -53,6 +53,20 @@ class Request
     const PATCH_METHOD = 'PATCH';
     
     /**
+     * Http head method.
+     *
+     * @var mixed
+     */
+    const HEAD_METHOD = 'HEAD';
+    
+    /**
+     * Http trace method.
+     *
+     * @var mixed
+     */
+    const TRACE_METHOD = 'HEAD';
+    
+    /**
      * Request class constructor.
      * 
      * @param App $app
@@ -120,6 +134,26 @@ class Request
     public function isPatch()
     {
         return $this->getRequestMethod() === static::PATCH_METHOD;
+    }
+    
+    /**
+     * Return true if http request method is HEAD.
+     *
+     * @return boolean
+     */
+    public function isHead()
+    {
+        return $this->getRequestMethod() === static::HEAD_METHOD;
+    }
+    
+    /**
+     * Return true if http request method is TRACE.
+     *
+     * @return boolean
+     */
+    public function isTrace()
+    {
+        return $this->getRequestMethod() === static::TRACE_METHOD;
     }
     
     /**
