@@ -66,7 +66,6 @@ class Street extends PdoAdapter implements StreetInterface
     public function __construct()
     {
         parent::__construct();
-
         $this->defineTable()->definePrimaryKey();
     }
     
@@ -544,6 +543,27 @@ class Street extends PdoAdapter implements StreetInterface
         ->run();
         
         $this->flush();
+        return $this->getTotalRows();
+    }
+    
+    /**
+     * Update if row already exisiting or do insert instead if no row affected. 
+     * 
+     * @see \Avenue\Database\StreetInterface::upsert()
+     */
+    public function upsert($id)
+    {
+        // temp store data to retain for insert if no update takes effect
+        $data = $this->data;
+        $affectedRows = $this->update($id);
+        
+        // proceed to insertion if no affected row
+        if ($affectedRows === 0) {
+            $this->data = $data;
+            $this->create();
+        }
+        
+        unset($data, $totalRows);
         return true;
     }
     
@@ -628,7 +648,7 @@ class Street extends PdoAdapter implements StreetInterface
      */
     protected function flush()
     {
-        $this->sql = null;
+        $this->sql = '';
         $this->columns = [];
         $this->values = [];
         $this->data = [];

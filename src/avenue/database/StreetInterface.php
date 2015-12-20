@@ -173,7 +173,14 @@ interface StreetInterface
      * @param mixed $id
      */
     public function update($id);
-
+    
+    /**
+     * Update or insert row.
+     * 
+     * @param mixed $id
+     */
+    public function upsert($id);
+    
     /**
      * Remove record based on the passed in ID value.
      */
