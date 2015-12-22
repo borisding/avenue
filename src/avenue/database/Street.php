@@ -375,7 +375,6 @@ class Street extends PdoAdapter implements StreetInterface
         ->batch($this->values)
         ->fetchAll($type);
         
-        $this->flush();
         return $result;
     }
     
@@ -421,7 +420,6 @@ class Street extends PdoAdapter implements StreetInterface
         ->batch($this->values)
         ->fetchOne($type);
         
-        $this->flush();
         return $result;
     }
     
@@ -468,7 +466,6 @@ class Street extends PdoAdapter implements StreetInterface
         ->batch($this->values)
         ->run();
         
-        $this->flush();
         return true;
     }
     
@@ -481,7 +478,6 @@ class Street extends PdoAdapter implements StreetInterface
     {
         $this->sql = sprintf('DELETE FROM %s', $this->table);
         $this->cmd($this->sql)->run();
-        $this->flush();
         
         return true;
     }
@@ -540,7 +536,6 @@ class Street extends PdoAdapter implements StreetInterface
         ->batch($this->values)
         ->run();
         
-        $this->flush();
         return $this->getInsertedId();
     }
     
@@ -563,7 +558,6 @@ class Street extends PdoAdapter implements StreetInterface
         ->batch($this->values)
         ->run();
         
-        $this->flush();
         return $this->getTotalRows();
     }
     
@@ -611,10 +605,10 @@ class Street extends PdoAdapter implements StreetInterface
             ->batch($this->values)
             ->run();
             
-            $this->flush();
         } else {
             // temp store for later usage
             $data = $this->data;
+            
             $result = $this
             ->findCount()
             ->where($this->pk, $id)

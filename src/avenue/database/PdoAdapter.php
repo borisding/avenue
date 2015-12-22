@@ -75,22 +75,15 @@ class PdoAdapter extends Connection implements PdoAdapterInterface
     public function run()
     {
         // prepare the statement if stmt object is empty
-        // get the persisted sql and bound values
-        // and then prepare for statement object
-        $flush = false;
-        
+        // by getting the persisted sql and bound values
         if (empty($this->stmt)) {
             $this->cmd($this->getSql())->batch($this->getValues());
-            $flush = true;
         }
         
         $this->stmt->execute();
         
-        // clear the persisted data
-        if ($flush) {
-            $this->flush();
-        }
-        
+        // clear any persisted data
+        $this->flush();
         return true;
     }
     
