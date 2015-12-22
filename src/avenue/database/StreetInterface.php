@@ -175,6 +175,11 @@ interface StreetInterface
     public function update($id);
     
     /**
+     * Update record(s) with where condition
+     */
+    public function updateWhere();
+    
+    /**
      * Update or insert row.
      * 
      * @param mixed $id
@@ -190,7 +195,12 @@ interface StreetInterface
      * Remove all records of the table.
      */
     public function removeAll();
-
+    
+    /**
+     * Remove record(s) with where condition
+     */
+    public function removeWhere();
+    
     /**
      * Join statement based on type.
      *

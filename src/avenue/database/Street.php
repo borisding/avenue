@@ -487,6 +487,27 @@ class Street extends PdoAdapter implements StreetInterface
     }
     
     /**
+     * Chainable remove record(s) with condition.
+     * 
+     * @return \Avenue\Database\Street
+     */
+    public function removeWhere()
+    {
+        list($column, $operator, $value) = $this->getConditionParams(func_get_args());
+        $this->sql = sprintf('DELETE FROM %s', $this->table);
+        
+        if (is_array($value)) {
+            $values = $value;
+            $this->whereIn($column, $values);
+        } else {
+            $this->sql .= sprintf(' WHERE %s %s %s', $column, $operator, '?');
+            array_push($this->values, $value);
+        }
+        
+        return $this;
+    }
+    
+    /**
      * Save by either creating or updating record(s) based on the ID(s).
      * 
      * @see \Avenue\Database\StreetInterface::save()
@@ -544,6 +565,30 @@ class Street extends PdoAdapter implements StreetInterface
         
         $this->flush();
         return $this->getTotalRows();
+    }
+    
+    /**
+     * Chainable update record(s) with condition.
+     * 
+     * @see \Avenue\Database\StreetInterface::updateWhere()
+     */
+    public function updateWhere()
+    {
+        $this->columns = implode(' = ?, ', array_keys($this->data)) . ' = ?';
+        $this->values = array_values($this->data);
+        
+        $this->sql = sprintf('UPDATE %s SET %s', $this->table, $this->columns);
+        list($column, $operator, $value) = $this->getConditionParams(func_get_args());
+        
+        if (is_array($value)) {
+            $values = $value;
+            $this->whereIn($column, $values);
+        } else {
+            $this->sql .= sprintf(' WHERE %s %s %s', $column, $operator, '?');
+            array_push($this->values, $value);
+        }
+        
+        return $this;
     }
     
     /**
@@ -685,6 +730,14 @@ class Street extends PdoAdapter implements StreetInterface
     public function getSql()
     {
         return $this->sql;
+    }
+    
+    /**
+     * Get the bound values.
+     */
+    public function getValues()
+    {
+        return $this->values;
     }
     
     /**
