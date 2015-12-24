@@ -191,7 +191,9 @@ class Pagination
         
         // previous page link
         if ($page < 2) {
-            $html .= '<li class="previous disabled"><span>' . $previous . '</span></li>';
+            $html .= '<li class="previous disabled">';
+            $html .= '<span>' . $previous . '</span>';
+            $html .= '</li>';
         } else {
             $html .= '<li class="previous">';
             $html .= '<a href="' . $link . '?page=' . ($page - 1) . '">' . $previous . '</a>';
@@ -210,6 +212,7 @@ class Pagination
             $html .= '</li>';
         }
         
+        // shown page numbers
         for ($p = $pageStart; $p <= $pageEnd; $p++) {
             ($p == $page) ? $active = 'active' : $active = '';
             $html .= '<li class="page ' . $active . '">';
@@ -231,9 +234,13 @@ class Pagination
         
         // next page link
         if ($page < $totalPage) {
-            $html .= '<li class="next"><a href="' . $link . '?page=' . ($page + 1) . '">' . $next . '</a></li>';
+            $html .= '<li class="next">';
+            $html .= '<a href="' . $link . '?page=' . ($page + 1) . '">' . $next . '</a>';
+            $html .= '</li>';
         } else {
-            $html .= '<li class="next disabled"><span>' . $next . '</span></li>';
+            $html .= '<li class="next disabled">';
+            $html .= '<span>' . $next . '</span>';
+            $html .= '</li>';
         }
         
         $html .= '</ul>';
