@@ -12,6 +12,7 @@ use Avenue\Components\Encryption;
 use Avenue\Components\Cookie;
 use Avenue\Components\Session;
 use Avenue\Components\SessionDatabase;
+use Avenue\Components\Pagination;
 use Avenue\Helpers\HelperBundleTrait;
 use Avenue\AppInterface;
 
@@ -245,6 +246,10 @@ final class App implements AppInterface
         
         $this->container('session', function() {
             return new Session(new SessionDatabase());
+        });
+        
+        $this->container('pagination', function() {
+            return new Pagination(static::getInstance());
         });
         
         return $this;
