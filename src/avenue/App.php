@@ -12,6 +12,7 @@ use Avenue\Components\Encryption;
 use Avenue\Components\Cookie;
 use Avenue\Components\Session;
 use Avenue\Components\SessionDatabase;
+use Avenue\Components\SessionFile;
 use Avenue\Components\Pagination;
 use Avenue\Helpers\HelperBundleTrait;
 use Avenue\AppInterface;
@@ -240,16 +241,23 @@ final class App implements AppInterface
             return new Encryption(static::getInstance());
         });
         
+        $this->container('pagination', function() {
+            return new Pagination(static::getInstance());
+        });
+        
         $this->container('cookie', function() {
             return new Cookie(static::getInstance());
         });
         
         $this->container('session', function() {
-            return new Session(new SessionDatabase());
-        });
-        
-        $this->container('pagination', function() {
-            return new Pagination(static::getInstance());
+            $config = $this->getConfig('session');
+            $storage = $this->arrGet('storage', $config, 'file');
+            
+            if ($storage === 'database') {
+                return new Session(new SessionDatabase());
+            }
+            
+            return new Session(new SessionFile(static::getInstance()));
         });
         
         return $this;

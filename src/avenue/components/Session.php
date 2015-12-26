@@ -1,6 +1,7 @@
 <?php
 namespace Avenue\Components;
 
+use Avenue\Components\SessionFile;
 use Avenue\Components\SessionDatabase;
 
 class Session
@@ -15,10 +16,15 @@ class Session
     /**
      * Session class constructor.
      * 
-     * @param SessionDatabase $ssdb
+     * @param object $handler
      */
-    public function __construct(SessionDatabase $handler)
+    public function __construct($handler)
     {
+        if (!$handler instanceof SessionFile &&
+            !$handler instanceof SessionDatabase) {
+            throw new \LogicException('Invalid session handler object!');
+        }
+        
         $this->handler = $handler;
         $this->assign()->start();
     }

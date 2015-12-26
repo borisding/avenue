@@ -4,7 +4,13 @@
  * This will be used for application session state purposes.
  */
 return [
-    // table name
+    // type of storage (file or database)
+    'storage' => 'file',
+    
+    // the save path for file storage
+    'path' => '',
+    
+    // table name for database storage
     'table' => 'session',
     
     // session lifetime in seconds
