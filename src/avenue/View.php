@@ -1,7 +1,7 @@
 <?php
 namespace Avenue;
 
-use \Closure;
+use Closure;
 use Avenue\App;
 use Avenue\Helpers\HelperBundleTrait;
 

@@ -1,7 +1,7 @@
 <?php
 namespace Avenue;
 
-use \Closure;
+use Closure;
 
 interface AppInterface
 {

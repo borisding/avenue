@@ -1,7 +1,7 @@
 <?php
 namespace Avenue\Database;
 
-use \PDO;
+use PDO;
 use Avenue\App;
 use Avenue\Database\ConnectionInterface;
 

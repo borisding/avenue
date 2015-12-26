@@ -1,7 +1,7 @@
 <?php
 namespace Avenue;
 
-use \Closure;
+use Closure;
 use Avenue\Request;
 use Avenue\Response;
 use Avenue\Route;
