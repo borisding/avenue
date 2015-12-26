@@ -1,9 +1,9 @@
 <?php
 namespace Avenue\Components;
 
-use SessionHandlerInterface;
 use Avenue\Database\Street;
 use Avenue\Components\Encryption;
+use SessionHandlerInterface;
 
 class SessionDatabase extends Street implements SessionHandlerInterface
 {
@@ -49,13 +49,12 @@ class SessionDatabase extends Street implements SessionHandlerInterface
     {
         parent::__construct();
         $this->config = array_merge($this->config, $this->app->getConfig('session'));
+        $this->table = $this->config['table'];
         
         // get the encryption instance if 'encrypt' set as true
         if ($this->config['encrypt']) {
             $this->encryption = $this->app->encryption();
         }
-        
-        $this->table = $this->config['table'];
     }
     
     /**
@@ -67,7 +66,7 @@ class SessionDatabase extends Street implements SessionHandlerInterface
     public function open($savePath, $sessionName)
     {
         if (mt_rand(1, static::GC_WEIGHT) === static::GC_WEIGHT) {
-            $this->ssgc($this->config['lifetime']);
+            $this->gc($this->config['lifetime']);
         }
         
         return true;
@@ -162,7 +161,7 @@ class SessionDatabase extends Street implements SessionHandlerInterface
      */
     protected function encrypt($plaintext)
     {
-        if (is_object($this->encryption) && $this->encryption instanceof Encryption) {
+        if ($this->encryption instanceof Encryption) {
             return $this->encryption->set($plaintext);
         }
         
@@ -176,7 +175,7 @@ class SessionDatabase extends Street implements SessionHandlerInterface
      */
     protected function decrypt($data)
     {
-        if (is_object($this->encryption) && $this->encryption instanceof Encryption) {
+        if ($this->encryption instanceof Encryption) {
             return $this->encryption->get($data);
         }
         
