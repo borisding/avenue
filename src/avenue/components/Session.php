@@ -10,16 +10,16 @@ class Session
      * 
      * @var mixed
      */
-    protected $ssdb;
+    protected $handler;
     
     /**
      * Session class constructor.
      * 
      * @param SessionDatabase $ssdb
      */
-    public function __construct(SessionDatabase $ssdb)
+    public function __construct(SessionDatabase $handler)
     {
-        $this->ssdb = $ssdb;
+        $this->handler = $handler;
         $this->assign()->start();
     }
     
@@ -131,12 +131,12 @@ class Session
     protected function assign()
     {
         session_set_save_handler(
-        [$this->ssdb, 'ssopen'],
-        [$this->ssdb, 'ssclose'],
-        [$this->ssdb, 'ssread'],
-        [$this->ssdb, 'sswrite'],
-        [$this->ssdb, 'ssdestroy'],
-        [$this->ssdb, 'ssgc']
+        [$this->handler, 'open'],
+        [$this->handler, 'close'],
+        [$this->handler, 'read'],
+        [$this->handler, 'write'],
+        [$this->handler, 'destroy'],
+        [$this->handler, 'gc']
         );
         
         return $this;

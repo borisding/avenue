@@ -1,10 +1,11 @@
 <?php
 namespace Avenue\Components;
 
+use SessionHandlerInterface;
 use Avenue\Database\Street;
 use Avenue\Components\Encryption;
 
-class SessionDatabase extends Street
+class SessionDatabase extends Street implements SessionHandlerInterface
 {
     /**
      * Session table name.
@@ -54,15 +55,16 @@ class SessionDatabase extends Street
             $this->encryption = $this->app->encryption();
         }
         
-        // get the table
         $this->table = $this->config['table'];
     }
     
     /**
      * Invoked when session is being opened.
      * Remove any expired session, ocassionally.
+     * 
+     * @see SessionHandlerInterface::open()
      */
-    public function ssopen()
+    public function open($savePath, $sessionName)
     {
         if (mt_rand(1, static::GC_WEIGHT) === static::GC_WEIGHT) {
             $this->ssgc($this->config['lifetime']);
@@ -73,10 +75,10 @@ class SessionDatabase extends Street
     
     /**
      * Invoked once session is written.
-     *
-     * @return boolean
+     * 
+     * @see SessionHandlerInterface::close()
      */
-    public function ssclose()
+    public function close()
     {
         session_write_close();
         return true;
@@ -84,11 +86,10 @@ class SessionDatabase extends Street
     
     /**
      * Retrieving the serialized session data inserted previously.
-     *
-     * @param mixed $id
-     * @return mixed
+     * 
+     * @see SessionHandlerInterface::read()
      */
-    public function ssread($id)
+    public function read($id)
     {
         $result = $this
         ->find(['value'])
@@ -105,11 +106,10 @@ class SessionDatabase extends Street
     
     /**
      * Writing session values into table.
-     *
-     * @param mixed $id
-     * @param mixed $value
+     * 
+     * @see SessionHandlerInterface::write()
      */
-    public function sswrite($id, $value)
+    public function write($id, $value)
     {
         $this->value = $this->encrypt($value);
         $this->timestamp = time();
@@ -120,9 +120,9 @@ class SessionDatabase extends Street
     /**
      * Invoked once session is destroyed.
      * 
-     * @param mixed $id
+     * @see SessionHandlerInterface::destroy()
      */
-    public function ssdestroy($id)
+    public function destroy($id)
     {
         return $this->remove($id);
     }
@@ -130,9 +130,9 @@ class SessionDatabase extends Street
     /**
      * Garbage collection to clean up old data by removing it.
      * 
-     * @param mixed $lifetime
+     * @see SessionHandlerInterface::gc()
      */
-    public function ssgc($lifetime)
+    public function gc($lifetime)
     {
         $this
         ->removeWhere('timestamp', '<=', $this->getExpired($lifetime))
