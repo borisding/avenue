@@ -49,9 +49,9 @@ class Session
     {
         if (isset($_SESSION[$key])) {
             return $_SESSION[$key];
-        } else {
-            return '';
         }
+        
+        return '';
     }
     
     /**
