@@ -145,6 +145,8 @@ class Session
         [$this->handler, 'gc']
         );
         
+        // call write close when shutting down to avoid any unexpected behavior
+        register_shutdown_function('session_write_close');
         return $this;
     }
 }
