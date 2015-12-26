@@ -85,7 +85,7 @@ class Pagination
     public function config(array $data = [])
     {
         $this->config = array_merge($this->config, $data);
-        $this->page = $this->app->arrGet('page', $_GET, 1);
+        $this->page = $this->app->escape($this->app->arrGet('page', $_GET, 1));
         $this->link = $this->config['link'];
         $this->limit = $this->config['limit'];
         $this->total = $this->config['total'];
