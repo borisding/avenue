@@ -254,9 +254,9 @@ class Route
     {
         if (empty($key)) {
             return $this->params;
-        } else {
-            return $this->app->arrGet($key, $this->params, null);
         }
+        
+        return $this->app->arrGet($key, $this->params, null);
     }
     
     /**

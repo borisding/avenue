@@ -236,9 +236,9 @@ class Request
     {
         if (!$this->app->hasFunction('getallheaders')) {
             return $this->getAllNginxHeaders();
-        } else {
-            return getallheaders();
         }
+        
+        return getallheaders();
     }
     
     /**
@@ -349,6 +349,7 @@ class Request
         
         $this->app->response->setStatus(302);
         header('Location:' . $path);
+        
         die();
     }
     

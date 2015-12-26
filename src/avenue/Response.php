@@ -93,10 +93,9 @@ class Response
         }
 
         unset($statusCode, $statusDesc, $httpProtocol);
-
         return $this;
     }
-
+    
     /**
      * Sending the user defined header, if any.
      */

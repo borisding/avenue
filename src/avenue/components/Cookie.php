@@ -85,6 +85,7 @@ class Cookie
         // extract respective config keys as parameters
         extract($this->config);
         setcookie($key, $value, time() + $expire, $path, $domain, $secure, $httpOnly);
+        
         // for immediate cookie assignment
         $_COOKIE[$key] = $value;
     }
@@ -99,9 +100,9 @@ class Cookie
     {
         if (isset($_COOKIE[$key])) {
             return $this->decrypt($_COOKIE[$key]);
-        } else {
-            return null;
         }
+        
+        return '';
     }
     
     /**
@@ -136,9 +137,9 @@ class Cookie
     {
         if (is_object($this->encryption) && $this->encryption instanceof Encryption) {
             return $this->encryption->set($plaintext);
-        } else {
-            return $plaintext;
         }
+        
+        return $plaintext;
     }
     
     /**
@@ -150,8 +151,8 @@ class Cookie
     {
         if (is_object($this->encryption) && $this->encryption instanceof Encryption) {
             return $this->encryption->get($data);
-        } else {
-            return $data;
         }
+        
+        return $data;
     }
 }
