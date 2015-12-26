@@ -135,7 +135,7 @@ class Cookie
      */
     protected function encrypt($plaintext)
     {
-        if (is_object($this->encryption) && $this->encryption instanceof Encryption) {
+        if ($this->encryption instanceof Encryption) {
             return $this->encryption->set($plaintext);
         }
         
@@ -149,7 +149,7 @@ class Cookie
      */
     protected function decrypt($data)
     {
-        if (is_object($this->encryption) && $this->encryption instanceof Encryption) {
+        if ($this->encryption instanceof Encryption) {
             return $this->encryption->get($data);
         }
         
