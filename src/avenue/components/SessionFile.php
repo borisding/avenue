@@ -68,8 +68,7 @@ class SessionFile implements SessionHandlerInterface
     
     /**
      * Invoked when session is being opened.
-     * Create one if there is no directory and,
-     * remove any expired session, ocassionally.
+     * Create one if there is no directory.
      * 
      * @see SessionHandlerInterface::open()
      */
