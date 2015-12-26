@@ -37,7 +37,7 @@ class SessionFile implements SessionHandlerInterface
         // the save path
         'path' => '',
         // session lifetime
-        'lifetime' => 1200,
+        'lifetime' => 0,
         // encrypt session's value
         'encrypt' => false
     ];
@@ -48,13 +48,6 @@ class SessionFile implements SessionHandlerInterface
      * @var string
      */
     const FILE_PREFIX = 'avenue_sess_';
-    
-    /**
-     * Weight of frequency to trigger garbage collection.
-     *
-     * @var integer
-     */
-    const GC_WEIGHT = 500;
     
     /**
      * Session file class constructor.
@@ -84,10 +77,6 @@ class SessionFile implements SessionHandlerInterface
     {
         if (!is_dir($this->path)) {
             mkdir($this->path, 0777);
-        }
-        
-        if (mt_rand(1, static::GC_WEIGHT) === static::GC_WEIGHT) {
-            $this->gc($this->config['lifetime']);
         }
         
         return true;
@@ -161,7 +150,7 @@ class SessionFile implements SessionHandlerInterface
         $expired = time() - intval($this->config['lifetime']);
         
         foreach (glob($pattern) as $file) {
-            if (file_exists($file) && (filemtime($file) + (int)$lifetime) <= $expired) {
+            if (file_exists($file) && (filemtime($file) + intval($lifetime)) <= $expired) {
                 unlink($file);
             }
         }

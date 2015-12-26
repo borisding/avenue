@@ -14,19 +14,28 @@ class Session
     protected $handler;
     
     /**
+     * Session config
+     * 
+     * @var array
+     */
+    protected $config = [];
+    
+    /**
      * Session class constructor.
      * 
-     * @param object $handler
+     * @param mixed $handler
+     * @param array $config
+     * @throws \LogicException
      */
-    public function __construct($handler)
+    public function __construct($handler, array $config = [])
     {
-        if (!$handler instanceof SessionFile &&
-            !$handler instanceof SessionDatabase) {
+        if (!$handler instanceof SessionFile && !$handler instanceof SessionDatabase) {
             throw new \LogicException('Invalid session handler object!');
         }
         
         $this->handler = $handler;
-        $this->assign()->start();
+        $this->config = $config;
+        $this->prepare()->start();
     }
     
     /**
@@ -132,10 +141,17 @@ class Session
     }
     
     /**
-     * Set user level session storage functions.
+     * Setting before start the session.
      */
-    protected function assign()
+    protected function prepare()
     {
+        // set the gc maxlifetime
+        ini_set('session.gc_maxlifetime', intval($this->config['lifetime']));
+        
+        // register write close when shutting down
+        register_shutdown_function('session_write_close');
+        
+        // register respective handlers
         session_set_save_handler(
         [$this->handler, 'open'],
         [$this->handler, 'close'],
@@ -145,8 +161,6 @@ class Session
         [$this->handler, 'gc']
         );
         
-        // call write close when shutting down to avoid any unexpected behavior
-        register_shutdown_function('session_write_close');
         return $this;
     }
 }

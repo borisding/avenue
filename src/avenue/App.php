@@ -254,10 +254,10 @@ final class App implements AppInterface
             $storage = $this->arrGet('storage', $config, 'file');
             
             if ($storage === 'database') {
-                return new Session(new SessionDatabase());
+                return new Session(new SessionDatabase(), $config);
             }
             
-            return new Session(new SessionFile(static::getInstance()));
+            return new Session(new SessionFile(static::getInstance()), $config);
         });
         
         return $this;

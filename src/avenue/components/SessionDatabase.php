@@ -22,13 +22,6 @@ class SessionDatabase extends Street implements SessionHandlerInterface
     protected $encryption;
     
     /**
-     * Weight of frequency to trigger garbage collection.
-     * 
-     * @var integer
-     */
-    const GC_WEIGHT = 500;
-    
-    /**
      * Default session configuration
      *
      * @var array
@@ -37,7 +30,7 @@ class SessionDatabase extends Street implements SessionHandlerInterface
         // table name
         'table' => 'session',
         // session lifetime
-        'lifetime' => 1200,
+        'lifetime' => 0,
         // encrypt session's value
         'encrypt' => false
     ];
@@ -59,16 +52,11 @@ class SessionDatabase extends Street implements SessionHandlerInterface
     
     /**
      * Invoked when session is being opened.
-     * Remove any expired session, ocassionally.
      * 
      * @see SessionHandlerInterface::open()
      */
     public function open($savePath, $sessionName)
     {
-        if (mt_rand(1, static::GC_WEIGHT) === static::GC_WEIGHT) {
-            $this->gc($this->config['lifetime']);
-        }
-        
         return true;
     }
     
