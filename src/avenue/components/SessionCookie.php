@@ -22,6 +22,13 @@ class SessionCookie implements SessionHandlerInterface
     protected $cookie;
     
     /**
+     * Name for session cookie.
+     * 
+     * @var string
+     */
+    const COOKIE_NAME = 'AVENUESESSID';
+    
+    /**
      * Session cookie class constructor.
      * 
      * @param App $app
@@ -38,7 +45,7 @@ class SessionCookie implements SessionHandlerInterface
      * 
      * @see SessionHandlerInterface::open()
      */
-    public function open($savePath, $sessionName)
+    public function open($path, $name)
     {
         return true;
     }
@@ -61,7 +68,7 @@ class SessionCookie implements SessionHandlerInterface
      */
     public function read($id)
     {
-        return $this->cookie->get($id);
+        return $this->cookie->get(static::COOKIE_NAME);
     }
     
     /**
@@ -71,7 +78,7 @@ class SessionCookie implements SessionHandlerInterface
      */
     public function write($id, $value)
     {
-        $this->cookie->set($id, $value);
+        $this->cookie->set(static::COOKIE_NAME, $value);
         return true;
     }
     
@@ -82,7 +89,7 @@ class SessionCookie implements SessionHandlerInterface
      */
     public function destroy($id)
     {
-        $this->cookie->remove($id);
+        $this->cookie->remove(static::COOKIE_NAME);
         return true;
     }
     
