@@ -72,7 +72,7 @@ class SessionFile implements SessionHandlerInterface
      * 
      * @see SessionHandlerInterface::open()
      */
-    public function open($savePath, $sessionName)
+    public function open($path, $name)
     {
         if (!is_dir($this->path)) {
             mkdir($this->path, 0777);

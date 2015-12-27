@@ -36,6 +36,13 @@ class SessionDatabase extends Street implements SessionHandlerInterface
     ];
     
     /**
+     * Weight of frequency to trigger garbage collection.
+     *
+     * @var integer
+     */
+    const GC_WEIGHT = 500;
+    
+    /**
      * Session database class constructor.
      */
     public function __construct()
@@ -52,11 +59,16 @@ class SessionDatabase extends Street implements SessionHandlerInterface
     
     /**
      * Invoked when session is being opened.
+     * Occasionally trigger the garbage collection.
      * 
      * @see SessionHandlerInterface::open()
      */
-    public function open($savePath, $sessionName)
+    public function open($path, $name)
     {
+        if (mt_rand(1, static::GC_WEIGHT) === static::GC_WEIGHT) {
+            $this->gc($this->config['lifetime']);
+        }
+        
         return true;
     }
     
