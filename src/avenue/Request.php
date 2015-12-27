@@ -235,16 +235,16 @@ class Request
     public function getAllHeaders()
     {
         if (!$this->app->hasFunction('getallheaders')) {
-            return $this->getAllNginxHeaders();
+            return $this->getCustomAllHeaders();
         }
         
         return getallheaders();
     }
     
     /**
-     * Returning nginx http request headers.
+     * Returning custom http request headers, eg: nginx
      */
-    public function getAllNginxHeaders()
+    public function getCustomAllHeaders()
     {
         $headers = [];
         
