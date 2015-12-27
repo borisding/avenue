@@ -79,7 +79,7 @@ class Street extends PdoAdapter implements StreetInterface
     {
         $this->columns = $columns;
         
-        if (is_array($this->columns) && !empty($this->columns)) {
+        if (count($this->columns)) {
             $this->sql = sprintf('SELECT %s FROM %s', implode(', ', $this->columns), $this->table);
         } else {
             $this->sql = sprintf('SELECT * FROM %s', $this->table);
