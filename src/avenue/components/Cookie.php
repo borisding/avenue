@@ -27,11 +27,11 @@ class Cookie
      */
     protected $config = [
         // cookie's expiration, default 20 min
-        'expire' => 1200,
+        'expire' => 0,
         // cookie's path that is available
-        'path' => '/',
+        'path' => '',
         // domain where cookie is available
-        'domain' => null,
+        'domain' => '',
         // only transmitted on https
         'secure' => false,
         // only for http protocol, not allowed for javascript
@@ -114,7 +114,7 @@ class Cookie
     {
         if (isset($_COOKIE[$key])) {
             unset($_COOKIE[$key]);
-            setcookie($key, '', time() - 3600, $this->config['path'], $this->config['domain']);
+            setcookie($key, '', time() - 604800, $this->config['path'], $this->config['domain']);
         }
     }
     
