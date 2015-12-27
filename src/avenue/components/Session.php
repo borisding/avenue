@@ -1,8 +1,7 @@
 <?php
 namespace Avenue\Components;
 
-use Avenue\Components\SessionFile;
-use Avenue\Components\SessionDatabase;
+use SessionHandlerInterface;
 
 class Session
 {
@@ -23,19 +22,14 @@ class Session
     /**
      * Session class constructor.
      * 
-     * @param mixed $handler
+     * @param SessionHandlerInterface $handler
      * @param array $config
-     * @throws \LogicException
      */
-    public function __construct($handler, array $config = [])
+    public function __construct(SessionHandlerInterface $handler, array $config = [])
     {
-        if (!$handler instanceof SessionFile && !$handler instanceof SessionDatabase) {
-            throw new \LogicException('Invalid session handler object!');
-        }
-        
         $this->handler = $handler;
         $this->config = $config;
-        $this->prepare()->start();
+        $this->ready()->start();
     }
     
     /**
@@ -143,7 +137,7 @@ class Session
     /**
      * Setting before start the session.
      */
-    protected function prepare()
+    protected function ready()
     {
         // set the gc maxlifetime
         ini_set('session.gc_maxlifetime', intval($this->config['lifetime']));
