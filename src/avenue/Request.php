@@ -230,7 +230,7 @@ class Request
     }
     
     /**
-     * Returning all http request headers.
+     * Get all http request headers.
      */
     public function getAllHeaders()
     {
@@ -242,7 +242,7 @@ class Request
     }
     
     /**
-     * Returning custom http request headers, eg: nginx
+     * Get all http request headers via alternative, eg: nginx
      */
     public function getCustomAllHeaders()
     {
@@ -268,7 +268,7 @@ class Request
     }
     
     /**
-     * Returning url's path info.
+     * Get url path info.
      * 
      * @return mixed
      */
@@ -278,7 +278,7 @@ class Request
     }
     
     /**
-     * Returning query string parameters.
+     * Get query string parameters.
      *
      * @return mixed
      */
@@ -288,7 +288,7 @@ class Request
     }
     
     /**
-     * Return the host name.
+     * Get the host name.
      */
     public function getHost()
     {
@@ -296,7 +296,7 @@ class Request
     }
     
     /**
-     * Return current URL's scheme.
+     * Get current URL's scheme.
      * 
      * @return string
      */
@@ -306,7 +306,7 @@ class Request
     }
     
     /**
-     * Return the script name.
+     * Get the script name.
      */
     public function getScriptName()
     {
@@ -314,11 +314,19 @@ class Request
     }
     
     /**
-     * Return the current request URI.
+     * Get the current request URI.
      */
     public function getRequestUri()
     {
         return $this->app->arrGet('REQUEST_URI', $_SERVER);
+    }
+    
+    /**
+     * Get the user agent.
+     */
+    public function getUserAgent()
+    {
+        return $this->app->arrGet('HTTP_USER_AGENT', $_SERVER, 'Unknown');
     }
     
     /**
