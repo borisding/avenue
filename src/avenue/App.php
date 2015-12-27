@@ -11,6 +11,7 @@ use Avenue\Exception;
 use Avenue\Components\Encryption;
 use Avenue\Components\Cookie;
 use Avenue\Components\Session;
+use Avenue\Components\SessionCookie;
 use Avenue\Components\SessionDatabase;
 use Avenue\Components\SessionFile;
 use Avenue\Components\Pagination;
@@ -255,6 +256,10 @@ final class App implements AppInterface
             
             if ($storage === 'database') {
                 return new Session(new SessionDatabase(), $config);
+            }
+            
+            if ($storage === 'cookie') {
+                return new Session(new SessionCookie(static::getInstance(), $this->cookie()), $config);
             }
             
             return new Session(new SessionFile(static::getInstance()), $config);
