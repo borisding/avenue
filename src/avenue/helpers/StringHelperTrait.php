@@ -93,4 +93,32 @@ trait StringHelperTrait
     {
         return preg_match('/^[a-zA-Z0-9-_]+$/', $value) === 1;
     }
+    
+    /**
+     * Compare two hashed string and return true if both are equal.
+     * 
+     * @param string $h1
+     * @param string $h2
+     * @return boolean
+     */
+    public function hashedCompare($h1, $h2)
+    {
+        if (strlen($h1) != strlen($h2)) {
+            return false;
+        }
+        
+        if (function_exists('hash_equals')) {
+            return hash_equals($h2, $h2);
+        }
+        
+        // alternative solution
+        $res = $h1 ^ $h2;
+        $ret = 0;
+        
+        for ($i = strlen($res) - 1; $i >= 0; $i--) {
+            $ret |= ord($res[$i]);
+        }
+        
+        return $ret === 0;
+    }
 }

@@ -20,5 +20,8 @@ return [
     'httpOnly' => true,
     
     // whether to encrypt cookie value
-    'encrypt' => true
+    'encrypt' => true,
+    
+    // this is for signed cookie purpose
+    'secret' => '<provide your secret key here>'
 ];

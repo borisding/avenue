@@ -26,7 +26,7 @@ class Cookie
      * @var array
      */
     protected $config = [
-        // cookie's expiration, default 20 min
+        // cookie's expiration
         'expire' => 0,
         // cookie's path that is available
         'path' => '',
@@ -37,7 +37,9 @@ class Cookie
         // only for http protocol, not allowed for javascript
         'httpOnly' => true,
         // encrypt cookie's value
-        'encrypt' => false
+        'encrypt' => false,
+        // secret key for cookie signature
+        'secret' => ''
     ];
     
     /**
@@ -46,6 +48,13 @@ class Cookie
      * @var integer
      */
     const MAX_SIZE = 4096;
+    
+    /**
+     * Delimiter string.
+     * 
+     * @var string
+     */
+    const DELIMITER = '||';
     
     /**
      * Cookie class constructor.
@@ -61,6 +70,11 @@ class Cookie
         if ($this->config['encrypt']) {
             $this->encryption = $this->app->encryption();
         }
+        
+        // check if secret key is empty
+        if (empty($this->config['secret'])) {
+            throw new \InvalidArgumentException('Secret must not be empty!');
+        }
     }
     
     /**
@@ -72,13 +86,14 @@ class Cookie
     public function set($key, $value = null)
     {
         if (empty($key)) {
-            throw new \InvalidArgumentException('Key must not be empty!');
+            throw new \InvalidArgumentException('The key must not be empty!');
         }
         
         $value = $this->encrypt($value);
-        $valueLen = $this->app->hasFunction('mb_strlen') ? mb_strlen($value) : strlen($value);
+        $value = $this->signed($key, $value) . static::DELIMITER . $value;
+        $length = function_exists('mb_strlen') ? mb_strlen($value) : strlen($value);
         
-        if ($valueLen > static::MAX_SIZE) {
+        if ($length > static::MAX_SIZE) {
             throw new \InvalidArgumentException('Saving content aborted! Session cookie data is larger than 4KB.');
         }
         
@@ -99,7 +114,10 @@ class Cookie
     public function get($key)
     {
         if (isset($_COOKIE[$key])) {
-            return $this->decrypt($_COOKIE[$key]);
+            $value = $this->unsigned($key, $_COOKIE[$key]);
+            $value = $this->decrypt($value);
+            
+            return $value;
         }
         
         return '';
@@ -112,10 +130,8 @@ class Cookie
      */
     public function remove($key)
     {
-        if (isset($_COOKIE[$key])) {
-            unset($_COOKIE[$key]);
-            setcookie($key, '', time() - 604800, $this->config['path'], $this->config['domain']);
-        }
+        unset($_COOKIE[$key]);
+        setcookie($key, '', time() - 604800, $this->config['path'], $this->config['domain']);
     }
     
     /**
@@ -126,6 +142,42 @@ class Cookie
         foreach ($_COOKIE as $key => $value) {
             $this->remove($key);
         }
+    }
+    
+    /**
+     * Create cookie signature.
+     * 
+     * @param mixed $key
+     * @param mixed $value
+     */
+    protected function signed($key, $value)
+    {
+        $secret = $this->config['secret'];
+        $hashed = hash_hmac('sha1', $value . $key . $secret, $secret);
+        
+        return $hashed;
+    }
+    
+    /**
+     * Compare signatures and return value.
+     * 
+     * @param mixed $key
+     * @param mixed $value
+     */
+    protected function unsigned($key, $value)
+    {
+        if (strpos($value, static::DELIMITER) !== false) {
+            list($hashed, $value) = explode(static::DELIMITER, $value, 2);
+            
+            // return cookie value if signature is valid
+            if ($this->app->hashedCompare($this->signed($key, $value), $hashed)) {
+                return $value;
+            }
+        }
+        
+        // remove the tempered cookie if not valid
+        $this->remove($key);
+        return '';
     }
     
     /**
