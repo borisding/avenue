@@ -234,7 +234,7 @@ class Request
      */
     public function getAllHeaders()
     {
-        if (!$this->app->hasFunction('getallheaders')) {
+        if (!function_exists('getallheaders')) {
             return $this->getCustomAllHeaders();
         }
         
