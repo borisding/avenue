@@ -108,7 +108,7 @@ trait StringHelperTrait
         }
         
         if (function_exists('hash_equals')) {
-            return hash_equals($h2, $h2);
+            return hash_equals($h1, $h2);
         }
         
         // alternative solution
