@@ -96,14 +96,6 @@ class Log implements LogInterface
     }
     
     /**
-     * Get the monolog logger instance.
-     */
-    public function getMonolog()
-    {
-        return $this->monolog;
-    }
-    
-    /**
      * Add log record by passing message, level and context, if any.
      * 
      * @see \Avenue\LogInterface::record()
