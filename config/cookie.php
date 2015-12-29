@@ -23,5 +23,5 @@ return [
     'encrypt' => true,
     
     // this is for signed cookie purpose
-    'secret' => '<provide your secret key here>'
+    'secret' => '<change this your own secret key!>'
 ];
