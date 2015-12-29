@@ -184,7 +184,7 @@ final class App implements AppInterface
         // only render output when it is not ajax request
         // this is to avoid entire view to be re-rendered
         if (!$this->request->isAjax()) {
-        	$this->response->render();
+            $this->response->render();
         }
     }
     
