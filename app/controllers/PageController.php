@@ -69,11 +69,5 @@ class PageController extends Controller
         
         // write to body
         $this->response->write($page);
-        
-        // only render output when no ajax call
-        // to avoid entire view re-rendered
-        if (!$this->request->isAjax()) {
-            $this->app->render();
-        }
     }
 }

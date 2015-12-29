@@ -181,7 +181,11 @@ final class App implements AppInterface
             throw new \Exception('Page not found!');
         }
         
-        $this->response->render();
+        // only render output when it is not ajax request
+        // this is to avoid entire view to be re-rendered
+        if (!$this->request->isAjax()) {
+        	$this->response->render();
+        }
     }
     
     /**

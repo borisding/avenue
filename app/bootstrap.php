@@ -9,3 +9,6 @@ require_once AVENUE_APP_DIR. '/helpers.php';
 
 // include application routes
 require_once AVENUE_APP_DIR. '/routes.php';
+
+// rendering application output
+$app->render();
