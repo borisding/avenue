@@ -2,9 +2,6 @@
 // application start time
 define('AVENUE_START_TIME', microtime(true));
 
-// application memory usage
-define('AVENUE_MEMORY_USAGE', memory_get_usage());
-
 // avenue root directory
 define('AVENUE_ROOT_DIR', __DIR__);
 
