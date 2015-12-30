@@ -35,20 +35,6 @@ class Validation
     const METHOD_PREFIX = 'check';
     
     /**
-     * Check field value is not empty.
-     * 
-     * @param mixed $value
-     */
-    public function checkRequired($value)
-    {
-        if (is_string($value)) {
-            $value = trim($value);
-        }
-        
-        return !empty($value) === true;
-    }
-    
-    /**
      * Validation class constructor.
      * 
      * @param App $app
@@ -56,6 +42,20 @@ class Validation
     public function __construct(App $app)
     {
         $this->app = $app;
+    }
+    
+    /**
+     * Check field value is not empty.
+     *
+     * @param mixed $value
+     */
+    public function checkRequired($value)
+    {
+        if (is_string($value)) {
+            $value = trim($value);
+        }
+    
+        return !empty($value) === true;
     }
     
     /**
