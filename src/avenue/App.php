@@ -9,12 +9,13 @@ use Avenue\View;
 use Avenue\Log;
 use Avenue\Exception;
 use Avenue\Components\Encryption;
+use Avenue\Components\Pagination;
+use Avenue\Components\Validation;
 use Avenue\Components\Cookie;
 use Avenue\Components\Session;
 use Avenue\Components\SessionCookie;
 use Avenue\Components\SessionDatabase;
 use Avenue\Components\SessionFile;
-use Avenue\Components\Pagination;
 use Avenue\Helpers\HelperBundleTrait;
 use Avenue\AppInterface;
 
@@ -248,6 +249,10 @@ final class App implements AppInterface
         
         $this->container('pagination', function() {
             return new Pagination(static::getInstance());
+        });
+        
+        $this->container('validation', function() {
+            return new Validation(static::getInstance());
         });
         
         $this->container('cookie', function() {
