@@ -45,17 +45,95 @@ class Validation
     }
     
     /**
-     * Check field value is not empty.
+     * Check field input is not empty.
+     * 
+     * @param mixed $input
+     * @return boolean
+     */
+    public function checkRequired($input)
+    {
+        if (is_string($input)) {
+            $input = trim($input);
+        }
+    
+        return !empty($input) === true;
+    }
+
+    /**
+     * Check field input length is equal to expected.
+     * 
+     * @param string $input
+     * @param integer $equal
+     * @return boolean
+     */
+    public function checkEqualLength($input, $equal)
+    {
+        return $this->getLength((string)$input) === $equal;
+    }
+    
+    /**
+     * Check minimum field input length.
+     * 
+     * @param string $input
+     * @param integer $minimum
+     * @return boolean
+     */
+    public function checkMinLength($input, $minimum)
+    {
+        return $this->getLength((string)$input) >= $minimum;
+    }
+    
+    /**
+     * Check maximum field input length.
+     *
+     * @param string $input
+     * @param integer $maximum
+     * @return boolean
+     */
+    public function checkMaxLength($input, $maximum)
+    {
+        return $this->getLength((string)$input) <= $maximum;
+    }
+    
+    /**
+     * Check field input length is in between expected length.
+     *
+     * @param string $input
+     * @param integer $between
+     * @return boolean
+     */
+    public function checkBetweenLength($input, array $between)
+    {
+        if (count($between) !== 2) {
+            throw new \InvalidArgumentException('Array expects 2 elements!');
+        }
+        
+        $length = $this->getLength((string)$input);
+        $minimum = $between[0];
+        $maximum = $between[1];
+        
+        return ($length >= $minimum && $length <= $maximum);
+    }
+    
+    /**
+     * Return the calculated string length.
      *
      * @param mixed $value
      */
-    public function checkRequired($value)
+    protected function getLength($string)
     {
-        if (is_string($value)) {
-            $value = trim($value);
-        }
+        return function_exists('mb_strlen') ? mb_strlen($string) : strlen($string);
+    }
     
-        return !empty($value) === true;
+    /**
+     * Check field value is valid email.
+     * 
+     * @param mixed $input
+     * @return boolean
+     */
+    public function checkEmail($input)
+    {
+        return filter_var($input, FILTER_VALIDATE_EMAIL) !== false;
     }
     
     /**
@@ -81,6 +159,14 @@ class Validation
     }
     
     /**
+     * Check if all field inputs validation has passed and valid.
+     */
+    public function isValid()
+    {
+        //TODO
+    }
+    
+    /**
      * Validation call magic method.
      * 
      * @param mixed $rule
@@ -91,7 +177,7 @@ class Validation
         $methodName = static::METHOD_PREFIX . ucfirst($rule);
         
         if (!method_exists($this, $methodName)) {
-            throw new \LogicException(sprintf('Validation class method %s does not exist.', $methodName));
+            throw new \LogicException(sprintf('Unsupported rule [%s] for validation.', $rule));
         }
         
         // assign field input(s)
