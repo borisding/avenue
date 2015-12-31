@@ -232,12 +232,7 @@ class Validation
      */
     public function checkBothSame($input1, $field)
     {
-        $input2 = null;
-        
-        if (isset($this->fields[$field])) {
-            $input2 = $this->fields[$field];
-        }
-        
+        $input2 = $this->app->arrGet($field, $this->fields, null);
         return !is_null($input2) && $input1 == $input2;
     }
     
