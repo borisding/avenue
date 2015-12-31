@@ -2,6 +2,7 @@
 // TODO: continue with adding more rules and validation message, label handling
 namespace Avenue\Components;
 
+use Closure;
 use Avenue\App;
 
 class Validation
@@ -116,16 +117,6 @@ class Validation
     }
     
     /**
-     * Return the calculated string length.
-     *
-     * @param mixed $value
-     */
-    protected function getLength($string)
-    {
-        return function_exists('mb_strlen') ? mb_strlen($string) : strlen($string);
-    }
-    
-    /**
      * Check field input is valid email.
      * 
      * @param mixed $input
@@ -234,6 +225,36 @@ class Validation
     {
         $input2 = $this->app->arrGet($field, $this->fields, null);
         return !is_null($input2) && $input1 == $input2;
+    }
+    
+    /**
+     * Implement validation via callback by accepting the value.
+     * Callback should return boolean.
+     * 
+     * @param mixed $input
+     * @param Closure $callback
+     */
+    public function checkCallback($input, Closure $callback)
+    {
+        return $callback($input);
+    }
+    
+    /**
+     * Return the calculated string length.
+     *
+     * @param mixed $value
+     */
+    protected function getLength($string)
+    {
+        return function_exists('mb_strlen') ? mb_strlen($string) : strlen($string);
+    }
+    
+    /**
+     * Return all stored fields.
+     */
+    public function getAllFields()
+    {
+        return $this->fields;
     }
     
     /**
