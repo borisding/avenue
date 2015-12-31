@@ -137,6 +137,50 @@ class Validation
     }
     
     /**
+     * Check field input is valid float by coercing it.
+     * 
+     * @param mixed $input
+     * @return boolean
+     */
+    public function checkIsFloat($input)
+    {
+        return is_float($input + 0);
+    }
+    
+    /**
+     * Check field input is valid integer by coercing it.
+     *
+     * @param mixed $input
+     * @return boolean
+     */
+    public function checkIsInteger($input)
+    {
+        return is_int($input + 0);
+    }
+    
+    /**
+     * Check field input is numeric.
+     *
+     * @param mixed $input
+     * @return boolean
+     */
+    public function checkIsNumeric($input)
+    {
+        return is_numeric($input) !== false;
+    }
+    
+    /**
+     * Check field input is valid boolean type.
+     *
+     * @param mixed $input
+     * @return boolean
+     */
+    public function checkIsBoolean($input)
+    {
+        return is_bool($input) !== false;
+    }
+    
+    /**
      * Start validation by preparing input values.
      * 
      * @return \Avenue\Components\Validation
@@ -164,6 +208,7 @@ class Validation
     public function isValid()
     {
         //TODO
+        print_r($this->result);
     }
     
     /**
