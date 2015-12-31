@@ -228,13 +228,13 @@ class Validation
     }
     
     /**
-     * Implement validation via callback by accepting the value.
+     * Implement custom rule via callback by accepting the value.
      * Callback should return boolean.
      * 
      * @param mixed $input
      * @param Closure $callback
      */
-    public function checkCallback($input, Closure $callback)
+    public function checkCustom($input, Closure $callback)
     {
         return $callback($input);
     }
