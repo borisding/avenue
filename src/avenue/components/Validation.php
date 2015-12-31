@@ -45,12 +45,12 @@ class Validation
     }
     
     /**
-     * Check field input is not empty.
+     * Check field input is required.
      * 
      * @param mixed $input
      * @return boolean
      */
-    public function checkRequired($input)
+    public function checkIsRequired($input)
     {
         if (is_string($input)) {
             $input = trim($input);
@@ -112,7 +112,7 @@ class Validation
         $minimum = $between[0];
         $maximum = $between[1];
         
-        return ($length >= $minimum && $length <= $maximum);
+        return $length >= $minimum && $length <= $maximum;
     }
     
     /**
@@ -126,14 +126,47 @@ class Validation
     }
     
     /**
-     * Check field value is valid email.
+     * Check field input is valid email.
      * 
      * @param mixed $input
      * @return boolean
      */
-    public function checkEmail($input)
+    public function checkIsEmail($input)
     {
         return filter_var($input, FILTER_VALIDATE_EMAIL) !== false;
+    }
+    
+    /**
+     * Check field input is valid URL.
+     * 
+     * @param mixed $input
+     * @return boolean
+     */
+    public function checkIsUrl($input)
+    {
+        return filter_var($input, FILTER_VALIDATE_URL) !== false;
+    }
+    
+    /**
+     * Check field input is valid IP address.
+     * 
+     * @param mixed $input
+     * @return boolean
+     */
+    public function checkIsIp($input)
+    {
+        return filter_var($input, FILTER_VALIDATE_IP) !== false;
+    }
+    
+    /**
+     * Check field input is scalar type.
+     * 
+     * @param mixed $input
+     * @return boolean
+     */
+    public function checkIsScalar($input)
+    {
+        return is_scalar($input) !== false;
     }
     
     /**
@@ -181,6 +214,34 @@ class Validation
     }
     
     /**
+     * Check field input is valid date.
+     * 
+     * @param mixed $input
+     * @return boolean
+     */
+    public function checkIsDate($input)
+    {
+        return strtotime($input) !== false;
+    }
+
+    /**
+     * Check and compare both field 1 and field 2 inputs.
+     * 
+     * @param mixed $input1
+     * @param mixed $field
+     */
+    public function checkBothSame($input1, $field)
+    {
+        $input2 = null;
+        
+        if (isset($this->fields[$field])) {
+            $input2 = $this->fields[$field];
+        }
+        
+        return !is_null($input2) && $input1 == $input2;
+    }
+    
+    /**
      * Start validation by preparing input values.
      * 
      * @return \Avenue\Components\Validation
@@ -205,10 +266,9 @@ class Validation
     /**
      * Check if all field inputs validation has passed and valid.
      */
-    public function isValid()
+    public function hasPassed()
     {
         //TODO
-        print_r($this->result);
     }
     
     /**
