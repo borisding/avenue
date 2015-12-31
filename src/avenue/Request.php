@@ -222,11 +222,11 @@ class Request
     /**
      * Get particular header value based on the name.
      * 
-     * @param mixed $name
+     * @param mixed $key
      */
-    public function getHeader($name)
+    public function getHeader($key)
     {
-        return $this->app->arrGet($name, $this->getAllHeaders());
+        return $this->app->arrGet($key, $this->getAllHeaders());
     }
     
     /**
@@ -252,10 +252,10 @@ class Request
             return $headers;
         }
         
-        foreach ($_SERVER as $name => $value) {
+        foreach ($_SERVER as $key => $value) {
             
-            if (substr($name, 0, 5) == 'HTTP_') {
-                $key = substr($name, 5);
+            if (substr($key, 0, 5) == 'HTTP_') {
+                $key = substr($key, 5);
                 $key = str_replace('_', ' ', $key);
                 $key = ucwords(strtolower($key));
                 $key = str_replace(' ', '-', $key);
