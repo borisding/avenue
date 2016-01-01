@@ -99,9 +99,10 @@ class Validation
     
     /**
      * Check field input length is in between expected length.
-     *
-     * @param string $input
-     * @param integer $between
+     * 
+     * @param mixed $input
+     * @param array $between
+     * @throws \InvalidArgumentException
      * @return boolean
      */
     public function checkBetweenLength($input, array $between)
@@ -115,6 +116,27 @@ class Validation
         $maximum = $between[1];
         
         return $length >= $minimum && $length <= $maximum;
+    }
+    
+    /**
+     * Check numeric field input is in between expected range.
+     * 
+     * @param mixed $input
+     * @param array $range
+     * @throws \InvalidArgumentException
+     * @return boolean
+     */
+    public function checkInRange($input, array $range)
+    {
+        if (count($range) !== 2) {
+            throw new \InvalidArgumentException('Array expects 2 elements!');
+        }
+        
+        $minimum = $range[0];
+        $maximum = $range[1];
+        $input =  $input + 0;
+        
+        return $input >= $minimum && $input <= $maximum;
     }
     
     /**
