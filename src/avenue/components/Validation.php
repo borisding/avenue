@@ -101,19 +101,19 @@ class Validation
      * Check field input length is in between expected length.
      * 
      * @param mixed $input
-     * @param array $between
+     * @param array $range
      * @throws \InvalidArgumentException
      * @return boolean
      */
-    public function checkInRangeLength($input, array $between)
+    public function checkInRangeLength($input, array $range)
     {
-        if (count($between) !== 2) {
+        if (count($range) !== 2) {
             throw new \InvalidArgumentException('Array expects 2 elements!');
         }
         
         $length = $this->getLength((string)$input);
-        $minimum = $between[0];
-        $maximum = $between[1];
+        $minimum = $range[0];
+        $maximum = $range[1];
         
         return $length >= $minimum && $length <= $maximum;
     }
