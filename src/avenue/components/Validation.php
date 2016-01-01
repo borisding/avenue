@@ -383,6 +383,18 @@ class Validation
     }
     
     /**
+     * Implement regular expression match.
+     * 
+     * @param mixed $input
+     * @param mixed $pattern
+     * @return boolean
+     */
+    public function checkMatch($input, $pattern)
+    {
+        return preg_match($pattern, $input) !== 0;
+    }
+    
+    /**
      * Implement custom rule via callback by accepting the value.
      * Callback should return boolean.
      * 
