@@ -355,7 +355,7 @@ class Validation
      * @param mixed $input
      * @return boolean
      */
-    public function checkisNotWhitespace($input)
+    public function checkIsNotWhitespace($input)
     {
         return ctype_space($input) === false;
     }
