@@ -3,6 +3,7 @@
 namespace Avenue\Components;
 
 use Closure;
+use DateTime;
 use Avenue\App;
 
 class Validation
@@ -214,14 +215,69 @@ class Validation
     {
         return strtotime($input) !== false;
     }
-
+    
+    /**
+     * Check date is before than targeted date.
+     * If targeted field not found, will compare with current date.
+     * 
+     * @param mixed $date
+     * @param mixed $field
+     * @return boolean
+     */
+    public function checkIsDateBefore($date, $field)
+    {
+        $target = $this->app->arrGet($field, $this->fields, 'now');
+        return $this->checkIsDate($date) && strtotime($date) < strtotime($target);
+    }
+    
+    /**
+     * Check date is after than targeted date.
+     * If targeted field not found, will compare with current date.
+     * 
+     * @param mixed $date
+     * @param mixed $field
+     * @return boolean
+     */
+    public function checkIsDateAfter($date, $field)
+    {
+        $target = $this->app->arrGet($field, $this->fields, 'now');
+        return $this->checkIsDate($date) && strtotime($date) > strtotime($target);
+    }
+    
+    /**
+     * Check date is equal with targeted date.
+     * If targeted field not found, will compare with current date.
+     *
+     * @param mixed $date
+     * @param mixed $field
+     * @return boolean
+     */
+    public function checkIsDateEqual($date, $field)
+    {
+        $target = $this->app->arrGet($field, $this->fields, 'now');
+        return $this->checkIsDate($date) && strtotime($date) == strtotime($target);
+    }
+    
+    /**
+     * Check date is as expected date format.
+     * 
+     * @param mixed $date
+     * @param mixed $format
+     * @return boolean
+     */
+    public function checkIsDateAsFormat($date, $format)
+    {
+        $dt = DateTime::createFromFormat($format, $date);
+        return $dt && $dt->format($format) == $date;
+    }
+    
     /**
      * Check and compare both field 1 and field 2 inputs.
      * 
      * @param mixed $input1
      * @param mixed $field
      */
-    public function checkBothSame($input1, $field)
+    public function checkBothEqual($input1, $field)
     {
         $input2 = $this->app->arrGet($field, $this->fields, null);
         return !is_null($input2) && $input1 == $input2;
@@ -264,16 +320,16 @@ class Validation
      */
     public function init()
     {
-        if (func_num_args() === 0) {
-            $this->fields = array_merge($_POST, $_GET, $_FILES);
-        } else {
+        if (func_num_args()) {
             array_filter(func_get_args(), function($arr) {
                 if (!is_array($arr)) {
                     $arr = [];
                 }
-                
+            
                 $this->fields = array_merge($this->fields, $arr);
             });
+        } else {
+            $this->fields = array_merge($_POST, $_GET, $_FILES);
         }
         
         return $this;
