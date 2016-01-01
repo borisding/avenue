@@ -284,6 +284,83 @@ class Validation
     }
     
     /**
+     * Check for alphabetic field input.
+     *
+     * @param mixed $input
+     * @return boolean
+     */
+    public function checkIsAlpha($input)
+    {
+        return ctype_alpha($input) !== false;
+    }
+    
+    /**
+     * Check for alphanumeric field input.
+     * 
+     * @param mixed $input
+     * @return boolean
+     */
+    public function checkIsAlnum($input)
+    {
+        return ctype_alnum($input) !== false;
+    }
+    
+    /**
+     * Check for digit field input.
+     *
+     * @param mixed $input
+     * @return boolean
+     */
+    public function checkIsDigit($input)
+    {
+        return ctype_digit($input) !== false;
+    }
+    
+    /**
+     * Check for hexadecimal digit field input.
+     *
+     * @param mixed $input
+     * @return boolean
+     */
+    public function checkIsHexadecimal($input)
+    {
+        return ctype_xdigit($input) !== false;
+    }
+    
+    /**
+     * Check for upper case field input.
+     *
+     * @param mixed $input
+     * @return boolean
+     */
+    public function checkIsUpper($input)
+    {
+        return ctype_upper($input) !== false;
+    }
+    
+    /**
+     * Check for lower case field input.
+     *
+     * @param mixed $input
+     * @return boolean
+     */
+    public function checkIsLower($input)
+    {
+        return ctype_lower($input) !== false;
+    }
+    
+    /**
+     * Check for field input not giving whitespace only.
+     *
+     * @param mixed $input
+     * @return boolean
+     */
+    public function checkisNotWhitespace($input)
+    {
+        return ctype_space($input) === false;
+    }
+    
+    /**
      * Implement custom rule via callback by accepting the value.
      * Callback should return boolean.
      * 
