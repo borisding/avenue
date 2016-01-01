@@ -105,7 +105,7 @@ class Validation
      * @throws \InvalidArgumentException
      * @return boolean
      */
-    public function checkBetweenLength($input, array $between)
+    public function checkInRangeLength($input, array $between)
     {
         if (count($between) !== 2) {
             throw new \InvalidArgumentException('Array expects 2 elements!');
