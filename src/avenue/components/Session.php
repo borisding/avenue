@@ -41,7 +41,7 @@ class Session
      */
     public function set($key, $value)
     {
-        if (empty($key)) {
+        if (empty(trim($key))) {
             throw new \InvalidArgumentException('Key must not be empty!');
         }
         

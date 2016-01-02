@@ -72,7 +72,7 @@ class Cookie
         }
         
         // check if secret key is empty
-        if (empty($this->config['secret'])) {
+        if (empty(trim($this->config['secret']))) {
             throw new \InvalidArgumentException('Secret must not be empty!');
         }
     }
@@ -85,7 +85,7 @@ class Cookie
      */
     public function set($key, $value = null)
     {
-        if (empty($key)) {
+        if (empty(trim($key))) {
             throw new \InvalidArgumentException('The key must not be empty!');
         }
         

@@ -53,7 +53,6 @@ class Encryption
     {
         $this->app = $app;
         $this->config = array_merge($this->config, $this->app->getConfig('encryption'));
-        
         $this->key = $this->config['key'];
         $this->cipher = $this->config['cipher'];
         $this->mode = $this->config['mode'];
@@ -129,7 +128,7 @@ class Encryption
      */
     protected function generateKey()
     {
-        if (empty($this->key)) {
+        if (empty(trim($this->key))) {
             throw new \InvalidArgumentException('Key cannot be empty!');
         }
         
