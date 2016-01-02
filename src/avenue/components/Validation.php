@@ -463,35 +463,37 @@ class Validation
         $config = $this->getConfig();
         
         foreach ($this->results as $field => $rules) {
-            $valid = true;
             
             foreach ($rules as $rule => $status) {
                 
-                if (!$status) {
-                    $valid = false;
-                    $fieldRule = $field . '.' . $rule;
-                    
-                    if (!isset($this->errors[$fieldRule])) {
-                        $this->errors[$fieldRule] = [];
-                    }
-                    
-                    // populate the label
-                    if (isset($config[$field]) && isset($config[$field]['label'])) {
-                        $label = $config[$field]['label'];
-                    } else {
-                        $label = $field;
-                    }
-                    
-                    // populate the message
-                    if (isset($config[$field]) && isset($config[$field][$rule])) {
-                        $message = $config[$field][$rule];
-                    } else {
-                        $message = sprintf('%s is invalid for rule %s.', $label, $rule);
-                    }
-                    
-                    $message = preg_replace('/{label}/i', $label, $message);
-                    $this->errors[$fieldRule]= $message;
+                if ($status) {
+                    $valid = true;
+                    continue;
                 }
+                
+                $valid = false;
+                $fieldRule = $field . '.' . $rule;
+                
+                if (!isset($this->errors[$fieldRule])) {
+                    $this->errors[$fieldRule] = [];
+                }
+                
+                // populate the label
+                if (isset($config[$field]) && isset($config[$field]['label'])) {
+                    $label = $config[$field]['label'];
+                } else {
+                    $label = $field;
+                }
+                
+                // populate the message
+                if (isset($config[$field]) && isset($config[$field][$rule])) {
+                    $message = $config[$field][$rule];
+                } else {
+                    $message = sprintf('%s is invalid for rule %s.', $label, $rule);
+                }
+                
+                $message = preg_replace('/{label}/i', $label, $message);
+                $this->errors[$fieldRule]= $message;
             }
         }
         
