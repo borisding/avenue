@@ -90,7 +90,7 @@ class Cookie
         }
         
         $value = $this->encrypt($value);
-        $value = $this->signed($key, $value) . static::DELIMITER . $value;
+        $value = $this->hashing($key, $value) . static::DELIMITER . $value;
         $length = function_exists('mb_strlen') ? mb_strlen($value) : strlen($value);
         
         if ($length > static::MAX_SIZE) {
@@ -114,7 +114,7 @@ class Cookie
     public function get($key)
     {
         if (isset($_COOKIE[$key])) {
-            $value = $this->unsigned($key, $_COOKIE[$key]);
+            $value = $this->verify($key, $_COOKIE[$key]);
             $value = $this->decrypt($value);
             
             return $value;
@@ -145,12 +145,12 @@ class Cookie
     }
     
     /**
-     * Create cookie signature.
+     * Create cookie signature by hashing value with key and secret.
      * 
      * @param mixed $key
      * @param mixed $value
      */
-    protected function signed($key, $value)
+    protected function hashing($key, $value)
     {
         $secret = $this->config['secret'];
         $hashed = hash_hmac('sha1', $value . $key . $secret, $secret);
@@ -159,18 +159,18 @@ class Cookie
     }
     
     /**
-     * Compare signatures and return value.
+     * Verify cookie signature and return value.
      * 
      * @param mixed $key
      * @param mixed $value
      */
-    protected function unsigned($key, $value)
+    protected function verify($key, $value)
     {
         if (strpos($value, static::DELIMITER) !== false) {
             list($hashed, $value) = explode(static::DELIMITER, $value, 2);
             
             // return cookie value if signature is valid
-            if ($this->app->hashedCompare($this->signed($key, $value), $hashed)) {
+            if ($this->app->hashedCompare($this->hashing($key, $value), $hashed)) {
                 return $value;
             }
         }
