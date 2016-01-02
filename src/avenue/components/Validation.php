@@ -1,5 +1,4 @@
 <?php
-// TODO: continue with adding more rules and validation message, label handling
 namespace Avenue\Components;
 
 use Closure;
@@ -27,7 +26,14 @@ class Validation
      * 
      * @var array
      */
-    protected $result = [];
+    protected $results = [];
+    
+    /**
+     * List of validation errors.
+     * 
+     * @var array
+     */
+    protected $errors = [];
     
     /**
      * Validation core method's prefix.
@@ -448,10 +454,72 @@ class Validation
     
     /**
      * Check if all field inputs validation has passed and valid.
+     * Store to errors list if particular rule failed for field input.
+     * 
+     * @return boolean
      */
     public function hasPassed()
     {
-        //TODO
+        $config = $this->getConfig();
+        
+        foreach ($this->results as $field => $rules) {
+            $valid = true;
+            
+            foreach ($rules as $rule => $status) {
+                
+                if (!$status) {
+                    $valid = false;
+                    $fieldRule = $field . '.' . $rule;
+                    
+                    if (!isset($this->errors[$fieldRule])) {
+                        $this->errors[$fieldRule] = [];
+                    }
+                    
+                    // populate the label
+                    if (isset($config[$field]) && isset($config[$field]['label'])) {
+                        $label = $config[$field]['label'];
+                    } else {
+                        $label = $field;
+                    }
+                    
+                    // populate the message
+                    if (isset($config[$field]) && isset($config[$field][$rule])) {
+                        $message = $config[$field][$rule];
+                    } else {
+                        $message = sprintf('%s is invalid for rule %s.', $label, $rule);
+                    }
+                    
+                    $message = preg_replace('/{label}/i', $label, $message);
+                    $this->errors[$fieldRule]= $message;
+                }
+            }
+        }
+        
+        return $valid;
+    }
+    
+    /**
+     * Return the populated error messages for field input(s).
+     */
+    public function getErrors()
+    {
+        return $this->errors;
+    }
+    
+    /**
+     * Get the validation configuration.
+     * 
+     * @throws \Exception
+     */
+    protected function getConfig()
+    {
+        $PATH_TO_VALIDATION_CONFIG = AVENUE_CONFIG_DIR . '/validation.php';
+        
+        if (!file_exists($PATH_TO_VALIDATION_CONFIG)) {
+            throw new \Exception(sprintf('Validation config file [%s] not found!', $PATH_TO_VALIDATION_CONFIG));
+        }
+        
+        return require_once $PATH_TO_VALIDATION_CONFIG;
     }
     
     /**
@@ -486,14 +554,14 @@ class Validation
         
         // go through respective fields
         array_filter($fields, function($field) use ($rule, $ruleValue, $methodName) {
-            if (!isset($this->result[$field])) {
-                $this->result[$field] = [];
+            if (!isset($this->results[$field])) {
+                $this->results[$field] = [];
             }
             
             $fieldValue = $this->app->arrGet($field, $this->fields, '');
             // invoke the the rule method by passing field input value and rule value to check with, if any
             // return the boolean result and store to the result list property
-            $this->result[$field][$rule] = call_user_func_array([$this, $methodName], [$fieldValue, $ruleValue]);
+            $this->results[$field][$rule] = call_user_func_array([$this, $methodName], [$fieldValue, $ruleValue]);
         });
     }
 }
