@@ -1,6 +1,9 @@
 <?php
 $app = new \Avenue\App();
 
+// include error handling.
+require_once AVENUE_APP_DIR. '/errors.php';
+
 // include application services.
 require_once AVENUE_APP_DIR. '/services.php';
 
