@@ -96,11 +96,11 @@ class Log implements LogInterface
     }
     
     /**
-     * Add log record by passing message, level and context, if any.
+     * {@inheritDoc}
      * 
-     * @see \Avenue\LogInterface::record()
+     * @see \Avenue\LogInterface::addRecord()
      */
-    public function record($message, $level = 'warning', array $context = [])
+    public function addRecord($message, $level = 'warning', array $context = [])
     {
         $level = $this->app->arrGet($level, $this->levels, $this->levels['warning']);
         $this->monolog->addRecord($level, $message, $context);
@@ -109,90 +109,90 @@ class Log implements LogInterface
     }
     
     /**
-     * Log debug message.
+     * {@inheritDoc}
      * 
-     * @see \Avenue\LogInterface::debug()
+     * @see \Avenue\LogInterface::addDebug()
      */
-    public function debug($message, array $context = [])
+    public function addDebug($message, array $context = [])
     {
-        $this->record($message, __FUNCTION__, $context);
+        $this->addRecord($message, 'debug', $context);
         return $this;
     }
     
     /**
-     * Log info message.
+     * {@inheritDoc}
      * 
-     * @see \Avenue\LogInterface::info()
+     * @see \Avenue\LogInterface::addInfo()
      */
-    public function info($message, array $context = [])
+    public function addInfo($message, array $context = [])
     {
-        $this->record($message, __FUNCTION__, $context);
+        $this->addRecord($message, 'info', $context);
         return $this;
     }
     
     /**
-     * Log notice message.
+     * {@inheritDoc}
      * 
-     * @see \Avenue\LogInterface::notice()
+     * @see \Avenue\LogInterface::addNotice()
      */
-    public function notice($message, array $context = [])
+    public function addNotice($message, array $context = [])
     {
-        $this->record($message, __FUNCTION__, $context);
+        $this->addRecord($message, 'notice', $context);
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see \Avenue\LogInterface::addWarning()
+     */
+    public function addWarning($message, array $context = [])
+    {
+        $this->addRecord($message, 'warning', $context);
         return $this;
     }
     
     /**
-     * Log warning message.
+     * {@inheritDoc}
      * 
-     * @see \Avenue\LogInterface::warning()
+     * @see \Avenue\LogInterface::addError()
      */
-    public function warning($message, array $context = [])
+    public function addError($message, array $context = [])
     {
-        $this->record($message, __FUNCTION__, $context);
+        $this->addRecord($message, 'error', $context);
         return $this;
     }
     
     /**
-     * Log error message.
+     * {@inheritDoc}
      * 
-     * @see \Avenue\LogInterface::error()
+     * @see \Avenue\LogInterface::addCritical()
      */
-    public function error($message, array $context = [])
+    public function addCritical($message, array $context = [])
     {
-        $this->record($message, __FUNCTION__, $context);
+        $this->addRecord($message, 'critical', $context);
         return $this;
     }
     
     /**
-     * Log critical message.
+     * {@inheritDoc}
      * 
-     * @see \Avenue\LogInterface::critical()
+     * @see \Avenue\LogInterface::addAlert()
      */
-    public function critical($message, array $context = [])
+    public function addAlert($message, array $context = [])
     {
-        $this->record($message, __FUNCTION__, $context);
+        $this->addRecord($message, 'alert', $context);
         return $this;
     }
     
     /**
-     * Log alert message.
+     * {@inheritDoc}
      * 
-     * @see \Avenue\LogInterface::alert()
+     * @see \Avenue\LogInterface::addEmergency()
      */
-    public function alert($message, array $context = [])
+    public function addEmergency($message, array $context = [])
     {
-        $this->record($message, __FUNCTION__, $context);
-        return $this;
-    }
-    
-    /**
-     * Log emergency message.
-     * 
-     * @see \Avenue\LogInterface::emergency()
-     */
-    public function emergency($message, array $context = [])
-    {
-        $this->record($message, __FUNCTION__, $context);
+        $this->addRecord($message, 'emergency', $context);
         return $this;
     }
     

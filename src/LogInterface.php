@@ -10,69 +10,69 @@ interface LogInterface
      * @param string $level
      * @param array $context
      */
-    public function record($message, $level, array $context);
+    public function addRecord($message, $level, array $context);
     
     /**
-     * Log for debug message.
+     * Adding log for debug message.
      * 
      * @param mixed $message
      * @param array $context
      */
-    public function debug($message, array $context);
+    public function addDebug($message, array $context);
     
     /**
-     * Log for info message.
+     * Adding log for info message.
      * 
      * @param mixed $message
      * @param array $context
      */
-    public function info($message, array $context);
+    public function addInfo($message, array $context);
     
     /**
-     * Log for notice message.
+     * Adding log for notice message.
      * 
      * @param mixed $message
      * @param array $context
      */
-    public function notice($message, array $context);
+    public function addNotice($message, array $context);
     
     /**
-     * Log for warning message.
+     * Adding log for warning message.
      * 
      * @param mixed $message
      * @param array $context
      */
-    public function warning($message, array $context);
+    public function addWarning($message, array $context);
     
     /**
-     * Log for error message.
+     * Adding log for error message.
      * 
      * @param mixed $message
      * @param array $context
      */
-    public function error($message, array $context);
+    public function addError($message, array $context);
     
     /**
-     * Log for critical message.
+     * Adding log for critical message.
      * 
      * @param mixed $message
      * @param array $context
      */
-    public function critical($message, array $context);
+    public function addCritical($message, array $context);
     
     /**
-     * Log for alert message.
+     * Adding log for alert message.
      * 
      * @param mixed $message
      * @param array $context
      */
-    public function alert($message, array $context);
+    public function addAlert($message, array $context);
     
     /**
-     * Log for emergency message.
+     * Adding log for emergency message.
      * 
      * @param mixed $message
      * @param array $context
      */
-    public function emergency($message, array $context);
+    public function addEmergency($message, array $context);
 }
