@@ -6,11 +6,11 @@ use Avenue\Controller;
 class PageController extends Controller
 {
     /**
-     * View layout.
+     * View layout template.
      * 
      * @var mixed
      */
-    protected $layout;
+    protected $template;
     
     /**
      * Page title.
@@ -51,7 +51,7 @@ class PageController extends Controller
         parent::beforeAction();
         
         // default values
-        $this->layout = 'layouts/page';
+        $this->template = 'page';
         $this->title = 'Avenue Framework | ';
         $this->content= '';
         
@@ -80,7 +80,7 @@ class PageController extends Controller
         parent::afterAction();
         
         // fetching page view tempate by passing parameters
-        $page = $this->view->fetch($this->layout, [
+        $page = $this->view->layout($this->template, [
             'css' => $this->css,
             'scripts' => $this->scripts,
             'title' => $this->title,
