@@ -7,4 +7,4 @@ composer.lock
 .DS_Store
 avenue.sublime-project
 avenue.sublime-workspace
-/log
+/log/*.log
