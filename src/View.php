@@ -31,6 +31,20 @@ class View
     protected $params = [];
     
     /**
+     * Layouts directory.
+     * 
+     * @var string
+     */
+    const LAYOUT_DIR = 'layouts';
+    
+    /**
+     * Partials directory.
+     * 
+     * @var string
+     */
+    const PARTIAL_DIR = 'partials';
+    
+    /**
      * View class constructor.
      * 
      * @param App $app
@@ -55,6 +69,32 @@ class View
         require $this->getViewFile($name);
         
         return ob_get_clean();
+    }
+    
+    /**
+     * Alias method for fetching layout view file by omitting directory name.
+     * 
+     * @param mixed $name
+     * @param array $params
+     * @return string
+     */
+    public function layout($name, array $params = [])
+    {
+        $layout = static::LAYOUT_DIR . '/'. $name;
+        return $this->fetch($layout, $params);
+    }
+    
+    /**
+     * Alias method for fetching partial view file by omitting directory name.
+     * 
+     * @param mixed $name
+     * @param array $params
+     * @return string
+     */
+    public function partial($name, array $params = [])
+    {
+        $partial = static::PARTIAL_DIR . '/'. $name;
+        return $this->fetch($partial, $params);
     }
     
     /**
