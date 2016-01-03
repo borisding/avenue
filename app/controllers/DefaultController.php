@@ -13,8 +13,8 @@ class DefaultController extends PageController
     public function indexAction()
     {
         // assign index title and content
-        $this->title .= 'Default';
-        $this->content = '<h3>Hello! Welcome to Avenue.</h3>';
+        $this->title .= 'Demo Page';
+        $this->content = $this->view->fetch('partials/home');
     }
     
     public function afterAction()

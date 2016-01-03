@@ -27,6 +27,20 @@ class PageController extends Controller
     protected $content;
     
     /**
+     * List of css files.
+     * 
+     * @var array
+     */
+    protected $css = [];
+    
+    /**
+     * List of script files.
+     * 
+     * @var array
+     */
+    protected $scripts = [];
+    
+    /**
      * Page controller before action.
      * Can add some settings here for child class usage.
      * 
@@ -40,6 +54,10 @@ class PageController extends Controller
         $this->layout = 'layouts/page';
         $this->title = 'Avenue Framework | ';
         $this->content= '';
+        
+        // css and scripts assignments
+        $this->css = ['bootstrap', 'style'];
+        $this->scripts = ['jquery-2.1.4.min', 'bootstrap.min'];
     }
     
     /**
@@ -63,6 +81,8 @@ class PageController extends Controller
         
         // fetching page view tempate by passing parameters
         $page = $this->view->fetch($this->layout, [
+            'css' => $this->css,
+            'scripts' => $this->scripts,
             'title' => $this->title,
             'content' => $this->content
         ]);
