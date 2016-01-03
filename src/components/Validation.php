@@ -460,7 +460,7 @@ class Validation
      */
     public function hasPassed()
     {
-        $config = $this->getConfig();
+        $config = $this->app->getConfig('validation');
         
         foreach ($this->results as $field => $rules) {
             
@@ -506,22 +506,6 @@ class Validation
     public function getErrors()
     {
         return $this->errors;
-    }
-    
-    /**
-     * Get the validation configuration.
-     * 
-     * @throws \Exception
-     */
-    protected function getConfig()
-    {
-        $PATH_TO_VALIDATION_CONFIG = AVENUE_CONFIG_DIR . '/validation.php';
-        
-        if (!file_exists($PATH_TO_VALIDATION_CONFIG)) {
-            throw new \Exception(sprintf('Validation config file [%s] not found!', $PATH_TO_VALIDATION_CONFIG));
-        }
-        
-        return require_once $PATH_TO_VALIDATION_CONFIG;
     }
     
     /**

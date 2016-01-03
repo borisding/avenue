@@ -19,17 +19,20 @@ return [
     'defaultController' => 'default',
     
     // cookie configuration
-    'cookie' => require 'cookie.php',
-    
-    // session configuration
-    'session' => require 'session.php',
-    
-    // encryption configuration
-    'encryption' => require 'encryption.php',
-    
-    // logging configuration
-    'logging' => require 'logging.php',
+    'cookie' => require_once 'cookie.php',
     
     // database configuration
-    'database' => require 'database.php'
+    'database' => require_once 'database.php',
+    
+    // encryption configuration
+    'encryption' => require_once 'encryption.php',
+    
+    // logging configuration
+    'logging' => require_once 'logging.php',
+    
+    // session configuration
+    'session' => require_once 'session.php',
+    
+    // validation configuration
+    'validation' => require_once 'validation.php'
 ];
