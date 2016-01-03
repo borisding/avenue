@@ -56,7 +56,7 @@ class PageController extends Controller
         $this->content= '';
         
         // css and scripts assignments
-        $this->css = ['bootstrap', 'style'];
+        $this->css = ['bootstrap.min', 'style'];
         $this->scripts = ['jquery-2.1.4.min', 'bootstrap.min'];
     }
     
