@@ -4,13 +4,12 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="A lightweight MVC framework for quick PHP web development and prototyping.">
     <meta name="author" content="Boris Ding Poh Hing">
     <title><?= $this->e($title); ?></title>
     <?php 
     for ($i = 0, $len = count($css); $i < $len; $i++) {
-        $file = $this->baseUrl() . '/public/css/' . $css[$i] . '.css';
+        $file = $this->baseUrl() . 'public/css/' . $css[$i] . '.css';
         echo '<link href="' . $file . '" rel="stylesheet">';
         echo PHP_EOL;
     }
@@ -51,7 +50,7 @@
     
     <? 
     for ($i = 0, $len = count($scripts); $i < $len; $i++) {
-        $file = $this->baseUrl() . '/public/js/' . $scripts[$i] . '.js';
+        $file = $this->baseUrl() . 'public/js/' . $scripts[$i] . '.js';
         echo '<script src="' . $file . '"></script>';
         echo PHP_EOL;
     }
