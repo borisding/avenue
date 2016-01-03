@@ -8,11 +8,11 @@ define('AVENUE_ROOT_DIR', __DIR__);
 // avenue app directory
 define('AVENUE_APP_DIR', AVENUE_ROOT_DIR . '/app');
 
+// avenue src directory
+define('AVENUE_SRC_DIR', AVENUE_ROOT_DIR . '/src');
+
 // avenue config directory
 define('AVENUE_CONFIG_DIR', AVENUE_ROOT_DIR . '/config');
-
-// avenue src directory
-define('AVENUE_SRC_DIR', AVENUE_ROOT_DIR . '/src/avenue');
 
 // avenue log directory
 define('AVENUE_LOG_DIR', AVENUE_ROOT_DIR . '/log');
