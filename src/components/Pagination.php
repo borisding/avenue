@@ -78,19 +78,22 @@ class Pagination
     }
     
     /**
-     * Configuration for pagination.
+     * Init pagination by passing users' config.
      * 
-     * @param array $data
+     * @param array $config
+     * @return \Avenue\Components\Pagination
      */
-    public function config(array $data = [])
+    public function init(array $config = [])
     {
-        $this->config = array_merge($this->config, $data);
+        $this->config = array_merge($this->config, $config);
         $this->page = $this->app->escape($this->app->arrGet('page', $_GET, 1));
         $this->link = $this->config['link'];
         $this->limit = $this->config['limit'];
         $this->total = $this->config['total'];
         $this->previous = $this->config['previous'];
         $this->next = $this->config['next'];
+        
+        return $this;
     }
     
     /**
@@ -183,7 +186,7 @@ class Pagination
         
         // range of shown page
         // decide the page start and end
-        $stopper = 7;
+        $stopper = 4;
         $pageStart = (($page - $stopper) > 0) ? $page - $stopper : 1;
         $pageEnd = (($page + $stopper) < $totalPage ) ? $page + $stopper : $totalPage;
         
