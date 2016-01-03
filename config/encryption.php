@@ -11,5 +11,5 @@ return [
     'mode' => MCRYPT_MODE_CBC,
     
     // random key
-    'key' => '<change this your own random key!>'
+    'key' => '<please change this to your own random key!>'
 ];
