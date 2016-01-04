@@ -11,9 +11,6 @@ define('AVENUE_APP_DIR', AVENUE_ROOT_DIR . '/app');
 // path to avenue config directory
 define('AVENUE_CONFIG_DIR', AVENUE_ROOT_DIR . '/config');
 
-// path to avenue src directory
-define('AVENUE_SRC_DIR', AVENUE_ROOT_DIR . '/src');
-
 // path to avenue log directory
 define('AVENUE_LOG_DIR', AVENUE_ROOT_DIR . '/log');
 

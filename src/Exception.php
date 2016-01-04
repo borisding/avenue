@@ -46,7 +46,7 @@ class Exception implements ExceptionInterface
      */
     public function __toString()
     {
-        $PATH_TO_EXCEPTION_FILE = AVENUE_SRC_DIR . '/includes/exception_error.php';
+        $PATH_TO_EXCEPTION_FILE = __DIR__ . '/includes/exception_error.php';
         
         if (!file_exists($PATH_TO_EXCEPTION_FILE)) {
             die(sprintf('Exception view [%s] not found!', $PATH_TO_EXCEPTION_FILE));
