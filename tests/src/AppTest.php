@@ -92,7 +92,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
         });
 
         $instance = $this->app->singleton('request');
-        $this->assertTrue($instance instanceof \Avenue\Request);
+        $this->assertTrue($instance instanceof \Avenue\Request, 'Returned class instance is as expected via singleton.');
     }
 
     public function testSingletonThroughAppMagicCallMethod()
@@ -102,7 +102,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
         });
 
         $instance = $this->app->request();
-        $this->assertTrue($instance instanceof \Avenue\Request);
+        $this->assertTrue($instance instanceof \Avenue\Request, 'Returned class instance is as expected via magic call method.');
     }
 
     /**

@@ -1,11 +1,9 @@
 <?php
-$PARENT_DIR = dirname(__DIR__);
-
 // application start time
 define('AVENUE_START_TIME', microtime(true));
 
 // avenue root directory
-define('AVENUE_ROOT_DIR', $PARENT_DIR);
+define('AVENUE_ROOT_DIR', dirname(__DIR__));
 
 // path to avenue app directory
 define('AVENUE_APP_DIR', AVENUE_ROOT_DIR . '/app');
@@ -22,7 +20,7 @@ define('AVENUE_PUBLIC_DIR', AVENUE_ROOT_DIR . '/public');
 // path to 'vendor' directory
 define('AVENUE_VENDOR_DIR', AVENUE_ROOT_DIR . '/vendor');
 
-// inlucde vendor autoloader
+// include vendor autoloader
 $autoloader = require AVENUE_VENDOR_DIR  . '/autoload.php';
 
 // set tests namespace at runtime
