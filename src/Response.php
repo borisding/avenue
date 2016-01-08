@@ -70,6 +70,10 @@ class Response
      */
     public function render()
     {
+        if (ob_get_length()) {
+            ob_end_clean();
+        }
+
         if (!headers_sent()) {
             $this->sendHeader()->sendDefinedHeader();
         }
@@ -95,7 +99,7 @@ class Response
         unset($statusCode, $statusDesc, $httpProtocol);
         return $this;
     }
-    
+
     /**
      * Sending the user defined header, if any.
      */
@@ -107,7 +111,7 @@ class Response
 
         return $this;
     }
-    
+
     /**
      * Print the body output.
      */
@@ -126,7 +130,7 @@ class Response
         $this->body = null;
         $this->headers = [];
     }
-    
+
     /**
      * Returning the body content.
      */
@@ -134,10 +138,10 @@ class Response
     {
         return $this->body;
     }
-    
+
     /**
      * Set the http status code.
-     * 
+     *
      * @param mixed $code
      * @return mixed
      */
@@ -173,10 +177,10 @@ class Response
 
         return $httpStatusDesc;
     }
-    
+
     /**
      * Set the respective http headers, if any.
-     * 
+     *
      * @param array $headers
      * @return \Avenue\Response
      */
@@ -188,30 +192,30 @@ class Response
 
         return $this;
     }
-    
+
     /**
      * Get the header description based on the key.
-     * 
+     *
      * @param mixed $key
      */
     public function getHeader($key)
     {
         return $this->app->arrGet($key, $this->headers);
     }
-    
+
     /**
      * Shortcut for JSON header.
-     * 
+     *
      * @return \Avenue\Response
      */
     public function setJsonHeader()
     {
         return $this->setHeader(['Content-Type' => 'application/json']);
     }
-    
+
     /**
      * Shortcut for text header.
-     * 
+     *
      * @return \Avenue\Response
      */
     public function setTextHeader()
@@ -221,17 +225,17 @@ class Response
 
     /**
      * Shortcut for csv header.
-     * 
+     *
      * @return \Avenue\Response
      */
     public function setCsvHeader()
     {
         return $this->setHeader(['Content-Type' => 'text/csv']);
     }
-    
+
     /**
      * Shortcut for xml header.
-     * 
+     *
      * @return \Avenue\Response
      */
     public function setXmlHeader()
