@@ -45,6 +45,28 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($fulfilled, false, 'Fulfilled should return boolean.');
     }
 
+    /**
+     * @expectedException LogicException
+     */
+    public function testAddRouteNotReturningArrayException()
+    {
+        $this->app->addRoute('param1', function() {
+            return '';
+        });
+    }
+
+    /**
+     * @expectedException Exception
+     */
+    public function testRenderPageNotFoundException()
+    {
+        $this->app->addRoute('/test', function() {
+            return [];
+        });
+
+        $this->app->render();
+    }
+
     public function testContainer()
     {
         $this->app->container('calculation', function() {
