@@ -198,6 +198,16 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
     public function testSingletonSessionClassInstance()
     {
+        $config = $this->app->getConfig('session');
+
+        // mock session database class here
+        if ($config['storage'] == 'database') {
+            $sessionDb = $this->getMock('\Avenue\Components\SessionDatabase');
+            $this->app->container('session', function() use ($sessionDb, $config) {
+                return new Session($sessionDb, $config);
+            });
+        }
+
         $session = $this->app->session();
         $this->assertTrue($session instanceof Session, '$session is instance of \Avenue\Components\Session.');
     }
