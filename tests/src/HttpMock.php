@@ -15,7 +15,8 @@ class HttpMock
         $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
         $_SERVER['HTTPS'] = 'on';
         $_SERVER['HTTP_USER_AGENT'] = 'Avenue';
-        $_SERVER['HTTP_X_FORWARDED_FOR'] = '32.32.32.32';
+        $_SERVER['HTTP_HOST'] = 'localhost';
+        $_SERVER['QUERY_STRING'] = '';
     }
 
     public function getDefault()
