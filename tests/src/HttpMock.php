@@ -1,7 +1,7 @@
 <?php
 namespace Avenue\Tests;
 
-class HttpMockTest
+class HttpMock
 {
     public function __construct()
     {

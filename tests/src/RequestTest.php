@@ -2,7 +2,9 @@
 namespace Avenue\Tests;
 
 use Avenue\App;
-use Avenue\Tests\HttpMockTest;
+use Avenue\Tests\HttpMock;
+
+require_once 'HttpMock.php';
 
 class RequestTest extends \PHPUnit_Framework_TestCase
 {
@@ -15,7 +17,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->app = new App();
-        $this->http = new HttpMockTest();
+        $this->http = new HttpMock();
         $this->request = $this->app->request();
     }
 
