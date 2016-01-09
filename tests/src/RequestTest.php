@@ -28,103 +28,103 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     public function testIsPost()
     {
-        $this->http->set('REQUEST_METHOD', 'POST');
+        $this->http->setPost();
         $this->assertTrue($this->request->isPost());
     }
 
     public function testIsPut()
     {
-        $this->http->set('REQUEST_METHOD', 'PUT');
+        $this->http->setPut();
         $this->assertTrue($this->request->isPut());
     }
 
     public function testIsDelete()
     {
-        $this->http->set('REQUEST_METHOD', 'DELETE');
+        $this->http->setDelete();
         $this->assertTrue($this->request->isDelete());
     }
 
     public function testIsOptions()
     {
-        $this->http->set('REQUEST_METHOD', 'OPTIONS');
+        $this->http->setOptions();
         $this->assertTrue($this->request->isOptions());
     }
 
     public function testIsPatch()
     {
-        $this->http->set('REQUEST_METHOD', 'PATCH');
+        $this->http->setPatch();
         $this->assertTrue($this->request->isPatch());
     }
 
     public function testIsHead()
     {
-        $this->http->set('REQUEST_METHOD', 'HEAD');
+        $this->http->setHead();
         $this->assertTrue($this->request->isHead());
     }
 
     public function testIsTrace()
     {
-        $this->http->set('REQUEST_METHOD', 'TRACE');
+        $this->http->setTrace();
         $this->assertTrue($this->request->isTrace());
     }
 
     public function testIsConnect()
     {
-        $this->http->set('REQUEST_METHOD', 'CONNECT');
+        $this->http->setConnect();
         $this->assertTrue($this->request->isConnect());
     }
 
     public function testGetRequestMethodGetLowercase()
     {
-        $this->http->set('REQUEST_METHOD', 'GET');
+        $this->http->setGet();
         $this->assertEquals('get', $this->request->getRequestMethod(true));
     }
 
     public function testGetRequestMethodPostLowercase()
     {
-        $this->http->set('REQUEST_METHOD', 'POST');
+        $this->http->setPost();
         $this->assertEquals('post', $this->request->getRequestMethod(true));
     }
 
     public function testGetRequestMethodPutLowercase()
     {
-        $this->http->set('REQUEST_METHOD', 'PUT');
+        $this->http->setPut();
         $this->assertEquals('put', $this->request->getRequestMethod(true));
     }
 
     public function testGetRequestMethodDeleteLowercase()
     {
-        $this->http->set('REQUEST_METHOD', 'DELETE');
+        $this->http->setDelete();
         $this->assertEquals('delete', $this->request->getRequestMethod(true));
     }
 
     public function testGetRequestMethodOptionsLowercase()
     {
-        $this->http->set('REQUEST_METHOD', 'OPTIONS');
+        $this->http->setOptions();
         $this->assertEquals('options', $this->request->getRequestMethod(true));
     }
 
     public function testGetRequestMethodPatchLowercase()
     {
-        $this->http->set('REQUEST_METHOD', 'PATCH');
+        $this->http->setPatch();
         $this->assertEquals('patch', $this->request->getRequestMethod(true));
     }
 
     public function testGetRequestMethodHeadLowercase()
     {
-        $this->http->set('REQUEST_METHOD', 'HEAD');
+        $this->http->setHead();
         $this->assertEquals('head', $this->request->getRequestMethod(true));
     }
 
     public function testGetRequestMethodTraceLowercase()
     {
-        $this->http->set('REQUEST_METHOD', 'TRACE');
+        $this->http->setTrace();
         $this->assertEquals('trace', $this->request->getRequestMethod(true));
     }
 
     public function testGetRequestMethodConnectLowercase()
     {
-        $this->http->set('REQUEST_METHOD', 'CONNECT');
+        $this->http->setConnect();
         $this->assertEquals('connect', $this->request->getRequestMethod(true));
     }
 

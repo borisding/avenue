@@ -29,6 +29,51 @@ class HttpMock
         $_SERVER[$name] = $value;
     }
 
+    public function setGet()
+    {
+        $this->set('REQUEST_METHOD', 'GET');
+    }
+
+    public function setPost()
+    {
+        $this->set('REQUEST_METHOD', 'POST');
+    }
+
+    public function setPut()
+    {
+        $this->set('REQUEST_METHOD', 'PUT');
+    }
+
+    public function setDelete()
+    {
+        $this->set('REQUEST_METHOD', 'DELETE');
+    }
+
+    public function setPatch()
+    {
+        $this->set('REQUEST_METHOD', 'PATCH');
+    }
+
+    public function setOptions()
+    {
+        $this->set('REQUEST_METHOD', 'OPTIONS');
+    }
+
+    public function setHead()
+    {
+        $this->set('REQUEST_METHOD', 'HEAD');
+    }
+
+    public function setTrace()
+    {
+        $this->set('REQUEST_METHOD', 'TRACE');
+    }
+
+    public function setConnect()
+    {
+        $this->set('REQUEST_METHOD', 'CONNECT');
+    }
+
     public function get($name)
     {
         if (isset($_SERVER[$name])) {
