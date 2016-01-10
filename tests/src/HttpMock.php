@@ -19,11 +19,6 @@ class HttpMock
         $_SERVER['QUERY_STRING'] = '';
     }
 
-    public function getDefault()
-    {
-        return $_SERVER;
-    }
-
     public function set($name, $value)
     {
         $_SERVER[$name] = $value;
@@ -72,6 +67,11 @@ class HttpMock
     public function setConnect()
     {
         $this->set('REQUEST_METHOD', 'CONNECT');
+    }
+
+    public function getAll()
+    {
+        return $_SERVER;
     }
 
     public function get($name)
