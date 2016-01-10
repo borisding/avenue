@@ -26,7 +26,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
     public function testGetInstance()
     {
-        $this->assertEquals($this->app, App::getInstance(), 'Both app instances are the same.');
+        $this->assertEquals(App::getInstance(), $this->app, 'Both app instances are the same.');
     }
 
     /**
@@ -53,7 +53,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
         // if route has passed, expects fullfiled is boolean
         $fulfilled = $this->app->route->isFulfilled();
-        $this->assertEquals($fulfilled, false, 'Fulfilled should return boolean.');
+        $this->assertEquals(false, $fulfilled, 'Fulfilled should return boolean.');
     }
 
     /**
@@ -85,7 +85,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
             return $result;
         });
 
-        $this->assertEquals($this->app->resolve('calculation'), 2, 'Calculation result from container is equal 2.');
+        $this->assertEquals(2, $this->app->resolve('calculation'), 'Calculation result from container is equal 2.');
     }
 
     /**
@@ -222,16 +222,19 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
     public function testGetConfig()
     {
-        // using reflection object class for retrieving static properties
-        $ro = new \ReflectionObject($this->app);
-        $sp = $ro->getStaticProperties();
+        $app = $this->getMockBuilder('\Avenue\App')
+        ->disableOriginalConstructor()
+        ->getMock();
 
-        // using 'version' key for testing
-        $this->assertEquals($this->app->getConfig('version'), $sp['config']['version'], 'Config value should be same.');
+        $app
+        ->method('getConfig')
+        ->willReturn('1.0');
+
+        $this->assertEquals('1.0', $this->app->getConfig('version'));
     }
 
     public function testGetVersion()
     {
-        $this->assertEquals($this->app->getVersion(), App::AVENUE_VERSION, 'Version should be equal.');
+        $this->assertEquals(App::AVENUE_VERSION, $this->app->getVersion(), 'Version should be equal.');
     }
 }
