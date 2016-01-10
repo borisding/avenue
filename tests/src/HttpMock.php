@@ -16,7 +16,8 @@ class HttpMock
         $_SERVER['HTTPS'] = 'on';
         $_SERVER['HTTP_USER_AGENT'] = 'Avenue';
         $_SERVER['HTTP_HOST'] = 'localhost';
-        $_SERVER['QUERY_STRING'] = '';
+        $_SERVER['QUERY_STRING'] = 'user=test';
+        $_SERVER['PATH_INFO'] = '/controller/action';
     }
 
     public function set($name, $value)
