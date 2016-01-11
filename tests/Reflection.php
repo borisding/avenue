@@ -5,12 +5,13 @@ abstract class Reflection
 {
     /**
      * Protected/private methods accessible helper.
+     * Call class method by assigning params.
      *
      * @param object $obj
      * @param mixed $method
      * @param array $params
      */
-    public static function getClassMethod($obj, $method, array $params = [])
+    public static function callClassMethod($obj, $method, array $params = [])
     {
         $rc = new \ReflectionClass(get_class($obj));
         $cm = $rc->getMethod($method);

@@ -22,25 +22,25 @@ class ControllerTest extends \PHPUnit_Framework_TestCase
     public function testControllerIndexActionInvoked()
     {
         $this->app->route->setParam('@action', 'index');
-        $indexAction = Reflection::getClassMethod(new FooController($this->app), 'indexAction');
+        $indexAction = Reflection::callClassMethod(new FooController($this->app), 'indexAction');
         $this->assertTrue($indexAction);
     }
 
     public function testControllerBeforeActionInvoked()
     {
-        $beforeAction = Reflection::getClassMethod(new FooController($this->app), 'beforeAction');
+        $beforeAction = Reflection::callClassMethod(new FooController($this->app), 'beforeAction');
         $this->assertTrue($beforeAction);
     }
 
     public function testControllerActionInvoked()
     {
-        $controllerAction = Reflection::getClassMethod(new FooController($this->app), 'controllerAction');
+        $controllerAction = Reflection::callClassMethod(new FooController($this->app), 'controllerAction');
         $this->assertTrue($controllerAction);
     }
 
     public function testControllerAfterActionInvoked()
     {
-        $afterAction = Reflection::getClassMethod(new FooController($this->app), 'afterAction');
+        $afterAction = Reflection::callClassMethod(new FooController($this->app), 'afterAction');
         $this->assertTrue($afterAction);
     }
 
@@ -50,6 +50,6 @@ class ControllerTest extends \PHPUnit_Framework_TestCase
     public function testControllerNonExistActionException()
     {
         $this->app->route->setParam('@action', 'dummy');
-        $controllerAction = Reflection::getClassMethod(new FooController($this->app), 'controllerAction');
+        $controllerAction = Reflection::callClassMethod(new FooController($this->app), 'controllerAction');
     }
 }
