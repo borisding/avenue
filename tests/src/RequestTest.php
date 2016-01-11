@@ -3,6 +3,7 @@ namespace Avenue\Tests;
 
 use Avenue\App;
 use Avenue\Tests\Http;
+use Avenue\Tests\Reflection;
 
 require_once 'mocks/Http.php';
 
@@ -238,68 +239,21 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('https://localhost/', $this->request->getBaseUrl());
     }
 
-    public function testRedirectWithBaseUrl()
-    {
-        $request = $this->getMockBuilder('\Avenue\Request')
-        ->disableOriginalConstructor()
-        ->getMock();
-
-        $request
-        ->method('redirect')
-        ->willReturn('http://localhost/');
-
-        $this->assertEquals('http://localhost/', $request->redirect('/'));
-    }
-
-    public function testRedirectWithoutBaseUrl()
-    {
-        $request = $this->getMockBuilder('\Avenue\Request')
-        ->disableOriginalConstructor()
-        ->getMock();
-
-        $request
-        ->method('redirect')
-        ->willReturn('admin/default/index');
-
-        $this->assertEquals('admin/default/index', $request->redirect('admin/default/index', false));
-    }
-
-    public function testGetBody()
-    {
-        $request = $this->getMockBuilder('\Avenue\Request')
-                   ->disableOriginalConstructor()
-                   ->getMock();
-        $request
-        ->method('getBody')
-        ->willReturn('foo');
-
-        $this->assertEquals('foo', $request->getBody());
-    }
-
     public function testGetDirectory()
     {
-        $ro = new \ReflectionObject($this->app->route);
-        $p = $ro->getProperty('params');
-        $p->setAccessible(true);
-        $p->setValue($this->app->route, ['@directory' => 'admin']);
+        Reflection::setPropertyValue($this->app->route, 'params', ['@directory' => 'admin']);
         $this->assertEquals('admin', $this->request->getDirectory());
     }
 
     public function testGetController()
     {
-        $ro = new \ReflectionObject($this->app->route);
-        $p = $ro->getProperty('params');
-        $p->setAccessible(true);
-        $p->setValue($this->app->route, ['@controller' => 'default']);
+        Reflection::setPropertyValue($this->app->route, 'params', ['@controller' => 'default']);
         $this->assertEquals('default', $this->request->getController());
     }
 
     public function testGetAction()
     {
-        $ro = new \ReflectionObject($this->app->route);
-        $p = $ro->getProperty('params');
-        $p->setAccessible(true);
-        $p->setValue($this->app->route, ['@action' => 'index']);
+        Reflection::setPropertyValue($this->app->route, 'params', ['@action' => 'index']);
         $this->assertEquals('index', $this->request->getAction());
     }
 }

@@ -13,6 +13,7 @@ use Avenue\Components\Pagination;
 use Avenue\Components\Validation;
 use Avenue\Components\Cookie;
 use Avenue\Components\Session;
+use Avenue\Tests\Reflection;
 
 class AppTest extends \PHPUnit_Framework_TestCase
 {
@@ -222,15 +223,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
     public function testGetConfig()
     {
-        $app = $this->getMockBuilder('\Avenue\App')
-        ->disableOriginalConstructor()
-        ->getMock();
-
-        $app
-        ->method('getConfig')
-        ->willReturn('1.0');
-
-        $this->assertEquals('1.0', $this->app->getConfig('version'));
+        Reflection::setPropertyValue(new App(), 'config', ['timezone' => 'UTC', 'foo' => 'bar'], true);
+        $this->assertEquals('bar', $this->app->getConfig('foo'));
     }
 
     public function testGetVersion()
