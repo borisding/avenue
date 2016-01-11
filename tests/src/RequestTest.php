@@ -4,7 +4,7 @@ namespace Avenue\Tests;
 use Avenue\App;
 use Avenue\Tests\Http;
 
-require_once 'fixtures/Http.php';
+require_once 'mocks/Http.php';
 
 class RequestTest extends \PHPUnit_Framework_TestCase
 {
