@@ -24,7 +24,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testInitInvalidNumberofArguments()
+    public function testInitInvalidNumberofArgumentsException()
     {
         $args = ['param1', 'param2', 'param3'];
         $this->route->init($args);
@@ -33,7 +33,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testInitInvalidCallableForSecondArguments()
+    public function testInitInvalidCallableForSecondArgumentsException()
     {
         $args = ['param1', 'param2'];
         $this->route->init($args);
