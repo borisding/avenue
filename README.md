@@ -1,9 +1,9 @@
 ## Avenue
 - A lightweight MVC framework for quick PHP web development and prototyping.
-- **WARNING** It is currently under development phase.
+- **Current Status** Unit testing, refactoring/bug fixes and new features if required.
 
 ## Features
-- PHP >=5.4.0
+- PHP >=5.5.0
 - Work with [PSR-4](http://www.php-fig.org/psr/psr-4/) packages via composer.
 - Written in [PSR-2](http://www.php-fig.org/psr/psr-2/) coding standard.
 - Take advantages of PHP new features (namespaces, traits, short array syntax, etc.)
