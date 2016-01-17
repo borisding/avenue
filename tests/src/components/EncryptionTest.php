@@ -18,7 +18,7 @@ class EncryptionTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testEmptyKeyExcepiton()
+    public function testEmptyKeyException()
     {
         Reflection::setPropertyValue($this->encryption, 'key', '');
         $this->encryption->set('test');
