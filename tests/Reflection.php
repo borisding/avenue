@@ -45,11 +45,10 @@ abstract class Reflection
     /**
      * Get class constant value.
      *
-     * @param object $obj
+     * @param mixed $obj
      * @param mixed $constant
-     * @param mixed $value
      */
-    public static function getConstantValue($obj, $constant, $value)
+    public static function getConstantValue($obj, $constant)
     {
         $ro = new \ReflectionClass(get_class($obj));
         return $ro->getConstant($constant);
