@@ -24,4 +24,4 @@ define('AVENUE_VENDOR_DIR', AVENUE_ROOT_DIR . '/vendor');
 $autoloader = require AVENUE_VENDOR_DIR  . '/autoload.php';
 
 // set tests namespace at runtime
-$autoloader->setPsr4('Avenue\\Tests\\', __DIR__);
+$autoloader->addPsr4('Avenue\\Tests\\', __DIR__);
