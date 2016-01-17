@@ -3,10 +3,11 @@ namespace Avenue;
 
 use Closure;
 use Avenue\App;
+use Avenue\Helpers\HelperBundleTrait;
 
 class View
 {
-    use \Avenue\Helpers\HelperBundleTrait;
+    use HelperBundleTrait;
 
     /**
      * Avenue class instance.

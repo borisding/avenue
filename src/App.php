@@ -16,11 +16,12 @@ use Avenue\Components\Session;
 use Avenue\Components\SessionCookie;
 use Avenue\Components\SessionDatabase;
 use Avenue\Components\SessionFile;
+use Avenue\Helpers\HelperBundleTrait;
 use Avenue\AppInterface;
 
 class App implements AppInterface
 {
-    use \Avenue\Helpers\HelperBundleTrait;
+    use HelperBundleTrait;
 
     /**
      * Avenue version.
