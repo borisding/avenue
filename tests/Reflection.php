@@ -43,6 +43,21 @@ abstract class Reflection
     }
 
     /**
+     * Get protected/private property value.
+     *
+     * @param object $obj
+     * @param mixed $property
+     */
+    public static function getPropertyValue($obj, $property)
+    {
+        $rc = new \ReflectionClass(get_class($obj));
+        $p = $rc->getProperty($property);
+        $p->setAccessible(true);
+
+        return $p->getValue($obj);
+    }
+
+    /**
      * Get class constant value.
      *
      * @param mixed $obj
