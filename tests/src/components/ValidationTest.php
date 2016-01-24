@@ -20,8 +20,8 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $_POST['test'] = 'validation';
         $this->v->init($_POST);
 
-        $fields = $this->v->getFields();
-        $this->assertEquals($_POST['test'], $fields['test']);
+        $value = $this->v->getFields('test');
+        $this->assertEquals($_POST['test'], $value);
     }
 
     public function testInitWithoutParams()
@@ -29,8 +29,8 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $_POST['number'] = 123;
         $this->v->init();
 
-        $fields = $this->v->getFields();
-        $this->assertEquals($_POST['number'], $fields['number']);
+        $value = $this->v->getFields('number');
+        $this->assertEquals($_POST['number'], $value);
     }
 
     public function testIsRequiredFailed()

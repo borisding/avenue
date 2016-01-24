@@ -509,11 +509,18 @@ class Validation
     }
 
     /**
-     * Return persisted field inputs.
+     * Get particular field input based on the key.
+     * Return all field inputs if key is empty.
+     *
+     * @param string $key
      */
-    public function getFields()
+    public function getFields($key = null)
     {
-        return $this->fields;
+        if (empty($key)) {
+            return $this->fields;
+        }
+
+        return $this->app->arrGet($key, $this->fields, '');
     }
 
     /**
