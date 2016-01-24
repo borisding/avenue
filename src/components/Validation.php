@@ -520,7 +520,7 @@ class Validation
             return $this->fields;
         }
 
-        return $this->app->arrGet($key, $this->fields, '');
+        return $this->app->arrGet($key, $this->fields, null);
     }
 
     /**
