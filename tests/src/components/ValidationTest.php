@@ -2,7 +2,6 @@
 namespace Avenue\Tests;
 
 use Avenue\App;
-use Avenue\Tests\Reflection;
 
 class ValidationTest extends \PHPUnit_Framework_TestCase
 {
@@ -21,7 +20,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $_POST['test'] = 'validation';
         $this->v->init($_POST);
 
-        $fields = Reflection::getPropertyValue($this->v, 'fields');
+        $fields = $this->v->getFields();
         $this->assertEquals($_POST['test'], $fields['test']);
     }
 
@@ -30,7 +29,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $_POST['number'] = 123;
         $this->v->init();
 
-        $fields = Reflection::getPropertyValue($this->v, 'fields');
+        $fields = $this->v->getFields();
         $this->assertEquals($_POST['number'], $fields['number']);
     }
 
