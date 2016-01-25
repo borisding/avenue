@@ -254,7 +254,7 @@ class Validation
      */
     public function checkIsDateBefore($date, $field)
     {
-        $target = $this->app->arrGet($field, $this->fields, 'now');
+        $target = $this->getFields($field, 'now');
         return $this->checkIsDate($date) && strtotime($date) < strtotime($target);
     }
 
@@ -268,7 +268,7 @@ class Validation
      */
     public function checkIsDateAfter($date, $field)
     {
-        $target = $this->app->arrGet($field, $this->fields, 'now');
+        $target = $this->getFields($field, 'now');
         return $this->checkIsDate($date) && strtotime($date) > strtotime($target);
     }
 
@@ -282,7 +282,7 @@ class Validation
      */
     public function checkIsDateEqual($date, $field)
     {
-        $target = $this->app->arrGet($field, $this->fields, 'now');
+        $target = $this->getFields($field, 'now');
         return $this->checkIsDate($date) && strtotime($date) == strtotime($target);
     }
 
@@ -307,7 +307,7 @@ class Validation
      */
     public function checkBothEqual($input1, $field)
     {
-        $input2 = $this->app->arrGet($field, $this->fields, null);
+        $input2 = $this->getFields($field);
         return !is_null($input2) && $input1 == $input2;
     }
 
@@ -423,14 +423,6 @@ class Validation
     }
 
     /**
-     * Return all stored fields.
-     */
-    public function getAllFields()
-    {
-        return $this->fields;
-    }
-
-    /**
      * Start validation by preparing input values.
      *
      * @return \Avenue\Components\Validation
@@ -509,18 +501,19 @@ class Validation
     }
 
     /**
-     * Get particular field input based on the key.
+     * Get particular field input based on the key, w/o default value if not found.
      * Return all field inputs if key is empty.
      *
-     * @param string $key
+     * @param mixed $key
+     * @param mixed $default
      */
-    public function getFields($key = null)
+    public function getFields($key = null, $default = null)
     {
         if (empty($key)) {
             return $this->fields;
         }
 
-        return $this->app->arrGet($key, $this->fields, null);
+        return $this->app->arrGet($key, $this->fields, $default);
     }
 
     /**
@@ -559,7 +552,7 @@ class Validation
                 $this->results[$field] = [];
             }
 
-            $fieldValue = $this->app->arrGet($field, $this->fields, '');
+            $fieldValue = $this->getFields($field, '');
             // invoke the the rule method by passing field input value and rule value to check with, if any
             // return the boolean result and store to the result list property
             $this->results[$field][$rule] = call_user_func_array([$this, $methodName], [$fieldValue, $ruleValue]);
