@@ -48,7 +48,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $this->setFileStorage();
         $this->session = $this->app->session();
         $this->session->set('foo', 'bar');
-        $this->assertEquals($_SESSION['foo'], 'bar');
+        $this->assertEquals('bar', $_SESSION['foo']);
     }
 
     public function testGetSessionValueWithFileStorage()
@@ -56,7 +56,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $this->setFileStorage();
         $this->session = $this->app->session();
         $this->session->set('foo', 'bar');
-        $this->assertEquals($this->session->get('foo'), 'bar');
+        $this->assertEquals('bar', $this->session->get('foo'));
     }
 
     public function testSetSessionValueWithCookieStorage()
@@ -64,7 +64,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $this->setCookieStorage();
         $this->session = $this->app->session();
         $this->session->set('foo', 'bar');
-        $this->assertEquals($_SESSION['foo'], 'bar');
+        $this->assertEquals('bar', $_SESSION['foo']);
     }
 
     public function testGetSessionValueWithCookieStorage()
@@ -72,7 +72,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $this->setCookieStorage();
         $this->session = $this->app->session();
         $this->session->set('foo', 'bar');
-        $this->assertEquals($this->session->get('foo'), 'bar');
+        $this->assertEquals('bar', $this->session->get('foo'));
     }
 
     public function testSetSessionValueWithDatabaseStorage()
@@ -87,7 +87,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         });
 
         $this->session->set('foo', 'bar');
-        $this->assertEquals($_SESSION['foo'], 'bar');
+        $this->assertEquals('bar', $_SESSION['foo']);
     }
 
     public function testGetSessionValueWithDatabaseStorage()
@@ -102,7 +102,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         });
 
         $this->session->set('foo', 'bar');
-        $this->assertEquals($this->session->get('foo'), 'bar');
+        $this->assertEquals('bar', $this->session->get('foo'));
     }
 
     public function testRemoveSessionValue()
@@ -111,7 +111,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $this->session = $this->app->session();
         $this->session->set('foo', 'bar');
         $this->session->remove('foo');
-        $this->assertEquals($this->session->get('foo'), '');
+        $this->assertEquals('', $this->session->get('foo'));
     }
 
     public function testRemoveAllSessionValues()
@@ -121,7 +121,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $this->session->set('foo', 'bar');
         $this->session->set('test', 'dummy');
         $this->session->removeAll();
-        $this->assertEquals(count($_SESSION), 0);
+        $this->assertEquals(0, count($_SESSION));
     }
 
     public function testRegenerateSessionId()
@@ -130,7 +130,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $this->session = $this->app->session();
         $this->session->set('foo', 'bar');
         $newSessionId = $this->session->regenerateId();
-        $this->assertEquals(session_id(), $newSessionId);
+        $this->assertEquals($newSessionId, session_id());
     }
 
     public function testGetSessionId()
@@ -139,7 +139,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $this->session = $this->app->session();
         $this->session->set('foo', 'bar');
         $sessionId = $this->session->getId();
-        $this->assertEquals(session_id(), $sessionId);
+        $this->assertEquals($sessionId, session_id());
     }
 
     public function testGetCsrfToken()
@@ -147,7 +147,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $this->setFileStorage();
         $this->session = $this->app->session();
         $csrfToken = $this->session->getCsrfToken();
-        $this->assertEquals($this->session->get('csrfToken'), $csrfToken);
+        $this->assertEquals($csrfToken, $this->session->get('csrfToken'));
     }
 
     public function setFileStorage()
