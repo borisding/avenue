@@ -9,6 +9,11 @@ $app->view->register('baseUrl', function() use ($app) {
     return $app->request->getBaseUrl();
 });
 
+// get app version
+$app->view->register('version', function() use ($app) {
+    return $app->getAppVersion();
+});
+
 // upper case helper
 $app->view->register('upper', function($input) {
     return strtoupper($input);

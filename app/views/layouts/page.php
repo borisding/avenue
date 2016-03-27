@@ -7,15 +7,14 @@
     <meta name="description" content="A lightweight MVC framework for quick PHP web development and prototyping.">
     <meta name="author" content="Boris Ding Poh Hing">
     <title><?= $this->e($title); ?></title>
-    <?php 
+    <?php
     for ($i = 0, $len = count($css); $i < $len; $i++) {
         $file = $this->baseUrl() . 'public/css/' . $css[$i] . '.css';
-        echo '<link href="' . $file . '" rel="stylesheet">';
+        echo '<link href="' . $file . '?v=' . $this->version() . '" rel="stylesheet">';
         echo PHP_EOL;
     }
     ?>
   </head>
-
   <body>
     <!-- Fixed navbar -->
     <nav class="navbar navbar-default navbar-fixed-top">
@@ -41,17 +40,17 @@
     <div class="container">
     <?= $content; ?>
     </div>
-    
+
     <footer class="footer">
       <div class="container">
         <p class="text-muted">Bootstrap demo page for Avenue, <?= date('Y'); ?></p>
       </div>
     </footer>
-    
-    <? 
+
+    <?
     for ($i = 0, $len = count($scripts); $i < $len; $i++) {
         $file = $this->baseUrl() . 'public/js/' . $scripts[$i] . '.js';
-        echo '<script src="' . $file . '"></script>';
+        echo '<script src="' . $file . '?v=' . $this->version() . '"></script>';
         echo PHP_EOL;
     }
     ?>
