@@ -223,12 +223,42 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
     public function testGetConfig()
     {
-        Reflection::setPropertyValue(new App(), 'config', ['timezone' => 'UTC', 'foo' => 'bar'], true);
+        Reflection::setPropertyValue($this->app, 'config', ['timezone' => 'UTC', 'foo' => 'bar'], true);
         $this->assertEquals('bar', $this->app->getConfig('foo'));
     }
 
     public function testGetVersion()
     {
         $this->assertEquals(App::AVENUE_VERSION, $this->app->getVersion(), 'Version should be equal.');
+    }
+
+    public function testGetAppVersion()
+    {
+        Reflection::setPropertyValue($this->app, 'config', ['version' => '1.0', 'timezone' => 'UTC'], true);
+        $this->assertEquals('1.0', $this->app->getAppVersion());
+    }
+
+    public function testGetHttpVersion()
+    {
+        Reflection::setPropertyValue($this->app, 'config', ['http' => '1.1', 'timezone' => 'UTC'], true);
+        $this->assertEquals('1.1', $this->app->getHttpVersion());
+    }
+
+    public function testGetTimezone()
+    {
+        Reflection::setPropertyValue($this->app, 'config', ['timezone' => 'UTC'], true);
+        $this->assertEquals('UTC', $this->app->getTimezone());
+    }
+
+    public function testGetEnvironment()
+    {
+        Reflection::setPropertyValue($this->app, 'config', ['timezone' => 'UTC', 'environment' => 'development'], true);
+        $this->assertEquals('development', $this->app->getEnvironment());
+    }
+
+    public function testGetDefaultController()
+    {
+        Reflection::setPropertyValue($this->app, 'config', ['timezone' => 'UTC', 'defaultController' => 'default'], true);
+        $this->assertEquals('default', $this->app->getDefaultController());
     }
 }
