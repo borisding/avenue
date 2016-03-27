@@ -45,7 +45,7 @@ class Response
     public function __construct(App $app)
     {
         $this->app = $app;
-        $this->http = $this->app->getConfig('http');
+        $this->http = $this->app->getHttpVersion();
         $this->setStatus(200);
         $this->setHeader(['Content-Type' => 'text/html']);
     }

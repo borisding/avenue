@@ -7,46 +7,46 @@ class Route
 {
     /**
      * App instance.
-     * 
+     *
      * @var object
      */
     protected $app;
-    
+
     /**
      * The route rule.
-     * 
+     *
      * @var mixed
      */
     protected $rule;
-    
+
     /**
      * The route filters.
-     * 
+     *
      * @var array
      */
     protected $filters = [];
-    
+
     /**
      * The route params.
-     * 
+     *
      * @var array
      */
     protected $params = [];
-    
+
     /**
      * Flag to indicate route is fulfullied.
-     * 
+     *
      * @var boolean
      */
     protected $fulfill = false;
-    
+
     /**
      * Current http path info.
-     * 
+     *
      * @var mixed
      */
     protected $pathInfo;
-    
+
     /**
      * @var Route's regular expression patterns to be matched.
      */
@@ -55,45 +55,45 @@ class Route
         ':alpha' => '([a-zA-Z]+)',
         ':digit' => '([0-9]+)'
     ];
-    
+
     /**
      * Prefix of controller namespace.
      *
      * @var string
      */
     const NAMESPACE_PREFIX = 'App\Controllers';
-    
+
     /**
      * Base controller namespace.
      *
      * @var string
      */
     const BASE_CONTROLLER = 'Avenue\Controller';
-    
+
     /**
      * Suffix of controller.
      *
      * @var string
      */
     const CONTROLLER_SUFFIX = 'Controller';
-    
+
     /**
      * Default action method.
-     * 
+     *
      * @var string
      */
     const DEFAULT_ACTION = 'index';
-    
+
     /**
      * Route class constructor.
-     * 
+     *
      * @param App $app
      */
     public function __construct(App $app)
     {
         $this->app = $app;
     }
-    
+
     /**
      * Start with the route mapping by accepting the arguments from app route.
      *
@@ -104,19 +104,19 @@ class Route
         if (count($args) !== 2) {
             throw new \InvalidArgumentException('Route method is expecting two arguments.');
         }
-        
+
         if (!is_callable($args[1])) {
             throw new \InvalidArgumentException('Second argument must be callable.');
         }
-        
+
         $this->rule = $args[0];
         $this->filters = $args[1]();
-        
+
         if ($this->fulfill = $this->matchRoute()) {
             $this->setRouteParams()->initController();
         }
     }
-    
+
     /**
      * Match the route URI with regular expression.
      * Return true if the particular route is matched.
@@ -126,15 +126,15 @@ class Route
         if (!is_array($this->filters)) {
             throw new \LogicException('Route callback should be returning array.');
         }
-        
+
         // replace with the regexp patterns
         $ruleRegex = strtr(strtr($this->rule, $this->filters), $this->regex);
         $ruleRegex = str_replace(')', ')?', $ruleRegex);
         $this->pathInfo = $this->app->request->getPathInfo();
-        
+
         return preg_match('#^/?' . $ruleRegex . '/?$#', $this->pathInfo);
     }
-    
+
     /**
      * Set respective route params with actual value.
      */
@@ -142,14 +142,14 @@ class Route
     {
         $this->rule = str_replace(')', '', str_replace('(', '', $this->rule));
         $fs = '/';
-        
+
         if (strpos($this->rule, $fs) !== false && strpos($this->pathInfo, $fs) !== false) {
             $arrUri = explode($fs, $this->rule);
             $arrPathInfo = explode($fs, $this->pathInfo);
-            
+
             // iterate over and set respective values to token
             for ($i = 0, $len = count($arrUri); $i < $len; $i++) {
-                
+
                 if (!empty($arrPathInfo[$i]) && strpos($arrUri[$i], '@') !== false) {
                     $key = $arrUri[$i];
                     $value = $arrPathInfo[$i];
@@ -157,47 +157,48 @@ class Route
                 }
             }
         }
-        
+
         // set directory
         $this->setParam('@directory', $this->app->arrGet('@directory', $this->filters, ''));
-        
+
         // set default controller if empty
         if (empty($this->getParams('@controller'))) {
-            $this->setParam('@controller', $this->app->getConfig('defaultController'));
+            print_r($this->app->getDefaultController());
+            $this->setParam('@controller', $this->app->getDefaultController());
         }
-        
+
         // set default action if empty
         if (empty($this->getParams('@action'))) {
             $this->setParam('@action', static::DEFAULT_ACTION);
         }
-        
+
         return $this;
     }
-    
+
     /**
      * Get the controller namespace and do the instantiation.
-     * 
+     *
      * @throws \LogicException
      */
     protected function initController()
     {
         $ControllerClass = $this->getControllerNamespace();
-        
+
         // throw exception if no controller class found
         if (!class_exists($ControllerClass)) {
             $this->app->response->setStatus(404);
             throw new \LogicException(sprintf('Controller [%s] not found.', $ControllerClass));
         }
-        
+
         // check if controller class has parent controller
         if (!$this->isExtendedFromBase($ControllerClass)) {
             $this->app->response->setStatus(400);
             throw new \LogicException('Controller must be extending the base controller!');
         }
-        
+
         return new $ControllerClass($this->app);
     }
-    
+
     /**
      * Build the controller namespace for the matched route.
      * If no controller is specified, the default controller will always be used.
@@ -210,7 +211,7 @@ class Route
         $directory = $this->getParams('@directory');
         $controller = $this->getParams('@controller');
         $controller = ucfirst($controller . static::CONTROLLER_SUFFIX);
-        
+
         // check directory
         if (!empty($directory)) {
             if (strpos($directory, $fs) !== false) {
@@ -219,11 +220,11 @@ class Route
                 $namespace .= ucfirst($directory) . $bs;
             }
         }
-        
+
         $namespace .= $controller;
         return static::NAMESPACE_PREFIX . $bs . $namespace;
     }
-    
+
     /**
      * To check whether the targetd controller is extending the base controller.
      */
@@ -232,7 +233,7 @@ class Route
         $parents = class_parents($targetedClass);
         return isset($parents[static::BASE_CONTROLLER]);
     }
-    
+
     /**
      * Set the particular URI token with a value.
      *
@@ -243,11 +244,11 @@ class Route
     {
         return $this->params[$key] = $value;
     }
-    
+
     /**
      * Get the particular token value based on the key.
      * Return all params if key is not provided.
-     * 
+     *
      * @param mixed $key
      */
     public function getParams($key = null)
@@ -255,10 +256,10 @@ class Route
         if (empty($key)) {
             return $this->params;
         }
-        
+
         return $this->app->arrGet($key, $this->params, null);
     }
-    
+
     /**
      * Check if particular route is fulfilled.
      */

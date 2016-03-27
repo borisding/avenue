@@ -303,7 +303,7 @@ class App implements AppInterface
     }
 
     /**
-     * Returning avenue version.
+     * Retrieving avenue version.
      */
     public function getVersion()
     {
@@ -311,20 +311,60 @@ class App implements AppInterface
     }
 
     /**
-     * Returning app instance.
+     * Retrieving avenue application version.
+     */
+    public function getAppVersion()
+    {
+        return $this->getConfig('version');
+    }
+
+    /**
+     * Retrieving http version setting.
+     */
+    public function getHttpVersion()
+    {
+        return $this->getConfig('http');
+    }
+
+    /**
+     * Retrieving timezone setting.
+     */
+    public function getTimezone()
+    {
+        return $this->getConfig('timezone');
+    }
+
+    /**
+     * Set the application default timezone based on the setting.
+     */
+    public function setTimezone()
+    {
+        date_default_timezone_set($this->getTimezone());
+        return $this;
+    }
+
+    /**
+     * Retrieving application environment setting.
+     */
+    public function getEnvironment()
+    {
+        return $this->getConfig('environment');
+    }
+
+    /**
+     * Retrieving default controller setting.
+     */
+    public function getDefaultController()
+    {
+        return $this->getConfig('defaultController');
+    }
+
+    /**
+     * Retrieving app instance.
      */
     public static function getInstance()
     {
         return static::$app;
-    }
-
-    /**
-     * Set the application default timezone.
-     */
-    protected function setTimezone()
-    {
-        date_default_timezone_set($this->getConfig('timezone'));
-        return $this;
     }
 
     /**
