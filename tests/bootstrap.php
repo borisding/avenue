@@ -20,6 +20,9 @@ define('AVENUE_PUBLIC_DIR', AVENUE_ROOT_DIR . '/public');
 // path to 'vendor' directory
 define('AVENUE_VENDOR_DIR', AVENUE_ROOT_DIR . '/vendor');
 
+// path to tests directory
+define('AVENUE_TESTS_DIR', AVENUE_ROOT_DIR . '/tests');
+
 // include vendor autoloader
 $autoloader = require AVENUE_VENDOR_DIR  . '/autoload.php';
 
