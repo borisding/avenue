@@ -9,14 +9,14 @@ class DefaultController extends PageController
     {
         parent::beforeAction();
     }
-    
+
     public function indexAction()
     {
         // assign index title and content
         $this->title .= 'Demo Page';
         $this->content = $this->view->partial('home');
     }
-    
+
     public function afterAction()
     {
         parent::afterAction();

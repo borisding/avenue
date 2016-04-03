@@ -46,8 +46,8 @@ class Response
     {
         $this->app = $app;
         $this->http = $this->app->getHttpVersion();
-        $this->setStatus(200);
-        $this->setHeader(['Content-Type' => 'text/html']);
+        $this->withStatus(200);
+        $this->withHeader(['Content-Type' => 'text/html']);
     }
 
     /**
@@ -86,7 +86,7 @@ class Response
      */
     protected function sendHeader()
     {
-        $statusCode = $this->getStatus();
+        $statusCode = $this->getStatusCode();
         $statusDesc = $this->getStatusDesc($statusCode);
         $httpProtocol = 'HTTP/' . (!empty($this->http) ? $this->http : '1.1');
 
@@ -145,7 +145,7 @@ class Response
      * @param mixed $code
      * @return mixed
      */
-    public function setStatus($code)
+    public function withStatus($code)
     {
         return $this->statusCode = $code;
     }
@@ -155,7 +155,7 @@ class Response
      *
      * @return mixed
      */
-    public function getStatus()
+    public function getStatusCode()
     {
         return $this->statusCode;
     }
@@ -184,7 +184,7 @@ class Response
      * @param array $headers
      * @return \Avenue\Response
      */
-    public function setHeader(array $headers = [])
+    public function withHeader(array $headers = [])
     {
         foreach ($headers as $type => $format) {
             $this->headers[$type] = $format;
@@ -204,42 +204,42 @@ class Response
     }
 
     /**
-     * Shortcut for JSON header.
+     * Shortcut for response with JSON header.
      *
      * @return \Avenue\Response
      */
-    public function setJsonHeader()
+    public function withJsonHeader()
     {
-        return $this->setHeader(['Content-Type' => 'application/json']);
+        return $this->withHeader(['Content-Type' => 'application/json']);
     }
 
     /**
-     * Shortcut for text header.
+     * Shortcut for response with text header.
      *
      * @return \Avenue\Response
      */
-    public function setTextHeader()
+    public function withTextHeader()
     {
-        return $this->setHeader(['Content-Type' => 'text/plain']);
+        return $this->withHeader(['Content-Type' => 'text/plain']);
     }
 
     /**
-     * Shortcut for csv header.
+     * Shortcut for response with CSV header.
      *
      * @return \Avenue\Response
      */
-    public function setCsvHeader()
+    public function withCsvHeader()
     {
-        return $this->setHeader(['Content-Type' => 'text/csv']);
+        return $this->withHeader(['Content-Type' => 'text/csv']);
     }
 
     /**
-     * Shortcut for xml header.
+     * Shortcut for response with XML header.
      *
      * @return \Avenue\Response
      */
-    public function setXmlHeader()
+    public function withXmlHeader()
     {
-        return $this->setHeader(['Content-Type' => 'text/xml']);
+        return $this->withHeader(['Content-Type' => 'text/xml']);
     }
 }

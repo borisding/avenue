@@ -92,7 +92,7 @@ abstract class Controller
 
         // check if controller action does exit before invoking action
         if (!method_exists($this, $action)) {
-            $this->response->setStatus(404);
+            $this->response->withStatus(404);
             throw new \BadMethodCallException(sprintf('Controller action method [%s] not found.', $action));
         }
 

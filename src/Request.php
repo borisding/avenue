@@ -355,7 +355,7 @@ class Request
             $path = $this->getBaseUrl() . $path;
         }
 
-        $this->app->response->setStatus(302);
+        $this->app->response->withStatus(302);
         header('Location:' . $path);
 
         die();

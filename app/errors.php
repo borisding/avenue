@@ -5,7 +5,7 @@
  */
 $app->container('error', function() use ($app) {
     $environment = $app->getEnvironment();
-    $status = $app->response->getStatus();
+    $status = $app->response->getStatusCode();
 
     if ($environment === 'staging' || $environment === 'production') {
         error_reporting(0);

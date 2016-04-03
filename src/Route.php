@@ -185,13 +185,13 @@ class Route
 
         // throw exception if no controller class found
         if (!class_exists($ControllerClass)) {
-            $this->app->response->setStatus(404);
+            $this->app->response->withStatus(404);
             throw new \LogicException(sprintf('Controller [%s] not found.', $ControllerClass));
         }
 
         // check if controller class has parent controller
         if (!$this->isExtendedFromBase($ControllerClass)) {
-            $this->app->response->setStatus(400);
+            $this->app->response->withStatus(400);
             throw new \LogicException('Controller must be extending the base controller!');
         }
 
