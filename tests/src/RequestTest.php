@@ -256,4 +256,10 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         Reflection::setPropertyValue($this->app->route, 'params', ['@action' => 'index']);
         $this->assertEquals('index', $this->request->getAction());
     }
+
+    public function testGetId()
+    {
+        Reflection::setPropertyValue($this->app->route, 'params', ['@id' => '123']);
+        $this->assertEquals('123', $this->request->getId());
+    }
 }

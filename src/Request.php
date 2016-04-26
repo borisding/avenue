@@ -400,4 +400,12 @@ class Request
     {
         return $this->app->route->getParams('@action');
     }
+
+    /**
+     * Return requested id.
+     */
+    public function getId()
+    {
+        return $this->app->route->getParams('@id');
+    }
 }
