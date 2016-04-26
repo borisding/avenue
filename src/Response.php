@@ -70,7 +70,7 @@ class Response
      */
     public function render()
     {
-        if (ob_get_length()) {
+        if (ob_get_length() && $this->app->getEnvironment() !== 'development') {
             ob_end_clean();
         }
 
