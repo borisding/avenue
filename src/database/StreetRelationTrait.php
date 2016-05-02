@@ -7,14 +7,14 @@ trait StreetRelationTrait
      * One to one relationship.
      *
      * @param mixed $model
-     * @param mixed $on
+     * @param array $columns
      */
-    public function hasOne($model, $on = null)
+    public function hasOne($model, array $columns = [])
     {
-        $on = $this->getOnCondition($model, $on);
+        $on = $this->getOnCondition($model);
 
         return $this
-        ->find()
+        ->find($columns)
         ->innerJoin($model, $on);
     }
 
@@ -22,14 +22,14 @@ trait StreetRelationTrait
      * One to many relationship.
      *
      * @param mixed $model
-     * @param mixed $on
+     * @param array $columns
      */
-    public function hasMany($model, $on = null)
+    public function hasMany($model, array $columns = [])
     {
-        $on = $this->getOnCondition($model, $on);
+        $on = $this->getOnCondition($model);
 
         return $this
-        ->find()
+        ->find($columns)
         ->leftJoin($model, $on);
     }
 
@@ -37,29 +37,36 @@ trait StreetRelationTrait
      * Belongs to relationship.
      *
      * @param mixed $model
-     * @param mixed $on
+     * @param array $columns
      */
-    public function belongsTo($model, $on = null)
+    public function belongsTo($model, array $columns = [])
     {
-        $on = $this->getInverseOnCondition($model, $on);
+        $on = $this->getInverseOnCondition($model);
 
         return $this
-        ->find()
+        ->find($columns)
         ->innerJoin($model, $on);
     }
 
     /**
      * Shortcut of many to many through junction table.
-     * Default junction, first ID and second ID will be defined respectively,
-     * based on the table and id when it is not provied.
+     * Junction table and columns should be defined in array key/value pairs.
+     * Will auto populate based on two model class objects if none is defined.
      *
      * @param mixed $model
-     * @param mixed $junction
-     * @param mixed $firstId
-     * @param mixed $secondId
+     * @param array $junctionInfo
+     * @param array $columns
      */
-    public function hasManyThrough($model, $junction = null, $firstId = null, $secondId = null)
+    public function hasManyThrough($model, array $junctionInfo = [], array $columns = [])
     {
+        $defaultJunctionInfo = [
+            'junction' => '',
+            'firstId' => '',
+            'secondId' => ''
+        ];
+
+        extract(array_merge($defaultJunctionInfo, $junctionInfo));
+
         // if empty, concat with first table and the latter with underscore
         if (empty($junction)) {
             $junction = $this->table . '_' . $model->table;
@@ -76,7 +83,7 @@ trait StreetRelationTrait
         }
 
         return $this
-        ->find()
+        ->find($columns)
         ->throughJoin($model, $junction, $firstId, $secondId);
     }
 
@@ -84,15 +91,12 @@ trait StreetRelationTrait
      * Get the on condition based on the current and targeted model.
      *
      * @param mixed $model
-     * @param mixed $on
      */
-    protected function getOnCondition($model, $on)
+    protected function getOnCondition($model)
     {
-        if (empty($on)) {
-            $on  = $this->table . '.' . $this->getPk();
-            $on .= ' = ';
-            $on .= $model->table . '.' . $model->getFk();
-        }
+        $on  = $this->table . '.' . $this->getPk();
+        $on .= ' = ';
+        $on .= $model->table . '.' . $model->getFk();
 
         return $on;
     }
@@ -101,15 +105,12 @@ trait StreetRelationTrait
      * Get the inverse on condition based on the current and targeted model.
      *
      * @param mixed $model
-     * @param mixed $on
      */
-    protected function getInverseOnCondition($model, $on)
+    protected function getInverseOnCondition($model)
     {
-        if (empty($on)) {
-            $on  = $this->table . '.' . $this->getFk();
-            $on .= ' = ';
-            $on .= $model->table . '.' . $model->getPk();
-        }
+        $on  = $this->table . '.' . $this->getFk();
+        $on .= ' = ';
+        $on .= $model->table . '.' . $model->getPk();
 
         return $on;
     }

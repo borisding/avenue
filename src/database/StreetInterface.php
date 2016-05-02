@@ -26,7 +26,7 @@ interface StreetInterface
 
     /**
      * Find with count coulum with alias provided.
-     * 
+     *
      * @param mixed $column
      * @param mixed $alias
      */
@@ -173,19 +173,19 @@ interface StreetInterface
      * @param mixed $id
      */
     public function update($id);
-    
+
     /**
      * Update record(s) with where condition
      */
     public function updateWhere();
-    
+
     /**
      * Update or insert row.
-     * 
+     *
      * @param mixed $id
      */
     public function upsert($id);
-    
+
     /**
      * Remove record based on the passed in ID value.
      */
@@ -195,12 +195,12 @@ interface StreetInterface
      * Remove all records of the table.
      */
     public function removeAll();
-    
+
     /**
      * Remove record(s) with where condition
      */
     public function removeWhere();
-    
+
     /**
      * Join statement based on type.
      *
@@ -262,27 +262,34 @@ interface StreetInterface
      * One to one method.
      *
      * @param mixed $model
-     * @param mixed $on
+     * @param array $columns
      */
-    public function hasOne($model, $on);
+    public function hasOne($model, array $columns = []);
 
     /**
      * One to many method.
      *
      * @param mixed $model
-     * @param mixed $on
+     * @param array $columns
      */
-    public function hasMany($model, $on);
+    public function hasMany($model, array $columns = []);
+
+    /**
+     * Belongs to relationship.
+     *
+     * @param mixed $model
+     * @param array $columns
+     */
+    public function belongsTo($model, array $columns = []);
 
     /**
      * Many to many through junction table.
      *
      * @param mixed $model
-     * @param mixed $junction
-     * @param mixed $firstId
-     * @param mixed $secondId
+     * @param array $junctionInfo
+     * @param array $columns
      */
-    public function hasManyThrough($model, $junction, $firstId, $secondId);
+    public function hasManyThrough($model, array $junctionInfo = [], array $columns = []);
 
     /**
      * Get the current model table name.
