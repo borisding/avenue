@@ -40,11 +40,12 @@ interface StreetInterface
     public function findDistinct(array $columns);
 
     /**
-     * Return all record(s) for union sql statements.
+     * Return all record(s) for union sql statements and individual model class objects.
      *
-     * @param array $objects
+     * @param array $sql
+     * @param array $obj
      */
-    public function findUnion(array $objects);
+    public function findUnion(array $sql, array $obj);
 
     /**
      * Where statemet condition.

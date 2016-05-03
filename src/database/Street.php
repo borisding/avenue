@@ -155,31 +155,31 @@ class Street extends PdoAdapter implements StreetInterface
     }
 
     /**
-     * Get all found record(s) via union by passing respective model objects
+     * Get all found record(s) via union by passing sql statements and respective model objects
+     * Model objects must be unique without duplicate.
+     *
+     * Model class sql statement can be retrieved by invoking via getSql() method.
      *
      * @see \Avenue\Database\StreetInterface::findUnion()
      */
-    public function findUnion(array $objects)
+    public function findUnion(array $sql, array $obj)
     {
-        $queries = [];
         $values = [];
         $i = 0;
 
-        // iterate each model objects
-        // store respective sql and values for placeholders, if any
-        while ($i < count($objects)) {
-            $that = $objects[$i];
-            array_push($queries, $that->sql);
+        // iterate different model class objects
+        // store respective model class values for placeholders
+        while ($i < count($obj)) {
+            $that = $obj[$i];
             $values = array_merge($values, $that->values);
             $i++;
         }
 
         // compute populated queries and values
         // so that can be invoked via prepared statement from the model that calls it
-        $this->sql = '(' . implode(') UNION (', $queries) . ')';
+        $this->sql = '(' . implode(') UNION (', $sql) . ')';
         $this->values = $values;
 
-        unset($that, $queries, $values);
         return $this;
     }
 
