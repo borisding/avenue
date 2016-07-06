@@ -1,6 +1,8 @@
 <?php
 namespace Avenue;
 
+use Avenue\App;
+
 class Response
 {
     /**
@@ -70,10 +72,6 @@ class Response
      */
     public function render()
     {
-        if (ob_get_length() && $this->app->getEnvironment() !== 'development') {
-            ob_end_clean();
-        }
-
         if (!headers_sent()) {
             $this->sendHeader()->sendDefinedHeader();
         }

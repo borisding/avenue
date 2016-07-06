@@ -1,6 +1,8 @@
 <?php
 namespace Avenue;
 
+use Avenue\App;
+
 class Request
 {
     /**
