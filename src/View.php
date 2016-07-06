@@ -57,16 +57,22 @@ class View
     /**
      * Fetching the view file and getting the contents.
      *
-     * @param mixed $name
+     * @param mixed $filename
      * @param array $params
+     * @return string
      */
-    public function fetch($name, array $params = [])
+    public function fetch($filename, array $params = [])
     {
+        // store file name to temp variable and later usage
+        $AVENUE_FILENAME = $filename;
+        unset($filename);
+
         ob_start();
+
         // merge with direct variables assignment to object
         // the latter will overwrite the first
         extract(array_merge($this->params, $params));
-        require $this->getViewFile($name);
+        require $this->getViewFile($AVENUE_FILENAME);
 
         return ob_get_clean();
     }
@@ -74,26 +80,26 @@ class View
     /**
      * Alias method for fetching layout view file by omitting directory name.
      *
-     * @param mixed $name
+     * @param mixed $filename
      * @param array $params
      * @return string
      */
-    public function layout($name, array $params = [])
+    public function layout($filename, array $params = [])
     {
-        $layout = static::LAYOUT_DIR . '/'. $name;
+        $layout = static::LAYOUT_DIR . '/'. $filename;
         return $this->fetch($layout, $params);
     }
 
     /**
      * Alias method for fetching partial view file by omitting directory name.
      *
-     * @param mixed $name
+     * @param mixed $filename
      * @param array $params
      * @return string
      */
-    public function partial($name, array $params = [])
+    public function partial($filename, array $params = [])
     {
-        $partial = static::PARTIAL_DIR . '/'. $name;
+        $partial = static::PARTIAL_DIR . '/'. $filename;
         return $this->fetch($partial, $params);
     }
 
@@ -104,15 +110,15 @@ class View
      * @throws \Exception
      * @return string
      */
-    protected function getViewFile($name)
+    protected function getViewFile($filename)
     {
         // assign with default .php extension
         // if there is no extension specified in file name
-        if (empty(pathinfo($name, PATHINFO_EXTENSION))) {
-            $name = $name . '.php';
+        if (empty(pathinfo($filename, PATHINFO_EXTENSION))) {
+            $filename = $filename . '.php';
         }
 
-        $PATH_TO_VIEW_FILE = AVENUE_APP_DIR . '/views/' . $name;
+        $PATH_TO_VIEW_FILE = AVENUE_APP_DIR . '/views/' . $filename;
 
         if (!file_exists($PATH_TO_VIEW_FILE)) {
             throw new \Exception(sprintf('View [%s] not found!', $PATH_TO_VIEW_FILE));
