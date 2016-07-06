@@ -18,8 +18,8 @@ class Pagination
      * @var array
      */
     protected $config = [
-        'previous' => 'Prev',
-        'next' => 'Next',
+        'previous' => '&lt;&lt;',
+        'next' => '&gt;&gt;',
         'link' => './',
         'limit' => 10,
         'total' => 0
@@ -78,18 +78,18 @@ class Pagination
     }
 
     /**
-     * Init pagination by passing users' config.
+     * Init pagination by setting based on the configuration.
      *
      * @param array $config
-     * @return \Avenue\Components\Pagination
+     * @return \Avenue\Pagination
      */
-    public function init(array $config = [])
+    public function set(array $config = [])
     {
         $this->config = array_merge($this->config, $config);
-        $this->page = $this->app->escape($this->app->arrGet('page', $_GET, 1));
+        $this->page = (int) $this->app->escape($this->app->arrGet('page', $_GET, 1));
         $this->link = $this->config['link'];
-        $this->limit = $this->config['limit'];
-        $this->total = $this->config['total'];
+        $this->limit = (int) $this->config['limit'];
+        $this->total = (int) $this->config['total'];
         $this->previous = $this->config['previous'];
         $this->next = $this->config['next'];
 
@@ -103,7 +103,7 @@ class Pagination
      */
     public function getPageLimit()
     {
-        return $this->limit;
+        return ($this->limit > 0) ? $this->limit : 1;
     }
 
     /**
@@ -117,7 +117,7 @@ class Pagination
             $this->page = 1;
         }
 
-        return ($this->page - 1) * $this->limit;
+        return ($this->page - 1) * $this->getPageLimit();
     }
 
     /**
@@ -125,7 +125,7 @@ class Pagination
      */
     public function getPageTotal()
     {
-        return ceil((int)$this->total / (int)$this->limit);
+        return ceil($this->total / $this->getPageLimit());
     }
 
     /**
@@ -177,6 +177,7 @@ class Pagination
         $previous = $this->getPreviousLabel();
         $next = $this->getNextLabel();
         $link = $this->getPageLink();
+        $limit = $this->getPageLimit();
         $page = $this->getCurrentPage();
 
         // reset to 1 if out of valid range
@@ -184,34 +185,26 @@ class Pagination
             $page = 1;
         }
 
-        // range of shown page
-        // decide the page start and end
-        $stopper = 4;
-        $pageStart = (($page - $stopper) > 0) ? $page - $stopper : 1;
-        $pageEnd = (($page + $stopper) < $total ) ? $page + $stopper : $total;
+        $range = 10;
+
+        if ($total < $range) {
+            $pageStart = 1;
+            $pageEnd = $total;
+        } else {
+            $pageStart = $page < ($range / 2) ? 1 : $page - ($range / 2) + 1;
+            $pageEnd = ($pageStart + $range - 1) < $total ? $pageStart + $range - 1 : $total;
+        }
+
+        if ($total > $range && $pageEnd === $total) {
+            $pageStart = $pageEnd - $range + 1;
+        }
 
         $html = '<ul class="pagination">';
 
         // previous page link
-        if ($page < 2) {
-            $html .= '<li class="previous disabled">';
-            $html .= '<span>' . $previous . '</span>';
-            $html .= '</li>';
-        } else {
+        if ($page > 1) {
             $html .= '<li class="previous">';
             $html .= '<a href="' . $link . '?page=' . ($page - 1) . '">' . $previous . '</a>';
-            $html .= '</li>';
-        }
-
-        // float and first page
-        if ($pageStart > 1) {
-            (1 == $page) ? $active = 'active' : $active = '';
-            $html .= '<li class="page ' . $active . '">';
-            $html .= '<a href="' . $link . '?page=1">1</a>';
-            $html .= '</li>';
-
-            $html .= '<li class="page float">';
-            $html .= '<span>...</span>';
             $html .= '</li>';
         }
 
@@ -223,26 +216,10 @@ class Pagination
             $html .= '</li>';
         }
 
-        // float and last page
-        if ($pageEnd < $total) {
-            $html .= '<li class="page float">';
-            $html .= '<span>...</span>';
-            $html .= '</li>';
-
-            ($total == $page) ? $active = 'active' : $active = '';
-            $html .= '<li class="page">';
-            $html .= '<a href="' . $link . '?page=' . $total. '">' . $total . '</a>';
-            $html .= '</li>';
-        }
-
         // next page link
         if ($page < $total) {
             $html .= '<li class="next">';
             $html .= '<a href="' . $link . '?page=' . ($page + 1) . '">' . $next . '</a>';
-            $html .= '</li>';
-        } else {
-            $html .= '<li class="next disabled">';
-            $html .= '<span>' . $next . '</span>';
             $html .= '</li>';
         }
 
