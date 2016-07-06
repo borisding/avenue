@@ -17,7 +17,7 @@ class PaginationTest extends \PHPUnit_Framework_TestCase
 
     public function testGetPageLimitValue()
     {
-        $this->pagination->init([
+        $this->pagination->set([
             'limit' => 10
         ]);
         $limit = $this->pagination->getPageLimit();
@@ -27,7 +27,7 @@ class PaginationTest extends \PHPUnit_Framework_TestCase
     public function testGetPageOffsetValue()
     {
         $_GET['page'] = 3;
-        $this->pagination->init([
+        $this->pagination->set([
             'limit' => 20
         ]);
         $offset = $this->pagination->getPageOffset();
@@ -36,7 +36,7 @@ class PaginationTest extends \PHPUnit_Framework_TestCase
 
     public function testGetPageTotalValue()
     {
-        $this->pagination->init([
+        $this->pagination->set([
             'total' => 100,
             'limit' => 10
         ]);
@@ -47,7 +47,7 @@ class PaginationTest extends \PHPUnit_Framework_TestCase
     public function testGetCurrentPageValue()
     {
         $_GET['page'] = 3;
-        $this->pagination->init([
+        $this->pagination->set([
             'total' => 100,
             'limit' => 10
         ]);
@@ -57,7 +57,7 @@ class PaginationTest extends \PHPUnit_Framework_TestCase
 
     public function testGetPreviousLabel()
     {
-        $this->pagination->init([
+        $this->pagination->set([
             'previous' => 'Previous',
             'total' => 100,
             'limit' => 10
@@ -68,7 +68,7 @@ class PaginationTest extends \PHPUnit_Framework_TestCase
 
     public function testGetNextLabel()
     {
-        $this->pagination->init([
+        $this->pagination->set([
             'next' => 'Next',
             'total' => 100,
             'limit' => 10
@@ -80,7 +80,7 @@ class PaginationTest extends \PHPUnit_Framework_TestCase
     public function testGetPageLink()
     {
         $pageLink = 'http://localhost/product/list';
-        $this->pagination->init([
+        $this->pagination->set([
             'link' => $pageLink,
             'total' => 100,
             'limit' => 10
@@ -91,7 +91,7 @@ class PaginationTest extends \PHPUnit_Framework_TestCase
 
     public function testRenderPaginationHtml()
     {
-        $this->pagination->init([
+        $this->pagination->set([
             'previous' => 'Previous',
             'next' => 'Next',
             'total' => 100,
