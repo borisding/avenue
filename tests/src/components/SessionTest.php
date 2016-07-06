@@ -81,7 +81,8 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $this->session = $this->app->session();
 
         $config = $this->app->getConfig('session');
-        $sessionDb = $this->getMock('\Avenue\Components\SessionDatabase');
+        $sessionDb = $this->getMock('\Avenue\Components\SessionDatabase', [], [$this->app, $config]);
+
         $this->app->container('session', function() use ($sessionDb, $config) {
             return new Session($sessionDb, $config);
         });
@@ -96,7 +97,8 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $this->session = $this->app->session();
 
         $config = $this->app->getConfig('session');
-        $sessionDb = $this->getMock('\Avenue\Components\SessionDatabase');
+        $sessionDb = $this->getMock('\Avenue\Components\SessionDatabase', [], [$this->app, $config]);
+
         $this->app->container('session', function() use ($sessionDb, $config) {
             return new Session($sessionDb, $config);
         });

@@ -147,7 +147,7 @@ class App implements AppInterface
         }
 
         $resolver = static::$services[$name];
-        return $resolver();
+        return $resolver(static::$app);
     }
 
     /**
@@ -226,59 +226,62 @@ class App implements AppInterface
      */
     protected function registry()
     {
-        $this->container('request', function() {
-            return new Request(static::getInstance());
+        $this->container('request', function($app) {
+            return new Request($app);
         });
 
-        $this->container('response', function() {
-            return new Response(static::getInstance());
+        $this->container('response', function($app) {
+            return new Response($app);
         });
 
-        $this->container('route', function() {
-            return new Route(static::getInstance());
+        $this->container('route', function($app) {
+            return new Route($app);
         });
 
-        $this->container('view', function() {
-            return new View(static::getInstance());
+        $this->container('view', function($app) {
+            return new View($app);
         });
 
-        $this->container('log', function() {
-            return new Log(static::getInstance());
+        $this->container('log', function($app) {
+            return new Log($app);
         });
 
-        $this->container('exception', function() {
-            return new Exception(static::getInstance(), $this->exc);
+        $this->container('exception', function($app) {
+            return new Exception($app, $this->exc);
         });
 
-        $this->container('encryption', function() {
-            return new Encryption(static::getInstance());
+        $this->container('encryption', function($app) {
+            return new Encryption($app);
         });
 
-        $this->container('pagination', function() {
-            return new Pagination(static::getInstance());
+        $this->container('pagination', function($app) {
+            return new Pagination($app);
         });
 
-        $this->container('validation', function() {
-            return new Validation(static::getInstance());
+        $this->container('validation', function($app) {
+            return new Validation($app);
         });
 
-        $this->container('cookie', function() {
-            return new Cookie(static::getInstance());
+        $this->container('cookie', function($app) {
+            return new Cookie($app);
         });
 
-        $this->container('session', function() {
+        $this->container('session', function($app) {
             $config = $this->getConfig('session');
             $storage = $this->arrGet('storage', $config, 'file');
 
+            // session for database storage
             if ($storage === 'database') {
-                return new Session(new SessionDatabase(), $config);
+                return new Session(new SessionDatabase($app, $config), $config);
             }
 
+            // session for cookie storage
             if ($storage === 'cookie') {
-                return new Session(new SessionCookie(static::getInstance(), $this->cookie()), $config);
+                return new Session(new SessionCookie($app, $this->cookie()), $config);
             }
 
-            return new Session(new SessionFile(static::getInstance()), $config);
+            // session for file storage
+            return new Session(new SessionFile($app, $config), $config);
         });
 
         return $this;

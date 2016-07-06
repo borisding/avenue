@@ -89,6 +89,16 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, $this->app->resolve('calculation'), 'Calculation result from container is equal 2.');
     }
 
+    public function testContainerWithAppInstancePassedToCallback()
+    {
+        $this->app->container('getAppInstance', function($app) {
+            return $app;
+        });
+
+        $app = $this->app->resolve('getAppInstance');
+        $this->assertTrue($app instanceof App);
+    }
+
     /**
      * @expectedException InvalidArgumentException
      */
@@ -203,7 +213,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
         // mock session database class here
         if ($config['storage'] == 'database') {
-            $sessionDb = $this->getMock('\Avenue\Components\SessionDatabase');
+            $sessionDb = $this->getMock('\Avenue\Components\SessionDatabase', [], [$this->app, $config]);
             $this->app->container('session', function() use ($sessionDb, $config) {
                 return new Session($sessionDb, $config);
             });
