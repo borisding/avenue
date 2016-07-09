@@ -276,7 +276,7 @@ class App implements AppInterface
      */
     public function getAppVersion()
     {
-        return $this->getConfig('version');
+        return $this->getConfig('appVersion');
     }
 
     /**
@@ -284,7 +284,7 @@ class App implements AppInterface
      */
     public function getHttpVersion()
     {
-        return $this->getConfig('http');
+        return $this->getConfig('httpVersion');
     }
 
     /**
