@@ -162,11 +162,12 @@ class App implements AppInterface
     }
 
     /**
-     * Rendering the response body output.
+     * Running by rendering the response body output.
      *
-     * @see \Avenue\Interfaces\AppInterface::render()
+     * {@inheritDoc}
+     * @see \Avenue\AppInterface::run()
      */
-    public function render()
+    public function run()
     {
         // throw page not found exception, if any
         if (!$this->route->isFulfilled()) {

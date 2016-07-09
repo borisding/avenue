@@ -71,7 +71,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
             return [];
         });
 
-        $this->app->render();
+        $this->app->run();
     }
 
     public function testContainer()
@@ -199,13 +199,13 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
     public function testGetAppVersion()
     {
-        Reflection::setPropertyValue($this->app, 'config', ['version' => '1.0', 'timezone' => 'UTC'], true);
+        Reflection::setPropertyValue($this->app, 'config', ['appVersion' => '1.0', 'timezone' => 'UTC'], true);
         $this->assertEquals('1.0', $this->app->getAppVersion());
     }
 
     public function testGetHttpVersion()
     {
-        Reflection::setPropertyValue($this->app, 'config', ['http' => '1.1', 'timezone' => 'UTC'], true);
+        Reflection::setPropertyValue($this->app, 'config', ['httpVersion' => '1.1', 'timezone' => 'UTC'], true);
         $this->assertEquals('1.1', $this->app->getHttpVersion());
     }
 
