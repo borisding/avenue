@@ -13,13 +13,3 @@ $app->view->register('baseUrl', function() use ($app) {
 $app->view->register('version', function() use ($app) {
     return $app->getAppVersion();
 });
-
-// upper case helper
-$app->view->register('upper', function($input) {
-    return strtoupper($input);
-});
-
-// lower case helper
-$app->view->register('lower', function($input) {
-    return strtolower($input);
-});

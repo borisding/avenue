@@ -8,7 +8,7 @@ require_once AVENUE_APP_DIR. '/errors.php';
 require_once AVENUE_APP_DIR. '/services.php';
 
 // include application view helpers.
-require_once AVENUE_APP_DIR. '/helpers.php';
+require_once AVENUE_APP_DIR. '/views/helpers.php';
 
 // include application routes
 require_once AVENUE_APP_DIR. '/routes.php';
