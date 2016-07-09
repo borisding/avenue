@@ -62,7 +62,7 @@ abstract class Controller
     public function __construct(App $app)
     {
         $this->app = $app;
-        $this->factory()->invoke();
+        $this->factory()->invokeActions();
     }
 
     /**
@@ -116,7 +116,7 @@ abstract class Controller
     /**
      * Invoke respective controller actions in sequence.
      */
-    protected function invoke()
+    protected function invokeActions()
     {
         $this->beforeAction();
         $this->controllerAction();
