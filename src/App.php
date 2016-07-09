@@ -8,14 +8,6 @@ use Avenue\Route;
 use Avenue\View;
 use Avenue\Log;
 use Avenue\Exception;
-use Avenue\Components\Encryption;
-use Avenue\Components\Pagination;
-use Avenue\Components\Validation;
-use Avenue\Components\Cookie;
-use Avenue\Components\Session;
-use Avenue\Components\SessionCookie;
-use Avenue\Components\SessionDatabase;
-use Avenue\Components\SessionFile;
 use Avenue\Helpers\HelperBundleTrait;
 use Avenue\AppInterface;
 
@@ -248,40 +240,6 @@ class App implements AppInterface
 
         $this->container('exception', function($app) {
             return new Exception($app, $this->exc);
-        });
-
-        $this->container('encryption', function($app) {
-            return new Encryption($app);
-        });
-
-        $this->container('pagination', function($app) {
-            return new Pagination($app);
-        });
-
-        $this->container('validation', function($app) {
-            return new Validation($app);
-        });
-
-        $this->container('cookie', function($app) {
-            return new Cookie($app);
-        });
-
-        $this->container('session', function($app) {
-            $config = $this->getConfig('session');
-            $storage = $this->arrGet('storage', $config, 'file');
-
-            // session for database storage
-            if ($storage === 'database') {
-                return new Session(new SessionDatabase($app, $config), $config);
-            }
-
-            // session for cookie storage
-            if ($storage === 'cookie') {
-                return new Session(new SessionCookie($app, $this->cookie()), $config);
-            }
-
-            // session for file storage
-            return new Session(new SessionFile($app, $config), $config);
         });
 
         return $this;
