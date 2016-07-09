@@ -23,11 +23,12 @@ define('AVENUE_VENDOR_DIR', AVENUE_ROOT_DIR . '/vendor');
 // include vendor's autoload
 $PATH_TO_VENDOR_AUTOLOAD_FILE = AVENUE_VENDOR_DIR. '/autoload.php';
 
-if (file_exists($PATH_TO_VENDOR_AUTOLOAD_FILE)) {
-    require_once $PATH_TO_VENDOR_AUTOLOAD_FILE;
-} else {
+if (!file_exists($PATH_TO_VENDOR_AUTOLOAD_FILE)) {
     die('Vendor autoload not found!');
 }
+
+// include vendor's autoloader
+require_once $PATH_TO_VENDOR_AUTOLOAD_FILE;
 
 // include bootstrap file, where app started
 require_once AVENUE_APP_DIR . '/bootstrap.php';
