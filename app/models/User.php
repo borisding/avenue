@@ -5,10 +5,10 @@ use Avenue\Model;
 
 class User extends Model
 {
-    public function getUsers()
+    // example for getting all user records from 'users' table
+    public function getAll()
     {
-        // example: simplest query all
-        $result = $this->findAll();
+        $result = $this->all();
         return $result;
     }
 }

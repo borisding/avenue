@@ -1,48 +1,30 @@
 <?php
+/**
+ * Database connection settings based on the environment.
+ */
+
 return [
-    /**
-     * Database settings for development environment.
-     */
+    // db settings for 'development' environment
     'development' => [
-        // database connection string
-        'dsn' => 'mysql:host=localhost;charset=utf8;dbname=test',
-        
-        // database user name
-        'username' => 'root',
-        
-        // database user password
-        'password' => 'root',
-        
-        // database table's prefix
-        'tablePrefix' => '',
-        
-        // persistence of connection
-        'persist' => true,
-        
-        // emulate prepares (eg: MySQL)
-        'emulate' => false
+        'driver'    => 'mysql',
+        'host'      => 'localhost',
+        'database'  => 'test',
+        'username'  => 'root',
+        'password'  => 'root',
+        'charset'   => 'utf8',
+        'collation' => 'utf8_unicode_ci',
+        'prefix'    => ''
     ],
-    
-    /**
-     * Database settings for production environment.
-     */
+
+    // db settings for 'production' environment
     'production' => [
-        // database connection string
-        'dsn' => 'mysql:host=localhost;charset=utf8;dbname=production',
-        
-        // database user name
-        'username' => 'root',
-         
-        // database user password
-        'password' => 'root',
-        
-        // database table's prefix
-        'tablePrefix' => '',
-        
-        // persistence of connection
-        'persist' => true,
-         
-        // emulate prepares (eg: MySQL)
-        'emulate' => false
+        'driver'    => 'mysql',
+        'host'      => 'localhost',
+        'database'  => 'productdb',
+        'username'  => 'root',
+        'password'  => 'root',
+        'charset'   => 'utf8',
+        'collation' => 'utf8_unicode_ci',
+        'prefix'    => ''
     ]
 ];

@@ -1,15 +1,32 @@
 <?php
 namespace Avenue;
 
-use Avenue\Database\Street as BaseModel;
+use Avenue\App;
+use Illuminate\Database\Eloquent\Model as BaseModel;
 
-abstract class Model extends BaseModel  
+abstract class Model extends BaseModel
 {
     /**
+     * Avenue class instance.
+     *
+     * @var mixed
+     */
+    protected $app;
+
+    /**
+     * Capsule object from database service.
+     *
+     * @var mixed
+     */
+    protected $db;
+
+    /**
      * Model class constructor.
+     * Resolve db service and return the Capsule manager class instance.
      */
     public function __construct()
     {
-        parent::__construct();
+        $this->app = App::getInstance();
+        $this->db = $this->app->db();
     }
 }
