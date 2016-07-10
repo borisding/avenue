@@ -4,8 +4,9 @@ namespace Avenue;
 use Closure;
 use Avenue\App;
 use Avenue\Helpers\HelperBundleTrait;
+use Avenue\Interfaces\ViewInterface;
 
-class View
+class View implements ViewInterface
 {
     use HelperBundleTrait;
 
@@ -78,11 +79,10 @@ class View
     }
 
     /**
-     * Alias method for fetching layout view file by omitting directory name.
+     * Alias method. Fetching layout view file by omitting directory name.
      *
-     * @param mixed $filename
-     * @param array $params
-     * @return string
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ViewInterface::layout()
      */
     public function layout($filename, array $params = [])
     {
@@ -91,11 +91,10 @@ class View
     }
 
     /**
-     * Alias method for fetching partial view file by omitting directory name.
+     * Alias method. Fetching partial view file by omitting directory name.
      *
-     * @param mixed $filename
-     * @param array $params
-     * @return string
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ViewInterface::partial()
      */
     public function partial($filename, array $params = [])
     {
@@ -128,10 +127,10 @@ class View
     }
 
     /**
-     * Register custom helper method.
+     * Register the helper for view template engine.
      *
-     * @param mixed $name
-     * @param Closure $callback
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ViewInterface::register()
      */
     public function register($name, Closure $callback)
     {
