@@ -169,6 +169,8 @@ class App implements AppInterface
      */
     public function run()
     {
+        $this->resolve('routes');
+
         // throw page not found exception, if any
         if (!$this->route->isFulfilled()) {
             $this->response->withStatus(404);
