@@ -95,7 +95,7 @@ class App implements AppInterface
         }
 
         $this->setTimezone()->setErrorHandler();
-        $this->registry()->factory();
+        $this->registerCore()->factory();
     }
 
     /**
@@ -217,9 +217,9 @@ class App implements AppInterface
     }
 
     /**
-     * Add the respective application registries.
+     * Register respective core component services.
      */
-    protected function registry()
+    protected function registerCore()
     {
         $this->container('request', function($app) {
             return new Request($app);
