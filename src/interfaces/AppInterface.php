@@ -1,5 +1,5 @@
 <?php
-namespace Avenue;
+namespace Avenue\Interfaces;
 
 use Closure;
 

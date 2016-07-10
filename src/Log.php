@@ -2,49 +2,49 @@
 namespace Avenue;
 
 use Avenue\App;
-use Avenue\LogInterface;
 use Monolog\Logger;
+use Avenue\Interfaces\LogInterface;
 
 class Log implements LogInterface
 {
     /**
      * App class instance.
-     * 
+     *
      * @var mixed
      */
     protected $app;
-    
+
     /**
      * Monolog class instance.
-     * 
+     *
      * @var mixed
      */
     protected $monolog;
-    
+
     /**
      * Log channel.
-     * 
+     *
      * @var mixed
      */
     protected $channel;
-    
+
     /**
      * List of handlers.
-     * 
+     *
      * @var array
      */
     protected $handlers = [];
-    
+
     /**
      * List of processors.
-     * 
+     *
      * @var unknown
      */
     protected $processors = [];
-    
+
     /**
      * Default logging configuration.
-     * 
+     *
      * @var array
      */
     protected $config = [
@@ -52,10 +52,10 @@ class Log implements LogInterface
         'handlers' => [],
         'processors' => []
     ];
-    
+
     /**
      * List of log level.
-     * 
+     *
      * @var array
      */
     protected $levels = [
@@ -76,16 +76,16 @@ class Log implements LogInterface
         // (600): Emergency: system is unusable.
         'emergency' => Logger::EMERGENCY
     ];
-    
+
     /**
      * Log class constructor.
-     * 
+     *
      * @param App $app
      */
     public function __construct(App $app)
     {
         $this->app = $app;
-        
+
         if (empty($this->monolog)) {
             $this->config = array_merge($this->config, $this->app->getConfig('logging'));
             $this->channel = $this->config['channel'];
@@ -94,23 +94,23 @@ class Log implements LogInterface
             $this->boot(new Logger($this->channel));
         }
     }
-    
+
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see \Avenue\LogInterface::addRecord()
      */
     public function addRecord($message, $level = 'warning', array $context = [])
     {
         $level = $this->app->arrGet($level, $this->levels, $this->levels['warning']);
         $this->monolog->addRecord($level, $message, $context);
-        
+
         return $this;
     }
-    
+
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see \Avenue\LogInterface::addDebug()
      */
     public function addDebug($message, array $context = [])
@@ -118,10 +118,10 @@ class Log implements LogInterface
         $this->addRecord($message, 'debug', $context);
         return $this;
     }
-    
+
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see \Avenue\LogInterface::addInfo()
      */
     public function addInfo($message, array $context = [])
@@ -129,10 +129,10 @@ class Log implements LogInterface
         $this->addRecord($message, 'info', $context);
         return $this;
     }
-    
+
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see \Avenue\LogInterface::addNotice()
      */
     public function addNotice($message, array $context = [])
@@ -143,7 +143,7 @@ class Log implements LogInterface
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see \Avenue\LogInterface::addWarning()
      */
     public function addWarning($message, array $context = [])
@@ -151,10 +151,10 @@ class Log implements LogInterface
         $this->addRecord($message, 'warning', $context);
         return $this;
     }
-    
+
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see \Avenue\LogInterface::addError()
      */
     public function addError($message, array $context = [])
@@ -162,10 +162,10 @@ class Log implements LogInterface
         $this->addRecord($message, 'error', $context);
         return $this;
     }
-    
+
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see \Avenue\LogInterface::addCritical()
      */
     public function addCritical($message, array $context = [])
@@ -173,10 +173,10 @@ class Log implements LogInterface
         $this->addRecord($message, 'critical', $context);
         return $this;
     }
-    
+
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see \Avenue\LogInterface::addAlert()
      */
     public function addAlert($message, array $context = [])
@@ -184,10 +184,10 @@ class Log implements LogInterface
         $this->addRecord($message, 'alert', $context);
         return $this;
     }
-    
+
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see \Avenue\LogInterface::addEmergency()
      */
     public function addEmergency($message, array $context = [])
@@ -195,22 +195,22 @@ class Log implements LogInterface
         $this->addRecord($message, 'emergency', $context);
         return $this;
     }
-    
+
     /**
      * Boot the monolog based on the handlers and processors.
-     * 
+     *
      * @param Logger $monolog
      */
     protected function boot(Logger $monolog)
     {
         // instantiate monolog logger instance
         $this->monolog = $monolog;
-        
+
         // push each assigned handler
         foreach ($this->handlers as $handler) {
             $this->monolog->pushHandler($handler);
         }
-        
+
         // push each assigned processor
         foreach ($this->processors as $processor) {
             $this->monolog->pushProcessor($handler);

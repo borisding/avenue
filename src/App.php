@@ -9,7 +9,7 @@ use Avenue\View;
 use Avenue\Log;
 use Avenue\Exception;
 use Avenue\Helpers\HelperBundleTrait;
-use Avenue\AppInterface;
+use Avenue\Interfaces\AppInterface;
 
 class App implements AppInterface
 {

@@ -15,6 +15,7 @@ class DefaultController extends PageController
         // assign index title and content
         $this->title .= 'Demo Page';
         $this->content = $this->view->partial('home');
+        $this->app->log()->addInfo('test info');
     }
 
     public function afterAction()
