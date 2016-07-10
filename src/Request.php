@@ -2,8 +2,9 @@
 namespace Avenue;
 
 use Avenue\App;
+use Avenue\Interfaces\RequestInterface;
 
-class Request
+class Request implements RequestInterface
 {
     /**
      * Avenue class instance.
@@ -222,7 +223,7 @@ class Request
     }
 
     /**
-     * Get particular header value based on the name.
+     * Get particular header value based on the key.
      *
      * @param mixed $key
      */
