@@ -2,8 +2,9 @@
 namespace Avenue;
 
 use Avenue\App;
+use Avenue\Interfaces\ResponseInterface;
 
-class Response
+class Response implements ResponseInterface
 {
     /**
      * Avenue class instance.
@@ -76,7 +77,7 @@ class Response
             $this->sendHeader()->sendDefinedHeader();
         }
 
-        $this->output()->flush();
+        $this->output()->cleanup();
     }
 
     /**
@@ -122,11 +123,11 @@ class Response
     /**
      * Reset to the default values after body output printed.
      */
-    public function flush()
+    public function cleanup()
     {
         $this->statusCode = null;
         $this->body = null;
-        $this->headers = [];
+        $this->headers = null;
     }
 
     /**
