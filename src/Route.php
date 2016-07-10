@@ -2,8 +2,9 @@
 namespace Avenue;
 
 use Avenue\App;
+use Avenue\Interfaces\RouteInterface;
 
-class Route
+class Route implements RouteInterface
 {
     /**
      * App instance.
