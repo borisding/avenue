@@ -2,8 +2,9 @@
 namespace Avenue;
 
 use Avenue\App;
+use Avenue\Interfaces\ControllerInterface;
 
-abstract class Controller
+abstract class Controller implements ControllerInterface
 {
     /**
      * Avenue class instance.
@@ -69,7 +70,7 @@ abstract class Controller
      * Controller's before action method.
      * Invoked before the controller action is called.
      */
-    protected function beforeAction()
+    public function beforeAction()
     {
         // do nothing
     }
@@ -78,7 +79,7 @@ abstract class Controller
      * Controller's after action method.
      * Invoke after the controller action is called.
      */
-    protected function afterAction()
+    public function afterAction()
     {
         // do nothing
     }
@@ -86,7 +87,7 @@ abstract class Controller
     /**
      * Invoke targeted controller's action.
      */
-    protected function controllerAction()
+    public function controllerAction()
     {
         $action = $this->request->getAction() . static::ACTION_SUFFIX;
 
@@ -144,10 +145,4 @@ abstract class Controller
     {
         return $this->app->arrGet($key, $this->params);
     }
-
-    /**
-     * Controller index abstract method.
-     * This to ensure child controller class has at least index method.
-     */
-    abstract function indexAction();
 }
