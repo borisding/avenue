@@ -161,12 +161,6 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($view instanceof View);
     }
 
-    public function testSingletonLogClassInstance()
-    {
-        $log = $this->app->log();
-        $this->assertTrue($log instanceof Log);
-    }
-
     public function testSingletonExceptionClassInstance()
     {
         $this->app->container('exception', function() {

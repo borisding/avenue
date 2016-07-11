@@ -1,6 +1,6 @@
 <?php
 /**
- * Cofigurations for logging for application logging purposes.
+ * Settings for application logging purposes.
  */
 
 return [

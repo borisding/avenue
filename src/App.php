@@ -6,7 +6,6 @@ use Avenue\Request;
 use Avenue\Response;
 use Avenue\Route;
 use Avenue\View;
-use Avenue\Log;
 use Avenue\Exception;
 use Avenue\Helpers\HelperBundleTrait;
 use Avenue\Interfaces\AppInterface;
@@ -235,10 +234,6 @@ class App implements AppInterface
 
         $this->container('view', function($app) {
             return new View($app);
-        });
-
-        $this->container('log', function($app) {
-            return new Log($app);
         });
 
         $this->container('exception', function($app) {
