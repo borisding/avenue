@@ -187,6 +187,7 @@ class App implements AppInterface
         // print out the response body for normal request
         if (!empty($this->response->getBody())) {
             $this->response->render();
+            exit(0);
         }
     }
 

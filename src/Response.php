@@ -74,7 +74,7 @@ class Response implements ResponseInterface
     public function render()
     {
         if (!headers_sent()) {
-            $this->sendHeader()->sendDefinedHeader();
+            $this->sendHeader()->sendDefinedHeaders();
         }
 
         $this->output()->cleanup();
@@ -102,7 +102,7 @@ class Response implements ResponseInterface
     /**
      * Sending the user defined header, if any.
      */
-    protected function sendDefinedHeader()
+    protected function sendDefinedHeaders()
     {
         foreach ($this->headers as $type => $format) {
             header($type . ': ' . $format, false);
