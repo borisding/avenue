@@ -42,6 +42,13 @@ class Response implements ResponseInterface
     protected $http;
 
     /**
+     * Flag for cached content.
+     *
+     * @var boolean
+     */
+    protected $boolCache = false;
+
+    /**
      * Response class constructor.
      * Set the default status code and content type.
      */
@@ -49,6 +56,7 @@ class Response implements ResponseInterface
     {
         $this->app = $app;
         $this->http = $this->app->getHttpVersion();
+
         $this->withStatus(200);
         $this->withHeader(['Content-Type' => 'text/html']);
     }
@@ -56,7 +64,8 @@ class Response implements ResponseInterface
     /**
      * Writing input to response body.
      *
-     * @param mixed $input
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ResponseInterface::write()
      */
     public function write($input)
     {
@@ -65,25 +74,40 @@ class Response implements ResponseInterface
         } else {
             $this->body .= $input;
         }
+
+        return $this;
     }
 
     /**
-     * Print out the cached content.
-     * Reset to the default values.
+     * Print out the content and cleanup if no cache.
+     * Else, just clean and exit.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ResponseInterface::render()
      */
     public function render()
     {
         if (!headers_sent()) {
-            $this->sendHeader()->sendDefinedHeaders();
+            $this->sendHttpHeader();
+            $this->sendDefinedHeaders();
+        }
+
+        // clean and exit if has cache
+        if ($this->hasCache()) {
+            $this->cleanup();
+            exit(0);
         }
 
         $this->output()->cleanup();
     }
 
     /**
-     * Sending header and http status.
+     * Sending http header.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ResponseInterface::sendHttpHeader()
      */
-    protected function sendHeader()
+    public function sendHttpHeader()
     {
         $statusCode = $this->getStatusCode();
         $statusDesc = $this->getStatusDesc($statusCode);
@@ -100,9 +124,12 @@ class Response implements ResponseInterface
     }
 
     /**
-     * Sending the user defined header, if any.
+     * Sending the the defined header, if any.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ResponseInterface::sendDefinedHeaders()
      */
-    protected function sendDefinedHeaders()
+    public function sendDefinedHeaders()
     {
         foreach ($this->headers as $type => $format) {
             header($type . ': ' . $format, false);
@@ -112,26 +139,44 @@ class Response implements ResponseInterface
     }
 
     /**
-     * Print the body output.
+     * Set the content length and print the body output.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ResponseInterface::output()
      */
-    protected function output()
+    public function output()
     {
-        echo $this->getBody();
+        $body = $this->getBody();
+        $contentLength = strlen($body);
+
+        if ($contentLength > 0) {
+            header(sprintf('Content-Length: %d', $contentLength));
+        }
+
+        echo $body;
         return $this;
     }
 
     /**
-     * Reset to the default values after body output printed.
+     * Reset properties.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ResponseInterface::cleanup()
      */
     public function cleanup()
     {
-        $this->statusCode = null;
-        $this->body = null;
-        $this->headers = null;
+        $this->statusCode = '';
+        $this->body = '';
+        $this->headers = [];
+
+        return $this;
     }
 
     /**
-     * Returning the body content.
+     * Get the body content.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ResponseInterface::getBody()
      */
     public function getBody()
     {
@@ -141,8 +186,8 @@ class Response implements ResponseInterface
     /**
      * Set the http status code.
      *
-     * @param mixed $code
-     * @return mixed
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ResponseInterface::withStatus()
      */
     public function withStatus($code)
     {
@@ -152,7 +197,8 @@ class Response implements ResponseInterface
     /**
      * Get the http status code.
      *
-     * @return mixed
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ResponseInterface::getStatusCode()
      */
     public function getStatusCode()
     {
@@ -160,10 +206,10 @@ class Response implements ResponseInterface
     }
 
     /**
-     * Returning the status based on the status code.
+     * Get the status description based on the status code.
      *
-     * @param mixed $code
-     * @return mixed
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ResponseInterface::getStatusDesc()
      */
     public function getStatusDesc($code)
     {
@@ -180,8 +226,8 @@ class Response implements ResponseInterface
     /**
      * Set the respective http headers, if any.
      *
-     * @param array $headers
-     * @return \Avenue\Response
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ResponseInterface::withHeader()
      */
     public function withHeader(array $headers = [])
     {
@@ -195,7 +241,8 @@ class Response implements ResponseInterface
     /**
      * Get the header description based on the key.
      *
-     * @param mixed $key
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ResponseInterface::getHeader()
      */
     public function getHeader($key)
     {
@@ -205,7 +252,8 @@ class Response implements ResponseInterface
     /**
      * Shortcut for response with JSON header.
      *
-     * @return \Avenue\Response
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ResponseInterface::withJsonHeader()
      */
     public function withJsonHeader()
     {
@@ -215,7 +263,8 @@ class Response implements ResponseInterface
     /**
      * Shortcut for response with text header.
      *
-     * @return \Avenue\Response
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ResponseInterface::withTextHeader()
      */
     public function withTextHeader()
     {
@@ -225,7 +274,8 @@ class Response implements ResponseInterface
     /**
      * Shortcut for response with CSV header.
      *
-     * @return \Avenue\Response
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ResponseInterface::withCsvHeader()
      */
     public function withCsvHeader()
     {
@@ -235,10 +285,51 @@ class Response implements ResponseInterface
     /**
      * Shortcut for response with XML header.
      *
-     * @return \Avenue\Response
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ResponseInterface::withXmlHeader()
      */
     public function withXmlHeader()
     {
         return $this->withHeader(['Content-Type' => 'text/xml']);
+    }
+
+    /**
+     * HTTP caching with ETag method.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ResponseInterface::withEtag()
+     */
+    public function withEtag($uniqueId, $type = 'strong')
+    {
+        $arrTypes = ['strong', 'weak'];
+
+        if (!in_array($type, $arrTypes)) {
+            throw new \InvalidArgumentException('Invalid type of ETag! Type: "strong" or "weak".');
+        }
+
+        // for weak type
+        if ($type === $arrTypes[1]) {
+            $uniqueId = 'W/' . $uniqueId;
+        }
+
+        $this->withHeader(['ETag' => $uniqueId]);
+        $HTTP_IF_NONE_MATCH = $this->app->request->getHeader('If-None-Match');
+
+        if ($HTTP_IF_NONE_MATCH && $HTTP_IF_NONE_MATCH === $uniqueId) {
+            $this->boolCache = true;
+            $this->withStatus(304);
+            $this->withHeader(['Connection' => 'close']);
+        }
+    }
+
+    /**
+     * Return true if has cache.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ResponseInterface::isCached()
+     */
+    public function hasCache()
+    {
+        return $this->boolCache;
     }
 }

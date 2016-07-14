@@ -16,6 +16,11 @@ interface ResponseInterface
     public function render();
 
     /**
+     * Output the reponse body.
+     */
+    public function output();
+
+    /**
      * Cleanup the properties once output is rendered.
      */
     public function cleanup();
@@ -43,6 +48,16 @@ interface ResponseInterface
      * @param mixed $code
      */
     public function getStatusDesc($code);
+
+    /**
+     * Send http header.
+     */
+    public function sendHttpHeader();
+
+    /**
+     * Send defined http headers, if any.
+     */
+    public function sendDefinedHeaders();
 
     /**
      * Set the respective http headers.
@@ -77,4 +92,17 @@ interface ResponseInterface
      * Alias method for setting XML header.
      */
     public function withXmlHeader();
+
+    /**
+     * Http cache with etag method.
+     *
+     * @param mixed $uniqueId
+     * @param string $type
+     */
+    public function withEtag($uniqueId, $type = 'strong');
+
+    /**
+     * Return true or false for cached content.
+     */
+    public function hasCache();
 }
