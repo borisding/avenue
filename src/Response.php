@@ -46,7 +46,7 @@ class Response implements ResponseInterface
      *
      * @var boolean
      */
-    protected $boolCache = false;
+    protected $boolCache;
 
     /**
      * Response class constructor.
@@ -56,6 +56,7 @@ class Response implements ResponseInterface
     {
         $this->app = $app;
         $this->http = $this->app->getHttpVersion();
+        $this->boolCache = false;
 
         $this->withStatus(200);
         $this->withHeader(['Content-Type' => 'text/html']);
@@ -304,7 +305,7 @@ class Response implements ResponseInterface
         $arrTypes = ['strong', 'weak'];
 
         if (!in_array($type, $arrTypes)) {
-            throw new \InvalidArgumentException('Invalid type of ETag! Type: "strong" or "weak".');
+            throw new \InvalidArgumentException('Invalid type of ETag! Type: [strong] or [weak].');
         }
 
         // for weak type
@@ -316,10 +317,32 @@ class Response implements ResponseInterface
         $HTTP_IF_NONE_MATCH = $this->app->request->getHeader('If-None-Match');
 
         if ($HTTP_IF_NONE_MATCH && $HTTP_IF_NONE_MATCH === $uniqueId) {
-            $this->boolCache = true;
-            $this->withStatus(304);
-            $this->withHeader(['Connection' => 'close']);
+            $this->setCacheHeader();
         }
+
+        return $this;
+    }
+
+    /**
+     * Http cache with last modified by providing UNIX timestamp.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ResponseInterface::withLastModified()
+     */
+    public function withLastModified($timestamp)
+    {
+        if (!is_integer($timestamp)) {
+            throw new \InvalidArgumentException('Invalid data type of UNIX timestamp! Expect integer value.');
+        }
+
+        $this->withHeader(['Last-Modified' => gmdate('D, d M Y H:i:s', $timestamp) . ' GMT']);
+        $HTTP_IF_MODIFIED_SINCE = $this->app->request->getHeader('If-Modified-Since');
+
+        if (strtotime($HTTP_IF_MODIFIED_SINCE) === $timestamp) {
+            $this->setCacheHeader();
+        }
+
+        return $this;
     }
 
     /**
@@ -331,5 +354,19 @@ class Response implements ResponseInterface
     public function hasCache()
     {
         return $this->boolCache;
+    }
+
+    /**
+     * Set the status and connection for cache.
+     *
+     * @return \Avenue\Response
+     */
+    protected function setCacheHeader()
+    {
+        $this->boolCache = true;
+        $this->withStatus(304);
+        $this->withHeader(['Connection' => 'close']);
+
+        return $this;
     }
 }

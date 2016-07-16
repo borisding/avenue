@@ -102,6 +102,13 @@ interface ResponseInterface
     public function withEtag($uniqueId, $type = 'strong');
 
     /**
+     * Http cache with last modified by providing UNIX timestamp.
+     *
+     * @param integer $timestamp
+     */
+    public function withLastModified($timestamp);
+
+    /**
      * Return true or false for cached content.
      */
     public function hasCache();
