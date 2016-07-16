@@ -258,16 +258,30 @@ class Request implements RequestInterface
         foreach ($_SERVER as $key => $value) {
 
             if (substr($key, 0, 5) == 'HTTP_') {
-                $key = substr($key, 5);
-                $key = str_replace('_', ' ', $key);
-                $key = ucwords(strtolower($key));
-                $key = str_replace(' ', '-', $key);
-
+                $key = $this->processHeaderName(substr($key, 5));
+                $headers[$key] = $value;
+            } elseif (substr($key, 0, 8) == 'CONTENT_') {
+                $key = $this->processHeaderName($key);
                 $headers[$key] = $value;
             }
         }
 
         return $headers;
+    }
+
+    /**
+     * Process the header's key name of the global server variable.
+     *
+     * @param mixed $key
+     * @return mixed
+     */
+    protected function processHeaderName($key)
+    {
+        $key = str_replace('_', ' ', $key);
+        $key = ucwords(strtolower($key));
+        $key = str_replace(' ', '-', $key);
+
+        return $key;
     }
 
     /**
