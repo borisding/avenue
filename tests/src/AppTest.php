@@ -6,7 +6,6 @@ use Avenue\Request;
 use Avenue\Response;
 use Avenue\Route;
 use Avenue\View;
-use Avenue\Log;
 use Avenue\Exception;
 use Avenue\Tests\Reflection;
 
