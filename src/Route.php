@@ -141,21 +141,30 @@ class Route implements RouteInterface
      */
     protected function setRouteParams()
     {
-        $this->rule = str_replace(')', '', str_replace('(', '', $this->rule));
         $fs = '/';
+        $arrRule = [];
+        $arrPathInfo = [];
+        $this->rule = str_replace(')', '', str_replace('(', '', $this->rule));
 
         if (strpos($this->rule, $fs) !== false && strpos($this->pathInfo, $fs) !== false) {
-            $arrUri = explode($fs, $this->rule);
+            $arrRule = explode($fs, $this->rule);
             $arrPathInfo = explode($fs, $this->pathInfo);
+        }
 
-            // iterate over and set respective values to token
-            for ($i = 0, $len = count($arrUri); $i < $len; $i++) {
+        foreach ($this->filters as $token => $regx) {
 
-                if (!empty($arrPathInfo[$i]) && substr($arrUri[$i], 0, 1) === '@') {
-                    $key = substr($arrUri[$i], 1, strlen($arrUri[$i]));
-                    $value = $arrPathInfo[$i];
+            if (substr($token, 0, 1) === '@') {
+                $key = substr($token, 1, strlen($token));
 
-                    $this->setParam($key, $this->app->escape($value));
+                // replaced with the actual value, if found any in the matched rule
+                if (in_array($token, $arrRule)) {
+                    $index = array_search($token, $arrRule);
+
+                    (isset($arrPathInfo[$index]))
+                    ? $this->setParam($key, $this->app->escape($arrPathInfo[$index]))
+                    : $this->setParam($key, null);
+                } else {
+                    $this->setParam($key, null);
                 }
             }
         }
@@ -165,7 +174,7 @@ class Route implements RouteInterface
     }
 
     /**
-     * Fallback and assign default if none exists.
+     * Set the default values for directory, controller and action if empty.
      *
      * @return \Avenue\Route
      */
