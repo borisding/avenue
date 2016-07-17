@@ -183,7 +183,6 @@ class Route implements RouteInterface
     protected function initController()
     {
         $ControllerClass = $this->getControllerNamespace();
-        $ControllerClassParents = class_parents($ControllerClass);
 
         // throw exception if no controller class found
         if (!class_exists($ControllerClass)) {
@@ -192,7 +191,7 @@ class Route implements RouteInterface
         }
 
         // check if controller class has parent controller
-        if (!isset($ControllerClassParents[static::BASE_CONTROLLER])) {
+        if (!isset(class_parents($ControllerClass)[static::BASE_CONTROLLER])) {
             $this->app->response->withStatus(400);
             throw new \LogicException('Controller must be extending the base controller!');
         }
