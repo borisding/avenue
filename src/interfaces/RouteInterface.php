@@ -11,6 +11,36 @@ interface RouteInterface
     public function init(array $args);
 
     /**
+     * Instantiate controller.
+     */
+    public function initController();
+
+    /**
+     * Get controller class namespace.
+     */
+    public function getControllerNamespace();
+
+    /**
+     * Match the route URI with regular expression.
+     */
+    public function matchRoute();
+
+    /**
+     * Set respective route params with actual value.
+     */
+    public function setRouteParams();
+
+    /**
+     * Set the default values route parameters.
+     */
+    public function setDefaultRouteParams();
+
+    /**
+     * Mapping the resource method representation.
+     */
+    public function mapResourceMethod();
+
+    /**
      * Set value for particular URI based on the key/value.
      *
      * @param mixed $key

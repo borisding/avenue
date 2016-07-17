@@ -122,7 +122,7 @@ class Route implements RouteInterface
      * Match the route URI with regular expression.
      * Return true if the particular route is matched.
      */
-    protected function matchRoute()
+    public function matchRoute()
     {
         if (!is_array($this->filters)) {
             throw new \LogicException('Route callback should be returning array.');
@@ -139,7 +139,7 @@ class Route implements RouteInterface
     /**
      * Set respective route params with actual value.
      */
-    protected function setRouteParams()
+    public function setRouteParams()
     {
         $fs = '/';
         $arrRule = [];
@@ -161,7 +161,7 @@ class Route implements RouteInterface
                     $index = array_search($token, $arrRule);
 
                     (isset($arrPathInfo[$index]))
-                    ? $this->setParam($key, $this->app->escape($arrPathInfo[$index]))
+                    ? $this->setParam($key, $arrPathInfo[$index])
                     : $this->setParam($key, null);
                 } else {
                     $this->setParam($key, null);
@@ -178,7 +178,7 @@ class Route implements RouteInterface
      *
      * @return \Avenue\Route
      */
-    protected function setDefaultRouteParams()
+    public function setDefaultRouteParams()
     {
         // set directory
         $this->setParam('directory', $this->app->arrGet('@directory', $this->filters, ''));
@@ -193,7 +193,54 @@ class Route implements RouteInterface
             $this->setParam('action', static::DEFAULT_ACTION);
         }
 
+        // proceed to resource mapping if token exist
+        if (isset($this->filters['@resource'])) {
+            $this->mapResourceMethod();
+        }
+
         return $this;
+    }
+
+    /**
+     * Check against resource token in route's filter and,
+     * overwrite the controller action based on the http request method
+     * when resource token is true or targeted controller is matched.
+     *
+     * example of @resource token format:
+     *
+     * @resource => true (applied to any controllers that fulfilled the route mapping)
+     * @resource => 'default' (only applied to 'DefaultController' class)
+     * @resource => 'default|dummy' (only applied to 'DefaultController' and 'DummyController' classes)
+     *
+     */
+    public function mapResourceMethod()
+    {
+        $delimiter = '|';
+        $controller = $this->getParams('controller');
+        $requestMethod = $this->app->request->getRequestMethod(true);
+
+        $resource = $this->filters['@resource'];
+        $this->setParam('resource', $resource);
+
+        // if true or with targeted controller
+        if ($resource === true || (!strpos($resource, $delimiter) && $resource === $controller)) {
+            $this->setParam('action', $requestMethod);
+            return;
+        }
+
+        // if more than one controller
+        if (strpos($resource, $delimiter) !== false) {
+            $arrControllers = explode($delimiter, $resource);
+            $filteredArrControllers = array_values(array_filter($arrControllers));
+
+            if (count($arrControllers) !== count($filteredArrControllers)) {
+                throw new \InvalidArgumentException(sprintf('Invalid format of @resource token value [%s]!', $resource));
+            }
+
+            if (in_array($controller, $arrControllers)) {
+                $this->setParam('action', $requestMethod);
+            }
+        }
     }
 
     /**
@@ -201,7 +248,7 @@ class Route implements RouteInterface
      *
      * @throws \LogicException
      */
-    protected function initController()
+    public function initController()
     {
         $ControllerClass = $this->getControllerNamespace();
 
@@ -224,7 +271,7 @@ class Route implements RouteInterface
      * Build the controller namespace for the matched route.
      * If no controller is specified, the default controller will always be used.
      */
-    protected function getControllerNamespace()
+    public function getControllerNamespace()
     {
         $fs = '/';
         $bs = '\\';
@@ -254,7 +301,7 @@ class Route implements RouteInterface
      */
     public function setParam($key, $value)
     {
-        return $this->params[$key] = $value;
+        return $this->params[$key] = $this->app->escape($value);
     }
 
     /**
