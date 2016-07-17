@@ -152,9 +152,4 @@ interface RequestInterface
      * Alias method for getting action name that provided in route for request.
      */
     public function getAction();
-
-    /**
-     * Alias method for getting id name that provided in route for request.
-     */
-    public function getId();
 }

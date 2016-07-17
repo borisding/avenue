@@ -14,14 +14,14 @@ class ControllerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->app = new App();
-        $this->app->route->setParam('@controller', 'foo');
-        $this->app->route->setParam('@action', 'test');
-        $this->app->route->setParam('@id', '123');
+        $this->app->route->setParam('controller', 'foo');
+        $this->app->route->setParam('action', 'test');
+        $this->app->route->setParam('id', '123');
     }
 
     public function testControllerIndexActionInvoked()
     {
-        $this->app->route->setParam('@action', 'index');
+        $this->app->route->setParam('action', 'index');
         $indexAction = Reflection::callClassMethod(new FooController($this->app), 'indexAction');
         $this->assertTrue($indexAction);
     }
@@ -49,7 +49,7 @@ class ControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function testControllerNonExistActionException()
     {
-        $this->app->route->setParam('@action', 'dummy');
+        $this->app->route->setParam('action', 'dummy');
         $controllerAction = Reflection::callClassMethod(new FooController($this->app), 'controllerAction');
     }
 }

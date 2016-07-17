@@ -131,8 +131,8 @@ class Route implements RouteInterface
         // replace with the regexp patterns
         $ruleRegex = strtr(strtr($this->rule, $this->filters), $this->regex);
         $ruleRegex = str_replace(')', ')?', $ruleRegex);
-        $this->pathInfo = $this->app->request->getPathInfo();
 
+        $this->pathInfo = $this->app->request->getPathInfo();
         return preg_match('#^/?' . $ruleRegex . '/?$#', $this->pathInfo);
     }
 
@@ -151,25 +151,37 @@ class Route implements RouteInterface
             // iterate over and set respective values to token
             for ($i = 0, $len = count($arrUri); $i < $len; $i++) {
 
-                if (!empty($arrPathInfo[$i]) && strpos($arrUri[$i], '@') !== false) {
-                    $key = $arrUri[$i];
+                if (!empty($arrPathInfo[$i]) && substr($arrUri[$i], 0, 1) === '@') {
+                    $key = substr($arrUri[$i], 1, strlen($arrUri[$i]));
                     $value = $arrPathInfo[$i];
+
                     $this->setParam($key, $this->app->escape($value));
                 }
             }
         }
 
+        $this->setDefaultRouteParams();
+        return $this;
+    }
+
+    /**
+     * Fallback and assign default if none exists.
+     *
+     * @return \Avenue\Route
+     */
+    protected function setDefaultRouteParams()
+    {
         // set directory
-        $this->setParam('@directory', $this->app->arrGet('@directory', $this->filters, ''));
+        $this->setParam('directory', $this->app->arrGet('@directory', $this->filters, ''));
 
         // set default controller if empty
-        if (empty($this->getParams('@controller'))) {
-            $this->setParam('@controller', $this->app->getDefaultController());
+        if (empty($this->getParams('controller'))) {
+            $this->setParam('controller', $this->app->getDefaultController());
         }
 
         // set default action if empty
-        if (empty($this->getParams('@action'))) {
-            $this->setParam('@action', static::DEFAULT_ACTION);
+        if (empty($this->getParams('action'))) {
+            $this->setParam('action', static::DEFAULT_ACTION);
         }
 
         return $this;
@@ -208,8 +220,8 @@ class Route implements RouteInterface
         $fs = '/';
         $bs = '\\';
         $namespace = '';
-        $directory = $this->getParams('@directory');
-        $controller = $this->getParams('@controller');
+        $directory = $this->getParams('directory');
+        $controller = $this->getParams('controller');
         $controller = ucfirst($controller . static::CONTROLLER_SUFFIX);
 
         // check directory

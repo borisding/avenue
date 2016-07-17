@@ -399,7 +399,7 @@ class Request implements RequestInterface
      */
     public function getDirectory()
     {
-        return $this->app->route->getParams('@directory');
+        return $this->app->route->getParams('directory');
     }
 
     /**
@@ -407,7 +407,7 @@ class Request implements RequestInterface
      */
     public function getController()
     {
-        return $this->app->route->getParams('@controller');
+        return $this->app->route->getParams('controller');
     }
 
     /**
@@ -415,14 +415,6 @@ class Request implements RequestInterface
      */
     public function getAction()
     {
-        return $this->app->route->getParams('@action');
-    }
-
-    /**
-     * Return requested id.
-     */
-    public function getId()
-    {
-        return $this->app->route->getParams('@id');
+        return $this->app->route->getParams('action');
     }
 }
