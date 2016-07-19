@@ -395,11 +395,11 @@ class Request implements RequestInterface
     }
 
     /**
-     * Return requested directory.
+     * Return requested prefix (directory).
      */
-    public function getDirectory()
+    public function getPrefix()
     {
-        return $this->app->route->getParams('directory');
+        return $this->app->route->getParams('prefix');
     }
 
     /**

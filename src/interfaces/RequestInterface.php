@@ -139,9 +139,9 @@ interface RequestInterface
     public function getBody();
 
     /**
-     * Alias method for getting directory name that provided in route for request.
+     * Alias method for getting namespace prefix (directory) name that provided in route for request.
      */
-    public function getDirectory();
+    public function getPrefix();
 
     /**
      * Alias method for getting controller name that provided in route for request.

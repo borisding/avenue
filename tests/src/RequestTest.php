@@ -241,8 +241,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     public function testGetDirectory()
     {
-        Reflection::setPropertyValue($this->app->route, 'params', ['directory' => 'admin']);
-        $this->assertEquals('admin', $this->request->getDirectory());
+        Reflection::setPropertyValue($this->app->route, 'params', ['prefix' => 'admin']);
+        $this->assertEquals('admin', $this->request->getPrefix());
     }
 
     public function testGetController()

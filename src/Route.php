@@ -174,14 +174,14 @@ class Route implements RouteInterface
     }
 
     /**
-     * Set the default values for directory, controller and action if empty.
+     * Set the default values for prefix (directory), controller and action if empty.
      *
      * @return \Avenue\Route
      */
     public function setDefaultRouteParams()
     {
-        // set directory
-        $this->setParam('directory', $this->app->arrGet('@directory', $this->filters, ''));
+        // set prefix (directory)
+        $this->setParam('prefix', $this->app->arrGet('@prefix', $this->filters, ''));
 
         // set default controller if empty
         if (empty($this->getParams('controller'))) {
@@ -276,16 +276,16 @@ class Route implements RouteInterface
         $fs = '/';
         $bs = '\\';
         $namespace = '';
-        $directory = $this->getParams('directory');
+        $prefix = $this->getParams('prefix');
         $controller = $this->getParams('controller');
         $controller = ucfirst($controller . static::CONTROLLER_SUFFIX);
 
-        // check directory
-        if (!empty($directory)) {
-            if (strpos($directory, $fs) !== false) {
-                $namespace .= implode($bs, array_map('ucfirst', explode($fs, $directory))) . $bs;
+        // check prefix
+        if (!empty($prefix)) {
+            if (strpos($prefix, $fs) !== false) {
+                $namespace .= implode($bs, array_map('ucfirst', explode($fs, $prefix))) . $bs;
             } else {
-                $namespace .= ucfirst($directory) . $bs;
+                $namespace .= ucfirst($prefix) . $bs;
             }
         }
 
