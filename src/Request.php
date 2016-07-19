@@ -411,6 +411,14 @@ class Request implements RequestInterface
     }
 
     /**
+     * Return the mapped controller namespace.
+     */
+    public function getNamespace()
+    {
+        return $this->app->route->getParams('namespace');
+    }
+
+    /**
      * Return requested action.
      */
     public function getAction()

@@ -250,21 +250,22 @@ class Route implements RouteInterface
      */
     public function initController()
     {
-        $ControllerClass = $this->getControllerNamespace();
+        $controllerNamespace = $this->getControllerNamespace();
+        $this->setParam('namespace', $controllerNamespace);
 
         // throw exception if no controller class found
-        if (!class_exists($ControllerClass)) {
+        if (!class_exists($controllerNamespace)) {
             $this->app->response->withStatus(404);
-            throw new \LogicException(sprintf('Controller [%s] not found.', $ControllerClass));
+            throw new \LogicException(sprintf('Controller [%s] not found.', $controllerNamespace));
         }
 
         // check if controller class has parent controller
-        if (!isset(class_parents($ControllerClass)[static::BASE_CONTROLLER])) {
+        if (!isset(class_parents($controllerNamespace)[static::BASE_CONTROLLER])) {
             $this->app->response->withStatus(400);
             throw new \LogicException('Controller must be extending the base controller!');
         }
 
-        return new $ControllerClass($this->app);
+        return new $controllerNamespace($this->app);
     }
 
     /**

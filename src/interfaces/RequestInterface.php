@@ -149,6 +149,11 @@ interface RequestInterface
     public function getController();
 
     /**
+     * Alias method for getting controller namespace.
+     */
+    public function getNamespace();
+
+    /**
      * Alias method for getting action name that provided in route for request.
      */
     public function getAction();

@@ -251,6 +251,12 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('default', $this->request->getController());
     }
 
+    public function testGetNamespace()
+    {
+        Reflection::setPropertyValue($this->app->route, 'params', ['namespace' => 'App\Controllers\Foo\BarController']);
+        $this->assertEquals('App\Controllers\Foo\BarController', $this->request->getNamespace());
+    }
+
     public function testGetAction()
     {
         Reflection::setPropertyValue($this->app->route, 'params', ['action' => 'index']);
