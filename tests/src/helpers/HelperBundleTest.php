@@ -204,14 +204,38 @@ class HelperBundleTest extends \PHPUnit_Framework_TestCase
 
     public function testInputAlnumIsTrue()
     {
-        $input = 'abc123_';
-        $this->assertTrue($this->app->isInputAlnum($input));
+        $input = 'abc123';
+        $this->assertTrue($this->app->isAlnum($input));
     }
 
     public function testInputAlnumIsFalse()
     {
         $input = 'abc123_~!@';
-        $this->assertFalse($this->app->isInputAlnum($input));
+        $this->assertFalse($this->app->isAlnum($input));
+    }
+
+    public function testInputAlphaIsTrue()
+    {
+        $input = 'abcABC';
+        $this->assertTrue($this->app->isAlpha($input));
+    }
+
+    public function testInputAlphaIsFalse()
+    {
+        $input = 'abc123_~!@';
+        $this->assertFalse($this->app->isAlpha($input));
+    }
+
+    public function testInputDigitIsTrue()
+    {
+        $input = '12345';
+        $this->assertTrue($this->app->isDigit($input));
+    }
+
+    public function testInputDigitIsFalse()
+    {
+        $input = 'abc123_~!@';
+        $this->assertFalse($this->app->isDigit($input));
     }
 
     public function testMatchHashedStringIsTrue()
