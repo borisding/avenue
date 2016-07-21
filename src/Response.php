@@ -93,7 +93,7 @@ class Response implements ResponseInterface
             $this->sendDefinedHeaders();
         }
 
-        // clean and exit if has cache
+        // clear body and exit for cache
         if ($this->hasCache()) {
             $this->cleanup();
             exit(0);
@@ -317,7 +317,7 @@ class Response implements ResponseInterface
         $HTTP_IF_NONE_MATCH = $this->app->request->getHeader('If-None-Match');
 
         if ($HTTP_IF_NONE_MATCH && $HTTP_IF_NONE_MATCH === $uniqueId) {
-            $this->setCacheHeader();
+            $this->setCacheStatus();
         }
 
         return $this;
@@ -339,8 +339,30 @@ class Response implements ResponseInterface
         $HTTP_IF_MODIFIED_SINCE = $this->app->request->getHeader('If-Modified-Since');
 
         if (strtotime($HTTP_IF_MODIFIED_SINCE) === $timestamp) {
-            $this->setCacheHeader();
+            $this->setCacheStatus();
         }
+
+        return $this;
+    }
+
+    /**
+     * Http cache for expire time as provided.
+     * Can be chained either with withEtag or withLastModified method.
+     *
+     * @param mixed $expireTime
+     */
+    public function cache($expireTime)
+    {
+        // parse string using strtotime if string provided
+        if (is_string($expireTime)) {
+            $expireTime = strtotime($expireTime);
+        }
+
+        // set cache control and expires headers
+        $this->withHeader([
+            'Cache-Control' => 'max-age=' . $expireTime,
+            'Expires' => gmdate('D, d M Y H:i:s', $expireTime) . ' GMT'
+        ]);
 
         return $this;
     }
@@ -357,15 +379,14 @@ class Response implements ResponseInterface
     }
 
     /**
-     * Set the status and connection for cache.
+     * Set the cache status.
      *
      * @return \Avenue\Response
      */
-    protected function setCacheHeader()
+    protected function setCacheStatus()
     {
         $this->boolCache = true;
         $this->withStatus(304);
-        $this->withHeader(['Connection' => 'close']);
 
         return $this;
     }

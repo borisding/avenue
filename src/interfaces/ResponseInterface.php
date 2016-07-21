@@ -109,6 +109,13 @@ interface ResponseInterface
     public function withLastModified($timestamp);
 
     /**
+     * Http cache for expire time as provided.
+     *
+     * @param mixed $expireTime
+     */
+    public function cache($expireTime);
+
+    /**
      * Return true or false for cached content.
      */
     public function hasCache();
