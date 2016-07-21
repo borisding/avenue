@@ -95,14 +95,14 @@ class App implements AppInterface
         }
 
         $this->setErrorHandler();
-        $this->registerCore();
-        $this->factory();
+        $this->registerCore()->factory();
     }
 
     /**
      * Adding route's rule for particular request.
      *
-     * @see \Avenue\AppInterface::addRoute()
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::addRoute()
      */
     public function addRoute()
     {
@@ -116,7 +116,8 @@ class App implements AppInterface
     /**
      * Container that registers specific service for later usage.
      *
-     * @see \Avenue\AppInterface::container()
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::container()
      */
     public function container($name, Closure $callback)
     {
@@ -130,6 +131,7 @@ class App implements AppInterface
     /**
      * Resolving registered services via callback.
      *
+     * {@inheritDoc}
      * @see \Avenue\Interfaces\AppInterface::resolve()
      */
     public function resolve($name)
@@ -147,6 +149,7 @@ class App implements AppInterface
      * Making sure only one class instance created at one time.
      * Class instance returned by resolving the registered service.
      *
+     * {@inheritDoc}
      * @see \Avenue\Interfaces\AppInterface::singleton()
      */
     public function singleton($name)
@@ -250,10 +253,12 @@ class App implements AppInterface
 
     /**
      * Retrieving config value based on the key.
+     * Return all configurations instead if key is empty.
      *
-     * @param mixed $key
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::getConfig()
      */
-    public function getConfig($key)
+    public function getConfig($key = null)
     {
         if (empty(static::$config)) {
             $appDefaultConfig = $this->getDefaultConfig();
@@ -264,6 +269,12 @@ class App implements AppInterface
             unset($appDefaultConfig, $userDefinedConfig);
         }
 
+        // simply return all if empty key provided
+        if (empty($key)) {
+            return static::$config;
+        }
+
+        // return particular config
         if (!array_key_exists($key, static::$config)) {
             static::$config[$key] = null;
         }
@@ -274,7 +285,8 @@ class App implements AppInterface
     /**
      * List of default value for configurations.
      *
-     * @return array
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::getDefaultConfig()
      */
     public function getDefaultConfig()
     {
@@ -306,7 +318,10 @@ class App implements AppInterface
     }
 
     /**
-     * Retrieving avenue version.
+     * Retrieving framework version.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::getVersion()
      */
     public function getVersion()
     {
@@ -314,7 +329,10 @@ class App implements AppInterface
     }
 
     /**
-     * Retrieving avenue application version.
+     * Retrieving avenue application version config.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::getAppVersion()
      */
     public function getAppVersion()
     {
@@ -322,7 +340,10 @@ class App implements AppInterface
     }
 
     /**
-     * Retrieving http version setting.
+     * Retrieving http version config.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::getHttpVersion()
      */
     public function getHttpVersion()
     {
@@ -330,7 +351,10 @@ class App implements AppInterface
     }
 
     /**
-     * Retrieving timezone setting.
+     * Retrieving timezone config.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::getTimezone()
      */
     public function getTimezone()
     {
@@ -338,7 +362,10 @@ class App implements AppInterface
     }
 
     /**
-     * Set the application default timezone based on the setting.
+     * Set the application default timezone based on the config.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::setTimezone()
      */
     public function setTimezone()
     {
@@ -347,7 +374,10 @@ class App implements AppInterface
     }
 
     /**
-     * Retrieving application environment setting.
+     * Retrieving application environment config.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::getEnvironment()
      */
     public function getEnvironment()
     {
@@ -355,7 +385,10 @@ class App implements AppInterface
     }
 
     /**
-     * Retrieving default controller setting.
+     * Retrieving default controller config.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::getDefaultController()
      */
     public function getDefaultController()
     {

@@ -185,6 +185,11 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('bar', $this->app->getConfig('foo'));
     }
 
+    public function testGetAllConfig()
+    {
+        $this->assertTrue(count($this->app->getConfig()) > 0);
+    }
+
     public function testGetVersion()
     {
         $this->assertEquals(App::AVENUE_VERSION, $this->app->getVersion(), 'Version should be equal.');

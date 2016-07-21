@@ -48,4 +48,44 @@ interface AppInterface
      * Get the default list of app config.
      */
     public function getDefaultConfig();
+
+    /**
+     * Get the framework version.
+     */
+    public function getVersion();
+
+    /**
+     * Get application version.
+     */
+    public function getAppVersion();
+
+    /**
+     * Get http version.
+     */
+    public function getHttpVersion();
+
+    /**
+     * Get timezone.
+     */
+    public function getTimezone();
+
+    /**
+     * Set application timezone.
+     */
+    public function setTimezone();
+
+    /**
+     * Get application environment.
+     */
+    public function getEnvironment();
+
+    /**
+     * Get default controller.
+     */
+    public function getDefaultController();
+
+    /**
+     * Get the app instance.
+     */
+    public static function getInstance();
 }
