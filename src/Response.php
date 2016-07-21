@@ -331,11 +331,7 @@ class Response implements ResponseInterface
      */
     public function withLastModified($timestamp)
     {
-        if (!is_integer($timestamp)) {
-            throw new \InvalidArgumentException('Invalid data type of UNIX timestamp! Expect integer value.');
-        }
-
-        $this->withHeader(['Last-Modified' => gmdate('D, d M Y H:i:s', $timestamp) . ' GMT']);
+        $this->withHeader(['Last-Modified' => $this->getGmtDateTime($timestamp)]);
         $HTTP_IF_MODIFIED_SINCE = $this->app->request->getHeader('If-Modified-Since');
 
         if (strtotime($HTTP_IF_MODIFIED_SINCE) === $timestamp) {
@@ -361,7 +357,7 @@ class Response implements ResponseInterface
         // set cache control and expires headers
         $this->withHeader([
             'Cache-Control' => 'max-age=' . $expireTime,
-            'Expires' => gmdate('D, d M Y H:i:s', $expireTime) . ' GMT'
+            'Expires' => $this->getGmtDateTime($expireTime)
         ]);
 
         return $this;
@@ -376,6 +372,21 @@ class Response implements ResponseInterface
     public function hasCache()
     {
         return $this->boolCache;
+    }
+
+    /**
+     * Get the GMT date/time based on the timestamp.
+     *
+     * @param integer $timestamp
+     * @throws \InvalidArgumentException
+     */
+    protected function getGmtDateTime($timestamp)
+    {
+        if (!is_integer($timestamp)) {
+            throw new \InvalidArgumentException('Invalid data type of UNIX timestamp! Expect integer value.');
+        }
+
+        return gmdate('D, d M Y H:i:s', $timestamp) . ' GMT';
     }
 
     /**
