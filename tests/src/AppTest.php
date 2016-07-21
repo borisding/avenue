@@ -7,6 +7,7 @@ use Avenue\Response;
 use Avenue\Route;
 use Avenue\View;
 use Avenue\Exception;
+use Avenue\Mcrypt;
 use Avenue\Tests\Reflection;
 
 class AppTest extends \PHPUnit_Framework_TestCase
@@ -169,6 +170,12 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
         $exception = $this->app->exception();
         $this->assertTrue($exception instanceof Exception);
+    }
+
+    public function testSingletonMcrytClassInstance()
+    {
+        $mcrypt = $this->app->mcrypt();
+        $this->assertTrue($mcrypt instanceof Mcrypt);
     }
 
     /**
