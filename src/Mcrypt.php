@@ -37,7 +37,7 @@ class Mcrypt implements McryptInterface
     }
 
     /**
-     * Set method for encrypting plain $data.
+     * Encrypt method for encrypting plain $data.
      *
      * {@inheritDoc}
      * @see \Avenue\Interfaces\McryptInterface::encrypt($data)
@@ -56,7 +56,7 @@ class Mcrypt implements McryptInterface
     }
 
     /**
-     * Get method for decrypting encrypted data.
+     * Decrypt method for decrypting encrypted data.
      *
      * {@inheritDoc}
      * @see \Avenue\Interfaces\McryptInterface::decrypt($data)
