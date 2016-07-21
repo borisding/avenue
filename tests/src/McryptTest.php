@@ -12,7 +12,7 @@ class McryptTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->app = new App();
-        Reflection::setPropertyValue($this->app, 'config', ['timezone' => 'UTC', 'encryption' =>[]]);
+        Reflection::setPropertyValue($this->app, 'config', ['encryption' =>[]]);
         $this->mcrypt = $this->app->mcrypt();
     }
 

@@ -36,4 +36,16 @@ interface AppInterface
      * Running application by rendering the application output.
      */
     public function run();
+
+    /**
+     * Get the particular config.
+     *
+     * @param mixed $key
+     */
+    public function getConfig($key);
+
+    /**
+     * Get the default list of app config.
+     */
+    public function getDefaultConfig();
 }

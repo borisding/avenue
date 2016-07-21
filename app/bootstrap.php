@@ -13,5 +13,5 @@ require_once AVENUE_APP_DIR. '/routes.php';
 // include application view helpers.
 require_once AVENUE_APP_DIR. '/views/helpers.php';
 
-// rendering application output
-$app->run();
+// set timezone and rendering application output
+$app->setTimezone()->run();

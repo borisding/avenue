@@ -74,7 +74,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
     public function testRouteDefaultController()
     {
         $this->http->set('PATH_INFO', '/');
-        Reflection::setPropertyValue($this->app, 'config', ['timezone' => 'UTC', 'defaultController' => 'default'], true);
+        Reflection::setPropertyValue($this->app, 'config', ['defaultController' => 'default'], true);
         $rule = '(/@controller(/@action(/@id)))';
         $callback = function() {
             return [

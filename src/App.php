@@ -94,8 +94,9 @@ class App implements AppInterface
             static::$app = $this;
         }
 
-        $this->setTimezone()->setErrorHandler();
-        $this->registerCore()->factory();
+        $this->setErrorHandler();
+        $this->registerCore();
+        $this->factory();
     }
 
     /**
@@ -255,7 +256,12 @@ class App implements AppInterface
     public function getConfig($key)
     {
         if (empty(static::$config)) {
-            static::$config = require_once AVENUE_CONFIG_DIR . '/app.php';
+            $appDefaultConfig = $this->getDefaultConfig();
+            $userDefinedConfig = require_once AVENUE_CONFIG_DIR . '/app.php';
+
+            // merged with user defined
+            static::$config = array_merge($appDefaultConfig, $userDefinedConfig);
+            unset($appDefaultConfig, $userDefinedConfig);
         }
 
         if (!array_key_exists($key, static::$config)) {
@@ -263,6 +269,40 @@ class App implements AppInterface
         }
 
         return static::$config[$key];
+    }
+
+    /**
+     * List of default value for configurations.
+     *
+     * @return array
+     */
+    public function getDefaultConfig()
+    {
+        return [
+            // default current application's version
+            'appVersion' => '1.0',
+
+            // default http version that is used
+            'httpVersion' => '1.1',
+
+            // default application's timezone
+            'timezone' => 'UTC',
+
+            // default application's environment mode
+            'environment' => 'development',
+
+            // default controller to be assigned when @controller param is empty
+            'defaultController' => 'default',
+
+            // default encryption configuration
+            'encryption' => [],
+
+            // default database configuration
+            'database' => [],
+
+            // default logging configuration
+            'logging' => []
+        ];
     }
 
     /**
