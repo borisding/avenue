@@ -25,6 +25,24 @@ class McryptTest extends \PHPUnit_Framework_TestCase
         $this->mcrypt->encrypt('test');
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testCipherNotSupportedException()
+    {
+        Reflection::setPropertyValue($this->mcrypt, 'config', ['key' => '', 'cipher' => 'zzz', 'mode' => MCRYPT_MODE_CBC]);
+        $this->mcrypt->encrypt('test');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testModeNotSupportedException()
+    {
+        Reflection::setPropertyValue($this->mcrypt, 'config', ['key' => '', 'cipher' => MCRYPT_RIJNDAEL_256, 'mode' => 'zzz']);
+        $this->mcrypt->encrypt('test');
+    }
+
     public function testEncryptData()
     {
         Reflection::setPropertyValue($this->mcrypt, 'config', ['key' => 'mysecret', 'cipher' => MCRYPT_RIJNDAEL_256, 'mode' => MCRYPT_MODE_CBC]);
