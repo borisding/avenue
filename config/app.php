@@ -2,6 +2,7 @@
 /**
  * Configuration of the application.
  */
+
 return [
     // current application's version
     'appVersion' => '1.0',
@@ -17,6 +18,9 @@ return [
 
     // default controller to be assigned when @controller param is empty
     'defaultController' => 'default',
+
+    // encryption configuration
+    'encryption' => require_once 'encryption.php',
 
     // database configuration
     'database' => require_once 'database.php',

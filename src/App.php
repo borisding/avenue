@@ -7,6 +7,7 @@ use Avenue\Response;
 use Avenue\Route;
 use Avenue\View;
 use Avenue\Exception;
+use Avenue\Mcrypt;
 use Avenue\Helpers\HelperBundleTrait;
 use Avenue\Interfaces\AppInterface;
 
@@ -237,6 +238,10 @@ class App implements AppInterface
 
         $this->container('exception', function($app) {
             return new Exception($app, $this->exc);
+        });
+
+        $this->container('mcrypt', function($app) {
+            return new Mcrypt($app, $this->getConfig('encryption'));
         });
 
         return $this;
