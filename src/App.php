@@ -129,7 +129,7 @@ class App implements AppInterface
     }
 
     /**
-     * Resolving registered services via callback.
+     * Resolving registered service via callback.
      *
      * {@inheritDoc}
      * @see \Avenue\Interfaces\AppInterface::resolve()
@@ -141,8 +141,8 @@ class App implements AppInterface
             throw new \OutOfBoundsException(sprintf('Service [%s] is not registered!', $name));
         }
 
-        $resolver = static::$services[$name];
-        return $resolver(static::$app);
+        $service = static::$services[$name];
+        return $service(static::$app);
     }
 
     /**
