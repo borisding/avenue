@@ -1,26 +1,34 @@
 <?php
 // application start time
+defined('AVENUE_START_TIME') or
 define('AVENUE_START_TIME', microtime(true));
 
 // avenue root directory
+defined('AVENUE_ROOT_DIR') or
 define('AVENUE_ROOT_DIR', dirname(__DIR__));
 
 // path to avenue app directory
+defined('AVENUE_APP_DIR') or
 define('AVENUE_APP_DIR', AVENUE_ROOT_DIR . '/app');
 
 // path to avenue config directory
+defined('AVENUE_CONFIG_DIR') or
 define('AVENUE_CONFIG_DIR', AVENUE_ROOT_DIR . '/config');
 
 // path to avenue log directory
+defined('AVENUE_LOG_DIR') or
 define('AVENUE_LOG_DIR', AVENUE_ROOT_DIR . '/log');
 
 // path to avenue public directory
+defined('AVENUE_PUBLIC_DIR') or
 define('AVENUE_PUBLIC_DIR', AVENUE_ROOT_DIR . '/public');
 
 // path to 'vendor' directory
+defined('AVENUE_VENDOR_DIR') or
 define('AVENUE_VENDOR_DIR', AVENUE_ROOT_DIR . '/vendor');
 
 // path to tests directory
+defined('AVENUE_TESTS_DIR') or
 define('AVENUE_TESTS_DIR', AVENUE_ROOT_DIR . '/tests');
 
 // include vendor autoloader
