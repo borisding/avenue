@@ -3,7 +3,7 @@
  * Application error handling.
  * Error details & stack trace only be displayed in development environment.
  */
-$app->container('error', function($app) {
+$app->container('errors', function($app) {
     $environment = $app->getEnvironment();
     $status = $app->response->getStatusCode();
 

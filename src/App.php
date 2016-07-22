@@ -204,7 +204,7 @@ class App implements AppInterface
     {
         set_exception_handler(function(\Exception $exc) {
             $this->exc = $exc;
-            return $this->error();
+            return $this->errors();
         });
 
         set_error_handler(function($severity, $message, $file, $line) {
