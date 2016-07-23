@@ -151,10 +151,20 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($request instanceof Request);
     }
 
+    public function testSingletonRequestClassInstanceViaStaticMethod()
+    {
+        $this->assertEquals($this->app->request(), App::request());
+    }
+
     public function testSingletonResponseClassInstance()
     {
         $response = $this->app->response();
         $this->assertTrue($response instanceof Response);
+    }
+
+    public function testSingletonResponseClassInstanceViaStaticMethod()
+    {
+        $this->assertEquals($this->app->response(), App::response());
     }
 
     public function testSingletonRouteClassInstance()
@@ -163,10 +173,20 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($route instanceof Route);
     }
 
+    public function testSingletonRouteClassInstanceViaStaticMethod()
+    {
+        $this->assertEquals($this->app->route(), App::route());
+    }
+
     public function testSingletonViewClassInstance()
     {
         $view = $this->app->view();
         $this->assertTrue($view instanceof View);
+    }
+
+    public function testSingletonViewClassInstanceViaStaticMethod()
+    {
+        $this->assertEquals($this->app->view(), App::view());
     }
 
     public function testSingletonExceptionClassInstance()
@@ -180,10 +200,20 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($exception instanceof Exception);
     }
 
+    public function testSingletonExceptionClassInstanceViaStaticMethod()
+    {
+        $this->assertEquals($this->app->exception(), App::exception());
+    }
+
     public function testSingletonMcrytClassInstance()
     {
         $mcrypt = $this->app->mcrypt();
         $this->assertTrue($mcrypt instanceof Mcrypt);
+    }
+
+    public function testSingletonMcryptClassInstanceViaStaticMethod()
+    {
+        $this->assertEquals($this->app->mcrypt(), App::mcrypt());
     }
 
     /**
@@ -192,6 +222,14 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testCallAppNonExistMethodException()
     {
         $this->app->appNonExistMethod();
+    }
+
+    /**
+     * @expectedException LogicException
+     */
+    public function testCallAppNonExistStaticMethodException()
+    {
+        App::appNonExistMethod();
     }
 
     public function testGetConfig()

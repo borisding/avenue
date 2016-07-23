@@ -26,10 +26,6 @@ abstract class Model extends BaseModel
      */
     public function __construct()
     {
-        $this->app = App::getInstance();
-
-        if (!empty($this->app)) {
-            $this->db = $this->app->db();
-        }
+        $this->db = App::db();
     }
 }

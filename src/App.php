@@ -419,8 +419,7 @@ class App implements AppInterface
 
     /**
      * App call magic method.
-     * Shortcut of creating instance via singleton,
-     * and also the user defined function, if any
+     * Shortcut of creating instance via singleton.
      *
      * @param mixed $name
      * @param array $params
@@ -433,10 +432,26 @@ class App implements AppInterface
             return $this->singleton($name);
         }
 
-        if (is_callable($name)) {
-            return call_user_func_array($name, $params);
+        throw new \LogicException(sprintf('Method [%s] does not exist!', $name));
+    }
+
+    /**
+     * App static call magic method.
+     * Provide alternative to singleton method call via static behavior.
+     *
+     * Eg:
+     * App::request() will be the same with $this->request() (in App class itself) or,
+     * $this->app->request() where invoked from other class that has $app property.
+     *
+     * @param mixed $name
+     * @param array $params
+     */
+    public static function __callStatic($name, array $params = [])
+    {
+        if (array_key_exists($name, static::$services)) {
+            return static::getInstance()->singleton($name);
         }
 
-        throw new \LogicException(sprintf('Method [%s] does not exist!', $name));
+        throw new \LogicException(sprintf('Static method [%s] does not exist!', $name));
     }
 }
