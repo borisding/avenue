@@ -1,7 +1,6 @@
 <?php
 namespace Avenue;
 
-use Closure;
 use Avenue\Request;
 use Avenue\Response;
 use Avenue\Route;
@@ -14,13 +13,6 @@ use Avenue\Interfaces\AppInterface;
 class App implements AppInterface
 {
     use HelperBundleTrait;
-
-    /**
-     * Avenue version.
-     *
-     * @var string
-     */
-    const AVENUE_VERSION = '1.0';
 
     /**
      * Request instance.
@@ -55,7 +47,7 @@ class App implements AppInterface
      *
      * @var object
      */
-    public $exc;
+    public $exception;
 
     /**
      * App instance.
@@ -119,7 +111,7 @@ class App implements AppInterface
      * {@inheritDoc}
      * @see \Avenue\Interfaces\AppInterface::container()
      */
-    public function container($name, Closure $callback)
+    public function container($name, \Closure $callback)
     {
         if (!$this->isAlnum($name)) {
             throw new \InvalidArgumentException('Invalid registered name! Alphanumeric only.');
@@ -159,7 +151,7 @@ class App implements AppInterface
         }
 
         if (!is_object(static::$instances[$name])) {
-            return null;
+            throw new \InvalidArgumentException(sprintf('Non-object returned for [%s] singleton.', $name));
         }
 
         return static::$instances[$name];
@@ -202,8 +194,8 @@ class App implements AppInterface
      */
     protected function setErrorHandler()
     {
-        set_exception_handler(function(\Exception $exc) {
-            $this->exc = $exc;
+        set_exception_handler(function(\Exception $exception) {
+            $this->exception = $exception;
             return $this->resolve('errorHandler');
         });
 
@@ -244,7 +236,7 @@ class App implements AppInterface
         });
 
         $this->container('exception', function($app) {
-            return new Exception($app, $this->exc);
+            return new Exception($app, $this->exception);
         });
 
         $this->container('mcrypt', function($app) {
@@ -318,17 +310,6 @@ class App implements AppInterface
             // default logging configuration
             'logging' => []
         ];
-    }
-
-    /**
-     * Retrieving framework version.
-     *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::getVersion()
-     */
-    public function getVersion()
-    {
-        return static::AVENUE_VERSION;
     }
 
     /**

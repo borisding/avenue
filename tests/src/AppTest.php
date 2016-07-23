@@ -115,14 +115,16 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $this->app->resolve('serviceDoesNotExist');
     }
 
-    public function testSingletonReturnsNull()
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testSingletonThrowsExceptionForNonObject()
     {
         $this->app->container('classObjectNotExist', function() {
             return 'I am just a string.';
         });
 
-        $object = $this->app->singleton('classObjectNotExist');
-        $this->assertNull($object, 'Class object is null.');
+        $this->app->singleton('classObjectNotExist');
     }
 
     public function testSingletonReturnsClassInstance()
@@ -195,11 +197,6 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testGetAllConfig()
     {
         $this->assertTrue(count($this->app->getConfig()) > 0);
-    }
-
-    public function testGetVersion()
-    {
-        $this->assertEquals(App::AVENUE_VERSION, $this->app->getVersion(), 'Version should be equal.');
     }
 
     public function testGetAppVersion()

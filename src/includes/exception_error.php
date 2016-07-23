@@ -59,35 +59,35 @@
             ?>
             <table>
                 <tbody>
-                    <? if ($codeInfo) { ?>
+                    <?php if ($codeInfo) { ?>
                     <tr>
                         <td><label>Code:</label></td>
-                        <td><?= $this->app->e($codeInfo) ?></td>
+                        <td><?php echo $this->app->e($codeInfo); ?></td>
                     </tr>
-                    <? } ?>
+                    <?php } ?>
                     <tr>
                         <td><label>Type:</label></td>
-                        <td><?= $this->app->e($exceptionClass) ?></td>
+                        <td><?php echo $this->app->e($exceptionClass); ?></td>
                     </tr>
                     <tr>
                         <td><label>Message:</label></td>
-                        <td><?= $this->app->e($messageInfo) ?></td>
+                        <td><?php echo $this->app->e($messageInfo); ?></td>
                     </tr>
                     <tr>
                         <td><label>File:</label></td>
-                        <td><?= $this->app->e($fileInfo) ?></td>
+                        <td><?php echo $this->app->e($fileInfo); ?></td>
                     </tr>
                     <tr>
                         <td><label>Line:</label></td>
-                        <td><?= $this->app->e($lineInfo) ?></td>
+                        <td><?php echo $this->app->e($lineInfo); ?></td>
                     </tr>
                 </tbody>
             </table>
             <h3>Stack Trace</h3>
-            <pre><?= $this->app->e($this->getTraceAsString()) ?></pre>
+            <pre><?php echo $this->app->e($this->getTraceAsString()); ?></pre>
         </section>
         <footer>
-            <?= date('Y') ?> &copy; Powered by, Avenue Framework - v<?= $this->app->getVersion() ?>
+            <?php echo date('Y'); ?> &copy; Powered by, Avenue Framework - v<?php echo AVENUE_FRAMEWORK_VERSION; ?>
         </footer>
     </body>
 </html>

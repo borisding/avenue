@@ -1,8 +1,6 @@
 <?php
 namespace Avenue\Interfaces;
 
-use Closure;
-
 interface AppInterface
 {
     /**
@@ -14,9 +12,9 @@ interface AppInterface
      * Container method that registers the dependencies.
      *
      * @param mixed $name
-     * @param Closure $callback
+     * @param \Closure $callback
      */
-    public function container($name, Closure $callback);
+    public function container($name, \Closure $callback);
 
     /**
      * Resolve the registered dependencies.
@@ -48,11 +46,6 @@ interface AppInterface
      * Get the default list of app config.
      */
     public function getDefaultConfig();
-
-    /**
-     * Get the framework version.
-     */
-    public function getVersion();
 
     /**
      * Get application version.

@@ -1,7 +1,6 @@
 <?php
 namespace Avenue;
 
-use Closure;
 use Avenue\App;
 use Avenue\Helpers\HelperBundleTrait;
 use Avenue\Interfaces\ViewInterface;
@@ -132,7 +131,7 @@ class View implements ViewInterface
      * {@inheritDoc}
      * @see \Avenue\Interfaces\ViewInterface::register()
      */
-    public function register($name, Closure $callback)
+    public function register($name, \Closure $callback)
     {
         if (array_key_exists($name, $this->helpers) || method_exists($this, $name)) {
             throw new \InvalidArgumentException('Helper name already registered!');

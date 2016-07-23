@@ -3,6 +3,10 @@
 defined('AVENUE_START_TIME') or
 define('AVENUE_START_TIME', microtime(true));
 
+// avenue framework version
+defined('AVENUE_FRAMEWORK_VERSION') or
+define('AVENUE_FRAMEWORK_VERSION', '1.0');
+
 // avenue root directory
 defined('AVENUE_ROOT_DIR') or
 define('AVENUE_ROOT_DIR', __DIR__);

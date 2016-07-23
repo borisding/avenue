@@ -1,8 +1,6 @@
 <?php
 namespace Avenue\Interfaces;
 
-use Closure;
-
 interface ViewInterface
 {
     /**
@@ -36,7 +34,7 @@ interface ViewInterface
      * Register helper by providing a helper name and a callback for the engine.
      *
      * @param mixed $name
-     * @param Closure $callback
+     * @param \Closure $callback
      */
-    public function register($name, Closure $callback);
+    public function register($name, \Closure $callback);
 }

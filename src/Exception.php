@@ -3,6 +3,7 @@ namespace Avenue;
 
 use Avenue\App;
 use Avenue\Interfaces\ExceptionInterface;
+use Exception as CoreException;
 
 class Exception implements ExceptionInterface
 {
@@ -18,18 +19,18 @@ class Exception implements ExceptionInterface
      *
      * @var mixed
      */
-    protected $exc;
+    protected $exception;
 
     /**
      * Exception class constructor.
      *
      * @param App $app
-     * @param \Exception $exc
+     * @param CoreException $exception
      */
-    public function __construct(App $app, \Exception $exc)
+    public function __construct(App $app, CoreException $exception)
     {
         $this->app = $app;
-        $this->exc = $exc;
+        $this->exception = $exception;
     }
 
     /**
@@ -68,7 +69,7 @@ class Exception implements ExceptionInterface
      */
     public function getMessage()
     {
-        return $this->exc->getMessage();
+        return $this->exception->getMessage();
     }
 
     /**
@@ -77,7 +78,7 @@ class Exception implements ExceptionInterface
      */
     public function getCode()
     {
-        return $this->exc->getCode();
+        return $this->exception->getCode();
     }
 
     /**
@@ -86,7 +87,7 @@ class Exception implements ExceptionInterface
      */
     public function getFile()
     {
-        return $this->exc->getFile();
+        return $this->exception->getFile();
     }
 
     /**
@@ -95,7 +96,7 @@ class Exception implements ExceptionInterface
      */
     public function getLine()
     {
-        return $this->exc->getLine();
+        return $this->exception->getLine();
     }
 
     /**
@@ -104,7 +105,7 @@ class Exception implements ExceptionInterface
      */
     public function getTrace()
     {
-        return $this->exc->getTrace();
+        return $this->exception->getTrace();
     }
 
     /**
@@ -113,7 +114,7 @@ class Exception implements ExceptionInterface
      */
     public function getTraceAsString()
     {
-        return $this->exc->getTraceAsString();
+        return $this->exception->getTraceAsString();
     }
 
     /**
@@ -123,6 +124,6 @@ class Exception implements ExceptionInterface
      */
     public function getExceptionClass()
     {
-        return get_class($this->exc);
+        return get_class($this->exception);
     }
 }
