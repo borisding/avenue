@@ -137,13 +137,18 @@ class Response implements ResponseInterface
     }
 
     /**
-     * Writing input to response body.
+     * Writing string input to response body.
      *
      * {@inheritDoc}
      * @see \Avenue\Interfaces\ResponseInterface::write()
      */
     public function write($input)
     {
+        // just "cast" array or object via serialize if accidentally written
+        if (is_array($input) || is_object($input)) {
+            $input = serialize($input);
+        }
+
         $this->body .= $input;
         return $this;
     }
