@@ -95,10 +95,15 @@ class Response implements ResponseInterface
         $statusCode = $this->getStatusCode();
         $statusDescription = $this->getStatusDescription($statusCode);
         $httpProtocol = 'HTTP/' . (!empty($this->http) ? $this->http : '1.1');
+        $body = $this->getBody();
 
         header(sprintf('%s %d %s', $httpProtocol, $statusCode, $statusDescription), true, $statusCode);
-        unset($statusCode, $statusDescription, $httpProtocol);
 
+        if (!$this->hasCache() && !empty($body)) {
+            header(sprintf('Content-Length: %d', strlen($body)));
+        }
+
+        unset($statusCode, $statusDescription, $httpProtocol, $body);
         return $this;
     }
 
@@ -110,10 +115,6 @@ class Response implements ResponseInterface
      */
     public function sendDefinedHeaders()
     {
-        if (!$this->hasCache()) {
-            header(sprintf('Content-Length: %d', strlen($this->getBody())));
-        }
-
         foreach ($this->headers as $type => $format) {
 
             // processed as multiple headers for the same type
