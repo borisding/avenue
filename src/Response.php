@@ -218,13 +218,7 @@ class Response implements ResponseInterface
     public function getStatusDesc($code)
     {
         $httpStatusCodes = require_once __DIR__ . '/includes/http_status.php';
-        $httpStatusDesc = 'Unknown http status!';
-
-        if (isset($httpStatusCodes[$code])) {
-            $httpStatusDesc = $httpStatusCodes[$code];
-        }
-
-        return $httpStatusDesc;
+        return $this->app->arrGet($code, $httpStatusCodes, 'Unknown http status!');
     }
 
     /**
