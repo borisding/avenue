@@ -39,7 +39,7 @@ class Response implements ResponseInterface
      *
      * @var mixed
      */
-    protected $http;
+    protected $httpVersion;
 
     /**
      * Flag for cached content.
@@ -56,7 +56,7 @@ class Response implements ResponseInterface
     {
         $this->app = $app;
         $this->boolCache = false;
-        $this->http = $this->app->getHttpVersion();
+        $this->httpVersion = $this->app->getHttpVersion();
 
         $this->withStatus(200);
         $this->withHeader(['Content-Type' => 'text/html']);
@@ -94,7 +94,7 @@ class Response implements ResponseInterface
     {
         $statusCode = $this->getStatusCode();
         $statusDescription = $this->getStatusDescription($statusCode);
-        $httpProtocol = 'HTTP/' . (!empty($this->http) ? $this->http : '1.1');
+        $httpProtocol = 'HTTP/' . (!empty($this->httpVersion) ? $this->httpVersion : '1.1');
         $body = $this->getBody();
 
         header(sprintf('%s %d %s', $httpProtocol, $statusCode, $statusDescription), true, $statusCode);
