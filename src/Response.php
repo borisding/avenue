@@ -55,28 +55,11 @@ class Response implements ResponseInterface
     public function __construct(App $app)
     {
         $this->app = $app;
-        $this->http = $this->app->getHttpVersion();
         $this->boolCache = false;
+        $this->http = $this->app->getHttpVersion();
 
         $this->withStatus(200);
         $this->withHeader(['Content-Type' => 'text/html']);
-    }
-
-    /**
-     * Writing input to response body.
-     *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ResponseInterface::write()
-     */
-    public function write($input)
-    {
-        if (empty($this->body)) {
-            $this->body = $input;
-        } else {
-            $this->body .= $input;
-        }
-
-        return $this;
     }
 
     /**
@@ -89,8 +72,7 @@ class Response implements ResponseInterface
     public function render()
     {
         if (!headers_sent()) {
-            $this->sendHttpHeader();
-            $this->sendDefinedHeaders();
+            $this->sendHttpHeader()->sendDefinedHeaders();
         }
 
         // clear body and exit for cache
@@ -132,17 +114,37 @@ class Response implements ResponseInterface
      */
     public function sendDefinedHeaders()
     {
-        $body = $this->getBody();
-
-        if ($body) {
-            header(sprintf('Content-Length: %d', strlen($body)));
+        if (!$this->hasCache()) {
+            header(sprintf('Content-Length: %d', strlen($this->getBody())));
         }
 
         foreach ($this->headers as $type => $format) {
             header($type . ': ' . $format, false);
         }
 
-        unset($body);
+        return $this;
+    }
+
+    /**
+     * Return true if has cache.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ResponseInterface::isCached()
+     */
+    public function hasCache()
+    {
+        return $this->boolCache;
+    }
+
+    /**
+     * Writing input to response body.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ResponseInterface::write()
+     */
+    public function write($input)
+    {
+        $this->body .= $input;
         return $this;
     }
 
@@ -181,7 +183,7 @@ class Response implements ResponseInterface
      */
     public function getBody()
     {
-        return $this->body;
+        return (string)$this->body;
     }
 
     /**
@@ -361,17 +363,6 @@ class Response implements ResponseInterface
         ]);
 
         return $this;
-    }
-
-    /**
-     * Return true if has cache.
-     *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ResponseInterface::isCached()
-     */
-    public function hasCache()
-    {
-        return $this->boolCache;
     }
 
     /**
