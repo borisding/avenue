@@ -47,7 +47,7 @@ interface ResponseInterface
      *
      * @param mixed $code
      */
-    public function getStatusDesc($code);
+    public function getStatusDescription($code);
 
     /**
      * Send http header.

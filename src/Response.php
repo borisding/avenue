@@ -93,11 +93,11 @@ class Response implements ResponseInterface
     public function sendHttpHeader()
     {
         $statusCode = $this->getStatusCode();
-        $statusDesc = $this->getStatusDesc($statusCode);
+        $statusDescription = $this->getStatusDescription($statusCode);
         $httpProtocol = 'HTTP/' . (!empty($this->http) ? $this->http : '1.1');
 
-        header(sprintf('%s %d %s', $httpProtocol, $statusCode, $statusDesc), true, $statusCode);
-        unset($statusCode, $statusDesc, $httpProtocol);
+        header(sprintf('%s %d %s', $httpProtocol, $statusCode, $statusDescription), true, $statusCode);
+        unset($statusCode, $statusDescription, $httpProtocol);
 
         return $this;
     }
@@ -213,9 +213,9 @@ class Response implements ResponseInterface
      * Get the status description based on the status code.
      *
      * {@inheritDoc}
-     * @see \Avenue\Interfaces\ResponseInterface::getStatusDesc()
+     * @see \Avenue\Interfaces\ResponseInterface::getStatusDescription()
      */
-    public function getStatusDesc($code)
+    public function getStatusDescription($code)
     {
         $httpStatusCodes = require_once __DIR__ . '/includes/http_status.php';
         return $this->app->arrGet($code, $httpStatusCodes, 'Unknown http status!');
