@@ -21,6 +21,13 @@ class Response implements ResponseInterface
     protected $headers = [];
 
     /**
+     * Response multiple headers with same type.
+     *
+     * @var array
+     */
+    protected $multipleHeaders = [];
+
+    /**
      * Response body.
      *
      * @var mixed
@@ -103,7 +110,7 @@ class Response implements ResponseInterface
     }
 
     /**
-     * Sending the the defined header, if any.
+     * Sending the the defined headers, if any.
      *
      * {@inheritDoc}
      * @see \Avenue\Interfaces\ResponseInterface::sendDefinedHeaders()
@@ -115,7 +122,19 @@ class Response implements ResponseInterface
         }
 
         foreach ($this->headers as $type => $format) {
-            header($type . ': ' . $format, false);
+
+            // processed as multiple headers for the same type
+            // when format is provided as index based array
+            if ($this->app->arrIsIndex($format)) {
+                $i = 0;
+
+                while ($i < count($format)) {
+                    header($type . ': ' . $format[$i], false);
+                    $i++;
+                }
+            } else {
+                header($type . ': ' . $format);
+            }
         }
 
         return $this;
