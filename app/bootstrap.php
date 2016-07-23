@@ -1,6 +1,7 @@
 <?php
 /**
  * Create app instance by injecting the app's configuration.
+ * Establish handler and core service registries.
  */
 
 // retrieve app config
@@ -19,8 +20,8 @@ $app->container('errorHandler', function($app) {
     $environment = $app->getEnvironment();
     $status = $app->response->getStatusCode();
 
-    // exmple of error messages handling based on the environment
-    // can modify based on the different needs
+    // example of error messages handling based on the environment
+    // can modify based on the different context
     if ($environment === 'staging' || $environment === 'production') {
         error_reporting(0);
         $message = ($status === 404) ? 'Page not found.' : 'Sorry! Something went wrong.';
