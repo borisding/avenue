@@ -132,10 +132,17 @@ class Response implements ResponseInterface
      */
     public function sendDefinedHeaders()
     {
+        $body = $this->getBody();
+
+        if ($body) {
+            header(sprintf('Content-Length: %d', strlen($body)));
+        }
+
         foreach ($this->headers as $type => $format) {
             header($type . ': ' . $format, false);
         }
 
+        unset($body);
         return $this;
     }
 
@@ -147,14 +154,7 @@ class Response implements ResponseInterface
      */
     public function output()
     {
-        $body = $this->getBody();
-        $contentLength = strlen($body);
-
-        if ($contentLength > 0) {
-            header(sprintf('Content-Length: %d', $contentLength));
-        }
-
-        echo $body;
+        echo $this->getBody();
         return $this;
     }
 
