@@ -18,28 +18,36 @@ trait ArrayHelperTrait
     }
 
     /**
-     * Check whether array is associative array.
+     * Check whether provided data is associative array.
      * Return true if it is valid.
      *
-     * @param array $arr
+     * @param mixed $data
      * @return boolean
      */
-    public function arrIsAssoc(array $arr)
+    public function arrIsAssoc($data)
     {
-        $keys = array_keys($arr);
+        if (!is_array($data)) {
+            return false;
+        }
+
+        $keys = array_keys($data);
         return $keys !== array_keys($keys);
     }
 
     /**
-     * Check whether array is index based.
+     * Check whether provided data is index based array.
      * Return true if it is valid.
      *
-     * @param array $arr
+     * @param mixed $data
      * @return boolean
      */
-    public function arrIsIndex(array $arr)
+    public function arrIsIndex($data)
     {
-        return array_values($arr) === $arr;
+        if (!is_array($data)) {
+            return false;
+        }
+
+        return array_values($data) === $data;
     }
 
     /**
