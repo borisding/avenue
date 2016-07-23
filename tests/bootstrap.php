@@ -31,8 +31,22 @@ define('AVENUE_VENDOR_DIR', AVENUE_ROOT_DIR . '/vendor');
 defined('AVENUE_TESTS_DIR') or
 define('AVENUE_TESTS_DIR', AVENUE_ROOT_DIR . '/tests');
 
-// include vendor autoloader
-$autoloader = require AVENUE_VENDOR_DIR  . '/autoload.php';
+// include vendor's autoload
+$PATH_TO_VENDOR_AUTOLOAD_FILE = AVENUE_VENDOR_DIR. '/autoload.php';
+
+if (!file_exists($PATH_TO_VENDOR_AUTOLOAD_FILE)) {
+    die('Vendor autoload not found!');
+}
+
+// check and define custom constant if mcrypt extension is not available
+// to avoid throwing error for default constant in class
+if (!extension_loaded('mcrypt')) {
+    define('MCRYPT_RIJNDAEL_256', '');
+    define('MCRYPT_MODE_CBC', '');
+}
+
+// include vendor's autoloader
+$autoloader = require $PATH_TO_VENDOR_AUTOLOAD_FILE;
 
 // set tests namespace at runtime
 $autoloader->addPsr4('Avenue\\Tests\\', __DIR__);

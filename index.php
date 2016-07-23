@@ -34,6 +34,13 @@ if (!file_exists($PATH_TO_VENDOR_AUTOLOAD_FILE)) {
     die('Vendor autoload not found!');
 }
 
+// check and define custom constant if mcrypt extension is not available
+// to avoid throwing error for default constant in class
+if (!extension_loaded('mcrypt')) {
+    define('MCRYPT_RIJNDAEL_256', '');
+    define('MCRYPT_MODE_CBC', '');
+}
+
 // include vendor's autoloader
 require_once $PATH_TO_VENDOR_AUTOLOAD_FILE;
 

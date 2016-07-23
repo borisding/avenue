@@ -204,7 +204,7 @@ class App implements AppInterface
     {
         set_exception_handler(function(\Exception $exc) {
             $this->exc = $exc;
-            return $this->errors();
+            return $this->resolve('errorHandler');
         });
 
         set_error_handler(function($severity, $message, $file, $line) {
@@ -212,7 +212,10 @@ class App implements AppInterface
                 return;
             }
 
-            $this->response->withStatus(500);
+            if (is_object($this->response)) {
+                $this->response->withStatus(500);
+            }
+
             throw new \ErrorException($message, 0, $severity, $file, $line);
         });
 
