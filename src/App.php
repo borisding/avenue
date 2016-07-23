@@ -207,7 +207,7 @@ class App implements AppInterface
             throw new \InvalidArgumentException('Timezone is not specified!');
         }
 
-        date_default_timezone_set($this->getTimezone());
+        date_default_timezone_set($timezone);
         return $this;
     }
 
