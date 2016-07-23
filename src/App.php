@@ -275,12 +275,13 @@ class App implements AppInterface
             return new Mcrypt($app, $this->getConfig('encryption'));
         });
 
-        $this->factory();
-        return $this;
+        return $this->factory();
     }
 
     /**
      * Retrieve respective class instances via singleton method.
+     *
+     * @return \Avenue\App
      */
     protected function factory()
     {
@@ -288,6 +289,8 @@ class App implements AppInterface
         $this->response = $this->response();
         $this->route = $this->route();
         $this->view = $this->view();
+
+        return $this;
     }
 
     /**
