@@ -96,13 +96,9 @@ class Response implements ResponseInterface
         $statusDesc = $this->getStatusDesc($statusCode);
         $httpProtocol = 'HTTP/' . (!empty($this->http) ? $this->http : '1.1');
 
-        if (strpos(php_sapi_name(), 'cgi') !== false) {
-            header(sprintf('Status: %d %s', $statusCode, $statusDesc), true);
-        } else {
-            header(sprintf('%s %d %s', $httpProtocol, $statusCode, $statusDesc), true, $statusCode);
-        }
-
+        header(sprintf('%s %d %s', $httpProtocol, $statusCode, $statusDesc), true, $statusCode);
         unset($statusCode, $statusDesc, $httpProtocol);
+
         return $this;
     }
 

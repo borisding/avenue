@@ -45,6 +45,16 @@ if (!extension_loaded('mcrypt')) {
     define('MCRYPT_MODE_CBC', '');
 }
 
+// built-in PHP server request URI handling
+// let static file(s) can be recognized and output as is
+if (php_sapi_name() === 'cli-server') {
+    $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+    if (is_file(AVENUE_ROOT_DIR . $path)) {
+        return false;
+    }
+}
+
 // include vendor's autoloader
 require_once $PATH_TO_VENDOR_AUTOLOAD_FILE;
 
