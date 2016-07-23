@@ -21,13 +21,6 @@ class Response implements ResponseInterface
     protected $headers = [];
 
     /**
-     * Response multiple headers with same type.
-     *
-     * @var array
-     */
-    protected $multipleHeaders = [];
-
-    /**
      * Response body.
      *
      * @var mixed
