@@ -8,7 +8,6 @@ use Avenue\Route;
 use Avenue\View;
 use Avenue\Exception;
 use Avenue\Mcrypt;
-use Avenue\Tests\Reflection;
 
 class AppTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,7 +16,14 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         @session_start();
-        $this->app = new App();
+        $this->app = new App([
+            'appVersion' => '1.0',
+            'httpVersion' => '1.1',
+            'timezone' => 'UTC',
+            'environment' => 'development',
+            'defaultController' => 'default',
+            'foo' => 'bar'
+        ]);
     }
 
     public function testGetInstance()
@@ -190,7 +196,6 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
     public function testGetConfig()
     {
-        Reflection::setPropertyValue($this->app, 'config', ['foo' => 'bar'], true);
         $this->assertEquals('bar', $this->app->getConfig('foo'));
     }
 
@@ -201,31 +206,26 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
     public function testGetAppVersion()
     {
-        Reflection::setPropertyValue($this->app, 'config', ['appVersion' => '1.0'], true);
         $this->assertEquals('1.0', $this->app->getAppVersion());
     }
 
     public function testGetHttpVersion()
     {
-        Reflection::setPropertyValue($this->app, 'config', ['httpVersion' => '1.1'], true);
         $this->assertEquals('1.1', $this->app->getHttpVersion());
     }
 
     public function testGetTimezone()
     {
-        Reflection::setPropertyValue($this->app, 'config', ['timezone' => 'UTC'], true);
         $this->assertEquals('UTC', $this->app->getTimezone());
     }
 
     public function testGetEnvironment()
     {
-        Reflection::setPropertyValue($this->app, 'config', ['environment' => 'development'], true);
         $this->assertEquals('development', $this->app->getEnvironment());
     }
 
     public function testGetDefaultController()
     {
-        Reflection::setPropertyValue($this->app, 'config', ['defaultController' => 'default'], true);
         $this->assertEquals('default', $this->app->getDefaultController());
     }
 }

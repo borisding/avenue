@@ -16,7 +16,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->app = new App();
+        $this->app = new App(['defaultController' => 'default']);
         $this->http = new Http();
         $this->route = $this->app->route;
     }
@@ -74,7 +74,6 @@ class RouteTest extends \PHPUnit_Framework_TestCase
     public function testRouteDefaultController()
     {
         $this->http->set('PATH_INFO', '/');
-        Reflection::setPropertyValue($this->app, 'config', ['defaultController' => 'default'], true);
         $rule = '(/@controller(/@action(/@id)))';
         $callback = function() {
             return [

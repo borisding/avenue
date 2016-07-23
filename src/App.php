@@ -79,15 +79,24 @@ class App implements AppInterface
 
     /**
      * App constructor
+     *
+     * @param array $config
      */
-    public function __construct()
+    public function __construct(array $config = [])
     {
         if (empty(static::$app)) {
             static::$app = $this;
         }
 
-        $this->registerExceptionHandler()->registerErrorHandler();
-        $this->registerServices()->factory();
+        if (empty(static::$config)) {
+            static::$config = array_merge($this->getDefaultConfig(), $config);
+        }
+
+        $this
+        ->registerExceptionHandler()
+        ->registerErrorHandler()
+        ->registerServices()
+        ->factory();
     }
 
     /**
@@ -278,12 +287,7 @@ class App implements AppInterface
     public function getConfig($key = null)
     {
         if (empty(static::$config)) {
-            $appDefaultConfig = $this->getDefaultConfig();
-            $userDefinedConfig = require_once AVENUE_CONFIG_DIR . '/app.php';
-
-            // merged with user defined
-            static::$config = array_merge($appDefaultConfig, $userDefinedConfig);
-            unset($appDefaultConfig, $userDefinedConfig);
+            throw new \InvalidArgumentException('Configuration is not available!');
         }
 
         // simply return all if empty key provided

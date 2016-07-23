@@ -1,10 +1,13 @@
 <?php
 /**
- * Create app instance.
- * This makes core services, error & exception handlers available.
+ * Create app instance by injecting the app's configuration.
  */
 
-$app = new \Avenue\App();
+// retrieve app config
+$config = require_once AVENUE_CONFIG_DIR . '/app.php';
+
+// instantiate app by providing config value
+$app = new \Avenue\App($config);
 
 
 /**
@@ -38,13 +41,13 @@ $app->container('errorHandler', function($app) {
  */
 
 // include application services.
-require_once AVENUE_APP_DIR. '/services.php';
+require_once 'services.php';
 
 // include application view helpers.
-require_once AVENUE_APP_DIR. '/views/helpers.php';
+require_once 'views/helpers.php';
 
 // include application routes
-require_once AVENUE_APP_DIR. '/routes.php';
+require_once 'routes.php';
 
 
 /**
