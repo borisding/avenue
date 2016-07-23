@@ -52,7 +52,7 @@ require_once 'routes.php';
 
 
 /**
- * Set application timezone and run.
+ * Boot to run application.
  */
 
-$app->setTimezone()->run();
+$app->run();

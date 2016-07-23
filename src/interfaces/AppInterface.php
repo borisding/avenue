@@ -63,11 +63,6 @@ interface AppInterface
     public function getTimezone();
 
     /**
-     * Set application timezone.
-     */
-    public function setTimezone();
-
-    /**
      * Get application environment.
      */
     public function getEnvironment();

@@ -93,6 +93,7 @@ class App implements AppInterface
         }
 
         $this
+        ->registerTimezone()
         ->registerExceptionHandler()
         ->registerErrorHandler()
         ->registerServices()
@@ -193,6 +194,21 @@ class App implements AppInterface
         // print out the response body for normal request
         $this->response->render();
         exit(0);
+    }
+
+    /**
+     * Register application default timezone based on the config.
+     */
+    protected function registerTimezone()
+    {
+        $timezone = $this->getTimezone();
+
+        if (empty($timezone)) {
+            throw new \InvalidArgumentException('Timezone is not specified!');
+        }
+
+        date_default_timezone_set($this->getTimezone());
+        return $this;
     }
 
     /**
@@ -369,18 +385,6 @@ class App implements AppInterface
     public function getTimezone()
     {
         return $this->getConfig('timezone');
-    }
-
-    /**
-     * Set the application default timezone based on the config.
-     *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::setTimezone()
-     */
-    public function setTimezone()
-    {
-        date_default_timezone_set($this->getTimezone());
-        return $this;
     }
 
     /**
