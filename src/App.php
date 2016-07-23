@@ -86,8 +86,8 @@ class App implements AppInterface
             static::$app = $this;
         }
 
-        $this->setErrorHandler();
-        $this->registerCore()->factory();
+        $this->registerExceptionHandler()->registerErrorHandler();
+        $this->registerServices()->factory();
     }
 
     /**
@@ -187,18 +187,29 @@ class App implements AppInterface
     }
 
     /**
-     * Set the error and exception handlers.
-     * Error messages are render via error service.
+     * Register core exception handler.
+     * Exception instance can be accessed in errorHandler service.
      *
-     * @throws \ErrorException
+     * @return \Avenue\App
      */
-    protected function setErrorHandler()
+    protected function registerExceptionHandler()
     {
         set_exception_handler(function(\Exception $exception) {
             $this->exception = $exception;
             return $this->resolve('errorHandler');
         });
 
+        return $this;
+    }
+
+    /**
+     * Register core error handler.
+     *
+     * @throws \ErrorException
+     * @return \Avenue\App
+     */
+    protected function registerErrorHandler()
+    {
         set_error_handler(function($severity, $message, $file, $line) {
             if (!(error_reporting() & $severity)) {
                 return;
@@ -217,7 +228,7 @@ class App implements AppInterface
     /**
      * Register respective core component services.
      */
-    protected function registerCore()
+    protected function registerServices()
     {
         $this->container('request', function($app) {
             return new Request($app);
@@ -244,6 +255,17 @@ class App implements AppInterface
         });
 
         return $this;
+    }
+
+    /**
+     * Retrieve respective class instances via singleton method.
+     */
+    protected function factory()
+    {
+        $this->request = $this->request();
+        $this->response = $this->response();
+        $this->route = $this->route();
+        $this->view = $this->view();
     }
 
     /**
@@ -385,17 +407,6 @@ class App implements AppInterface
     public static function getInstance()
     {
         return static::$app;
-    }
-
-    /**
-     * Retrieve respective class instances via singleton method.
-     */
-    protected function factory()
-    {
-        $this->request = $this->request();
-        $this->response = $this->response();
-        $this->route = $this->route();
-        $this->view = $this->view();
     }
 
     /**
