@@ -93,11 +93,10 @@ class App implements AppInterface
         }
 
         $this
+        ->registerServices()
         ->registerTimezone()
         ->registerExceptionHandler()
-        ->registerErrorHandler()
-        ->registerServices()
-        ->factory();
+        ->registerErrorHandler();
     }
 
     /**
@@ -143,8 +142,8 @@ class App implements AppInterface
             throw new \OutOfBoundsException(sprintf('Service [%s] is not registered!', $name));
         }
 
-        $service = static::$services[$name];
-        return $service(static::$app);
+        $callback = static::$services[$name];
+        return $callback(static::$app);
     }
 
     /**
@@ -240,10 +239,7 @@ class App implements AppInterface
                 return;
             }
 
-            if (is_object($this->response)) {
-                $this->response->withStatus(500);
-            }
-
+            $this->response->withStatus(500);
             throw new \ErrorException($message, 0, $severity, $file, $line);
         });
 
@@ -279,6 +275,7 @@ class App implements AppInterface
             return new Mcrypt($app, $this->getConfig('encryption'));
         });
 
+        $this->factory();
         return $this;
     }
 
