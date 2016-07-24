@@ -203,7 +203,9 @@ class Route implements RouteInterface
         }
 
         // proceed to resource mapping if token exist
-        if (isset($this->filters['@resource'])) {
+        if (!isset($this->filters['@resource'])) {
+            $this->setParam('resource', false);
+        } else {
             $this->mapResourceMethod();
         }
 
