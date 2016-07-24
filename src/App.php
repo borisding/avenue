@@ -10,6 +10,46 @@ use Avenue\Mcrypt;
 use Avenue\Helpers\HelperBundleTrait;
 use Avenue\Interfaces\AppInterface;
 
+/**
+ * Autocomplete hints for core services to map respective classes:
+ *
+ * 1. Method helpers for overloading via call static magic method.
+ *
+ * @method static \Avenue\Request request()
+ * @method static \Avenue\Response response()
+ * @method static \Avenue\Route route()
+ * @method static \Avenue\View view()
+ * @method static \Avenue\Mcrypt mcrypt()
+ * @method static \Avenue\Exception exception()
+ *
+ * 2. Method helpers for overloading via call magic method.
+ *
+ * @method \Avenue\Request request()
+ * @method \Avenue\Response response()
+ * @method \Avenue\Route route()
+ * @method \Avenue\View view()
+ * @method \Avenue\Mcrypt mcrypt()
+ * @method \Avenue\Exception exception()
+ *
+ * 3. Method helpers for singletons.
+ *
+ * @method \Avenue\Request singleton('request')
+ * @method \Avenue\Response singleton('response')
+ * @method \Avenue\Route singleton('route')
+ * @method \Avenue\View singleton('view')
+ * @method \Avenue\Mcrypt singleton('mcrypt')
+ * @method \Avenue\Exception singleton('exception')
+ *
+ * 4. Method helpers for resolvers.
+ *
+ * @method \Avenue\Request resolve('request')
+ * @method \Avenue\Response resolve('response')
+ * @method \Avenue\Route resolve('route')
+ * @method \Avenue\View resolve('view')
+ * @method \Avenue\Mcrypt resolve('mcrypt')
+ * @method \Avenue\Exception resolve('exception')
+ */
+
 class App implements AppInterface
 {
     use HelperBundleTrait;

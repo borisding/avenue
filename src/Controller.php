@@ -16,28 +16,28 @@ abstract class Controller implements ControllerInterface
     /**
      * Request class instance.
      *
-     * @var mixed
+     * @var \Avenue\Request
      */
     protected $request;
 
     /**
      * Response class instance.
      *
-     * @var mixed
+     * @var \Avenue\Response
      */
     protected $response;
 
     /**
      * Route class instance.
      *
-     * @var mixed
+     * @var \Avenue\Route
      */
     protected $route;
 
     /**
      * View class instance.
      *
-     * @var mixed
+     * @var \Avenue\View
      */
     protected $view;
 

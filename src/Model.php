@@ -16,7 +16,7 @@ abstract class Model extends BaseModel
     /**
      * Capsule object from database service.
      *
-     * @var mixed
+     * @var \Illuminate\Database\Capsule\Manager
      */
     protected $db;
 
