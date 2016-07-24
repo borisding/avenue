@@ -187,6 +187,11 @@ class Route implements RouteInterface
      */
     public function setDefaultRouteParams()
     {
+        // set default prefix if empty
+        if (empty($this->getParams('prefix'))) {
+            $this->setParam('prefix', '');
+        }
+
         // set default controller if empty
         if (empty($this->getParams('controller'))) {
             $this->setParam('controller', $this->app->getDefaultController());
