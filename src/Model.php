@@ -9,7 +9,7 @@ abstract class Model extends BaseModel
     /**
      * Avenue class instance.
      *
-     * @var mixed
+     * @var \Avenue\App
      */
     protected $app;
 
