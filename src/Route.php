@@ -21,6 +21,13 @@ class Route implements RouteInterface
     protected $rule;
 
     /**
+     * The actual matched rule regular expression.
+     *
+     * @var mixed
+     */
+    protected $ruleRegex;
+
+    /**
      * The route filters.
      *
      * @var array
@@ -129,11 +136,11 @@ class Route implements RouteInterface
         }
 
         // replace with the regexp patterns
-        $ruleRegex = strtr(strtr($this->rule, $this->filters), $this->regex);
-        $ruleRegex = str_replace(')', ')?', $ruleRegex);
+        $this->ruleRegex = strtr(strtr($this->rule, $this->filters), $this->regex);
+        $this->ruleRegex = str_replace(')', ')?', $this->ruleRegex);
 
         $this->pathInfo = $this->app->request->getPathInfo();
-        return preg_match('#^/?' . $ruleRegex . '/?$#', $this->pathInfo);
+        return preg_match('#^/?' . $this->ruleRegex . '/?$#', $this->pathInfo);
     }
 
     /**
@@ -180,9 +187,6 @@ class Route implements RouteInterface
      */
     public function setDefaultRouteParams()
     {
-        // set prefix (directory)
-        $this->setParam('prefix', $this->app->arrGet('@prefix', $this->filters, ''));
-
         // set default controller if empty
         if (empty($this->getParams('controller'))) {
             $this->setParam('controller', $this->app->getDefaultController());
@@ -326,5 +330,15 @@ class Route implements RouteInterface
     public function isFulfilled()
     {
         return $this->fulfill;
+    }
+
+    /**
+     * Get the matched rule's regular expression.
+     *
+     * @return mixed
+     */
+    public function getMatchedRuleRegexp()
+    {
+        return $this->ruleRegex;
     }
 }

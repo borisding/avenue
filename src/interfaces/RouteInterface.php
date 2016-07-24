@@ -59,4 +59,9 @@ interface RouteInterface
      * Check if particular route rule is fulfilled.
      */
     public function isFulfilled();
+
+    /**
+     * Get the actual matched rule's regexp.
+     */
+    public function getMatchedRuleRegexp();
 }

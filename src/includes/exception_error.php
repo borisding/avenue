@@ -56,6 +56,8 @@
                 $messageInfo = $this->getMessage();
                 $fileInfo = $this->getFile();
                 $lineInfo = $this->getLine();
+                $ruleRegex = $this->getRouteMatchedRuleRegexp();
+                $routeParams = $this->getRouteParams();
             ?>
             <table>
                 <tbody>
@@ -80,6 +82,14 @@
                     <tr>
                         <td><label>Line:</label></td>
                         <td><?php echo $this->app->e($lineInfo); ?></td>
+                    </tr>
+                    <tr>
+                        <td><label>Route's Parameters:</label></td>
+                        <td><?php print_r($this->app->ee($routeParams)); ?></td>
+                    </tr>
+                    <tr>
+                        <td><label>Route's Regexp:</label></td>
+                        <td><?php echo $this->app->e($ruleRegex); ?></td>
                     </tr>
                 </tbody>
             </table>

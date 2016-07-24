@@ -126,4 +126,20 @@ class Exception implements ExceptionInterface
     {
         return get_class($this->exception);
     }
+
+    /**
+     * Get the matched route's params
+     */
+    public function getRouteParams()
+    {
+        return $this->app->route->getParams();
+    }
+
+    /**
+     * Get the matched rule regular expression.
+     */
+    public function getRouteMatchedRuleRegexp()
+    {
+       return $this->app->route->getMatchedRuleRegexp();
+    }
 }
