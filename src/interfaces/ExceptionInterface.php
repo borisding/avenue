@@ -37,4 +37,14 @@ interface ExceptionInterface
      * String magic method to render the formatted exception details.
      */
     public function __toString();
+
+    /**
+     * Get the matched route's params
+     */
+    public function getRouteParams();
+
+    /**
+     * Get the matched rule regular expression.
+     */
+    public function getRouteMatchedRuleRegexp();
 }
