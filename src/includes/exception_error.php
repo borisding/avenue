@@ -83,18 +83,14 @@
                         <td><label>Line:</label></td>
                         <td><?php echo $this->app->e($lineInfo); ?></td>
                     </tr>
-                    <tr>
-                        <td><label>Route's Parameters:</label></td>
-                        <td><?php print_r($this->app->ee($routeParams)); ?></td>
-                    </tr>
-                    <tr>
-                        <td><label>Route's Regexp:</label></td>
-                        <td><?php echo $this->app->e($ruleRegex); ?></td>
-                    </tr>
                 </tbody>
             </table>
             <h3>Stack Trace</h3>
             <pre><?php echo $this->app->e($this->getTraceAsString()); ?></pre>
+            <h3>Route Regular Expression</h3>
+            <pre><?php echo $this->app->e($ruleRegex); ?></pre>
+            <h3>Route Parameters</h3>
+            <pre><?php var_dump($this->app->ee($routeParams)); ?></pre>
         </section>
         <footer>
             <?php echo date('Y'); ?> &copy; Powered by, Avenue Framework - v<?php echo AVENUE_FRAMEWORK_VERSION; ?>
