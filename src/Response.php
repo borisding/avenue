@@ -72,7 +72,7 @@ class Response implements ResponseInterface
     public function render()
     {
         if (!headers_sent()) {
-            $this->sendHttpHeader()->sendDefinedHeaders();
+            $this->sendHttpHeaders()->sendDefinedHeaders();
         }
 
         // clear body and exit for cache
@@ -88,9 +88,9 @@ class Response implements ResponseInterface
      * Sending http header.
      *
      * {@inheritDoc}
-     * @see \Avenue\Interfaces\ResponseInterface::sendHttpHeader()
+     * @see \Avenue\Interfaces\ResponseInterface::sendHttpHeaders()
      */
-    public function sendHttpHeader()
+    public function sendHttpHeaders()
     {
         $statusCode = $this->getStatusCode();
         $statusDescription = $this->getStatusDescription($statusCode);

@@ -50,9 +50,9 @@ interface ResponseInterface
     public function getStatusDescription($code);
 
     /**
-     * Send http header.
+     * Send http headers.
      */
-    public function sendHttpHeader();
+    public function sendHttpHeaders();
 
     /**
      * Send defined http headers, if any.
