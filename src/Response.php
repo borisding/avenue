@@ -28,11 +28,18 @@ class Response implements ResponseInterface
     protected $body;
 
     /**
+     * Flag for cached content.
+     *
+     * @var boolean
+     */
+    protected $boolCache = false;
+
+    /**
      * Http status code.
      *
      * @var mixed
      */
-    protected $statusCode;
+    protected $statusCode = 200;
 
     /**
      * Http version to be used.
@@ -42,24 +49,13 @@ class Response implements ResponseInterface
     protected $httpVersion;
 
     /**
-     * Flag for cached content.
-     *
-     * @var boolean
-     */
-    protected $boolCache;
-
-    /**
      * Response class constructor.
      * Set the default status code and content type.
      */
     public function __construct(App $app)
     {
         $this->app = $app;
-        $this->boolCache = false;
         $this->httpVersion = $this->app->getHttpVersion();
-
-        $this->withStatus(200);
-        $this->withHeader(['Content-Type' => 'text/html']);
     }
 
     /**
@@ -94,10 +90,13 @@ class Response implements ResponseInterface
     {
         $statusCode = $this->getStatusCode();
         $statusDescription = $this->getStatusDescription($statusCode);
+
         $httpProtocol = 'HTTP/' . (!empty($this->httpVersion) ? $this->httpVersion : '1.1');
         $body = $this->getBody();
 
-        header(sprintf('%s %d %s', $httpProtocol, $statusCode, $statusDescription), true, $statusCode);
+        if (is_int($statusCode)) {
+            header(sprintf('%s %d %s', $httpProtocol, $statusCode, $statusDescription), true, $statusCode);
+        }
 
         if (!$this->hasCache() && !empty($body)) {
             header(sprintf('Content-Length: %d', strlen($body)));
@@ -182,9 +181,10 @@ class Response implements ResponseInterface
      */
     public function cleanup()
     {
-        $this->statusCode = '';
-        $this->body = '';
         $this->headers = [];
+        $this->body = '';
+        $this->boolCache = false;
+        $this->statusCode = 200;
 
         return $this;
     }
@@ -230,7 +230,7 @@ class Response implements ResponseInterface
      */
     public function getStatusDescription($code)
     {
-        $httpStatusCodes = require_once __DIR__ . '/includes/http_status.php';
+        $httpStatusCodes = require __DIR__ . '/includes/http_status.php';
         return $this->app->arrGet($code, $httpStatusCodes, 'Unknown http status!');
     }
 
