@@ -313,7 +313,7 @@ class Route implements RouteInterface
      */
     public function setParam($key, $value)
     {
-        return $this->params[$key] = $this->app->escape($value);
+        return $this->params[$key] = urldecode($value);
     }
 
     /**
