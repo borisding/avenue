@@ -42,20 +42,11 @@ class Response implements ResponseInterface
     protected $statusCode = 200;
 
     /**
-     * Http version to be used.
-     *
-     * @var mixed
-     */
-    protected $httpVersion;
-
-    /**
      * Response class constructor.
-     * Set the default status code and content type.
      */
     public function __construct(App $app)
     {
         $this->app = $app;
-        $this->httpVersion = $this->app->getHttpVersion();
     }
 
     /**
@@ -91,7 +82,8 @@ class Response implements ResponseInterface
         $statusCode = $this->getStatusCode();
         $statusDescription = $this->getStatusDescription($statusCode);
 
-        $httpProtocol = 'HTTP/' . (!empty($this->httpVersion) ? $this->httpVersion : '1.1');
+        $httpVersion = $this->app->getHttpVersion();
+        $httpProtocol = 'HTTP/' . (!empty($httpVersion) ? $httpVersion : '1.1');
         $body = $this->getBody();
 
         if (is_int($statusCode)) {
