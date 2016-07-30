@@ -128,14 +128,6 @@ class Exception implements ExceptionInterface
     }
 
     /**
-     * Get the matched route's params
-     */
-    public function getRouteParams()
-    {
-        return $this->app->route->getParams();
-    }
-
-    /**
      * Get the matched rule regular expression.
      */
     public function getRouteMatchedRuleRegexp()

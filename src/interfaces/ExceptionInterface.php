@@ -39,11 +39,6 @@ interface ExceptionInterface
     public function __toString();
 
     /**
-     * Get the matched route's params
-     */
-    public function getRouteParams();
-
-    /**
      * Get the matched rule regular expression.
      */
     public function getRouteMatchedRuleRegexp();

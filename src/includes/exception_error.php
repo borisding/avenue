@@ -57,7 +57,6 @@
                 $fileInfo = $this->getFile();
                 $lineInfo = $this->getLine();
                 $ruleRegex = $this->getRouteMatchedRuleRegexp();
-                $routeParams = $this->getRouteParams();
             ?>
             <table>
                 <tbody>
@@ -87,10 +86,8 @@
             </table>
             <h3>Stack Trace</h3>
             <pre><?php echo $this->app->e($this->getTraceAsString()); ?></pre>
-            <h3>Route Regular Expression</h3>
+            <h3>Route's Regular Expression</h3>
             <pre><?php echo $this->app->e($ruleRegex); ?></pre>
-            <h3>Route Parameters</h3>
-            <pre><?php var_dump($this->app->ee($routeParams)); ?></pre>
         </section>
         <footer>
             <?php echo date('Y'); ?> &copy; Powered by, Avenue Framework - v<?php echo AVENUE_FRAMEWORK_VERSION; ?>
