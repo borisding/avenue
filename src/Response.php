@@ -42,11 +42,23 @@ class Response implements ResponseInterface
     protected $statusCode = 200;
 
     /**
+     * List of status descriptions.
+     *
+     * @var array
+     */
+    protected static $statusDescriptions = [];
+
+    /**
      * Response class constructor.
      */
     public function __construct(App $app)
     {
         $this->app = $app;
+
+        // store the status descriptions if empty
+        if (empty(static::$statusDescriptions)) {
+            static::$statusDescriptions = require __DIR__ . '/includes/http_status.php';
+        }
     }
 
     /**
@@ -222,8 +234,7 @@ class Response implements ResponseInterface
      */
     public function getStatusDescription($code)
     {
-        $httpStatusCodes = require __DIR__ . '/includes/http_status.php';
-        return $this->app->arrGet($code, $httpStatusCodes, 'Unknown http status!');
+        return $this->app->arrGet($code, static::$statusDescriptions, 'Unknown http status!');
     }
 
     /**
