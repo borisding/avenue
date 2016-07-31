@@ -112,7 +112,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     public function testWithJsonHeader()
     {
         $this->response->withJsonHeader();
-        $this->assertEquals('application/json', $this->response->getHeader('Content-Type'));
+        $this->assertEquals('application/json;charset=utf-8', $this->response->getHeader('Content-Type'));
     }
 
     public function testWithTextHeader()

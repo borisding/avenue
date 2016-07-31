@@ -271,7 +271,7 @@ class Response implements ResponseInterface
      */
     public function withJsonHeader()
     {
-        return $this->withHeader(['Content-Type' => 'application/json']);
+        return $this->withHeader(['Content-Type' => 'application/json;charset=utf-8']);
     }
 
     /**
