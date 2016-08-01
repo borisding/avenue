@@ -18,6 +18,26 @@ class FooController extends \Avenue\Controller
         return true;
     }
 
+    public function getAction()
+    {
+        return true;
+    }
+
+    public function deleteAction()
+    {
+        return true;
+    }
+
+    public function putAction()
+    {
+        return true;
+    }
+
+    public function postAction()
+    {
+        return true;
+    }
+
     public function afterAction()
     {
         return true;
