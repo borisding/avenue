@@ -5,6 +5,8 @@ use Avenue\App;
 use App\Controllers\FooController;
 use Avenue\Tests\Reflection;
 
+require_once 'mocks/FooController.php';
+
 class ControllerTest extends \PHPUnit_Framework_TestCase
 {
     private $app;
