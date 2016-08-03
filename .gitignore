@@ -8,3 +8,5 @@ composer.lock
 avenue.sublime-project
 avenue.sublime-workspace
 /log/*.log
+/node_modules
+npm-debug.log
