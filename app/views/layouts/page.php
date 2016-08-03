@@ -7,13 +7,12 @@
     <meta name="description" content="A lightweight MVC framework for quick PHP web development and prototyping.">
     <meta name="author" content="Boris Ding Poh Hing">
     <title><?= $this->e($title); ?></title>
-    <?php
-    for ($i = 0, $len = count($css); $i < $len; $i++) {
-        $file = $this->baseUrl() . 'public/css/' . $css[$i] . '.css';
-        echo '<link href="' . $file . '?v=' . $this->version() . '" rel="stylesheet">';
-        echo PHP_EOL;
-    }
+    <?
+    $baseUrl = $this->baseUrl();
+    $version = $this->version();
     ?>
+    <link href="<?= $baseUrl; ?>assets/components/bootstrap/dist/css/bootstrap.min.css?v=<?= $version; ?>" rel="stylesheet">
+    <link href="<?= $baseUrl; ?>assets/css/dist/style.min.css?v=<?= $version; ?>" rel="stylesheet">
   </head>
   <body>
     <!-- Fixed navbar -->
@@ -26,11 +25,11 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="<?= $this->baseUrl(); ?>">Avenue</a>
+          <a class="navbar-brand" href="<?= $baseUrl; ?>">Project Name</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="<?= $this->baseUrl(); ?>"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>
+            <li class="active"><a href="<?= $baseUrl; ?>"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -42,17 +41,12 @@
     </div>
 
     <footer class="footer">
-      <div class="container">
-        <p class="text-muted">Bootstrap demo page for Avenue, <?= date('Y'); ?></p>
-      </div>
+        <div class="container">
+            <p class="text-muted"><a href="https://github.com/borisding/avenue">Avenue framework</a> (v<?= AVENUE_FRAMEWORK_VERSION ;?>)
+        </div>
     </footer>
 
-    <?
-    for ($i = 0, $len = count($scripts); $i < $len; $i++) {
-        $file = $this->baseUrl() . 'public/js/' . $scripts[$i] . '.js';
-        echo '<script src="' . $file . '?v=' . $this->version() . '"></script>';
-        echo PHP_EOL;
-    }
-    ?>
+    <script src="<?= $baseUrl; ?>assets/components/jquery/dist/jquery.min.js?v=<?= $version; ?>"></script>
+    <script src="<?= $baseUrl; ?>assets/components/bootstrap/dist/js/bootstrap.min.js?v=<?= $version; ?>"></scripts>
   </body>
 </html>
