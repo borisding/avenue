@@ -1,0 +1,38 @@
+{
+  "name": "avenue",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Default frontend assets dependencies for Avenue framework.",
+  "author": "Boris Ding Poh Hing",
+  "license": "MIT",
+  "homepage": "https://github.com/borisding/avenue#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/borisding/avenue.git"
+  },
+  "keywords": [
+    "npm",
+    "frontend",
+    "assets"
+  ],
+  "scripts": {
+    "build-dev": "grunt && grunt watch",
+    "build-prod": "grunt"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-cssmin": "^1.0.1",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-less": "^1.3.0",
+    "grunt-contrib-uglify": "^2.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "matchdep": "^1.0.1"
+  },
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "font-awesome": "^4.6.3",
+    "jquery": "^3.1.0"
+  }
+}
