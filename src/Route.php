@@ -59,11 +59,13 @@ class Route implements RouteInterface
      * @var Route's regular expression patterns to be matched.
      */
     protected $regex = [
-        ':alnum' => '([a-zA-Z0-9-]+)',
-        ':alpha' => '([a-zA-Z]+)',
-        ':lower' => '([a-z]+)',
-        ':upper' => '([A-Z]+)',
-        ':digit' => '([0-9]+)'
+        ':alnum'    => '([a-zA-Z0-9-]+)',
+        ':alpha'    => '([a-zA-Z]+)',
+        ':lower'    => '([a-z]+)',
+        ':lowernum' => '([a-z0-9-]+)',
+        ':upper'    => '([A-Z]+)',
+        ':uppernum' => '([A-Z0-9-]+)',
+        ':digit'    => '([0-9]+)'
     ];
 
     /**

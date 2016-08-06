@@ -258,4 +258,32 @@ class RouteTest extends \PHPUnit_Framework_TestCase
         $this->route->init([$this->rule, $callback]);
         $this->assertEquals(0, $this->route->isFulfilled());
     }
+
+    public function testMatchRouteSuccessForLowerUpperNumRoutePatterns()
+    {
+        $this->http->set('PATH_INFO', '/foo/TEST/abc123');
+        $callback = function() {
+            return [
+                '@controller' => ':alnum',
+                '@action' => ':uppernum',
+                '@id' => ':lowernum'
+            ];
+        };
+        $this->route->init([$this->rule, $callback]);
+        $this->assertEquals(1, $this->route->isFulfilled());
+    }
+
+    public function testMatchRouteFailedForLowerUpperNumRoutePatterns()
+    {
+        $this->http->set('PATH_INFO', '/foo/TEST/abc123');
+        $callback = function() {
+            return [
+                '@controller' => ':alnum',
+                '@action' => ':lowernum',
+                '@id' => 'uppernum'
+            ];
+        };
+        $this->route->init([$this->rule, $callback]);
+        $this->assertEquals(0, $this->route->isFulfilled());
+    }
 }
