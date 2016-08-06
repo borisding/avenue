@@ -137,15 +137,9 @@ class Route implements RouteInterface
      */
     public function matchRoute()
     {
-        $sensitive = $this->app->arrGet('@sensitive', $this->filters, true);
-
-        if (!is_bool($sensitive)) {
-            throw new \InvalidArgumentException(sprintf('[%s] value must be Boolean.', '@sensitive'));
-        }
-
         // replace with the regexp patterns
         $this->ruleRegex = strtr(strtr($this->rule, $this->filters), $this->regex);
-        $this->ruleRegex = '#^/?' . str_replace(')', ')?', $this->ruleRegex) . '/?$#' . (!$sensitive ? 'i' : '');
+        $this->ruleRegex = '#^/?' . str_replace(')', ')?', $this->ruleRegex) . '/?$#';
         $this->pathInfo = $this->app->request->getPathInfo();
 
         return preg_match($this->ruleRegex, $this->pathInfo);
@@ -208,11 +202,6 @@ class Route implements RouteInterface
         // set default action if empty
         if (empty($this->getParams('action'))) {
             $this->setParam('action', static::DEFAULT_ACTION);
-        }
-
-        // set default sensitive if not set
-        if (!isset($this->filters['@sensitive'])) {
-            $this->setParam('sensitive', true);
         }
 
         // proceed to resource mapping if token exist
