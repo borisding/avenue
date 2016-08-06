@@ -61,6 +61,8 @@ class Route implements RouteInterface
     protected $regex = [
         ':alnum' => '([a-zA-Z0-9-]+)',
         ':alpha' => '([a-zA-Z]+)',
+        ':lower' => '([a-z]+)',
+        ':upper' => '([A-Z]+)',
         ':digit' => '([0-9]+)'
     ];
 
