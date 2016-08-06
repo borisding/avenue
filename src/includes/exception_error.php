@@ -86,8 +86,11 @@
             </table>
             <h3>Stack Trace</h3>
             <pre><?php echo $this->app->e($this->getTraceAsString()); ?></pre>
+
+            <?php if ($ruleRegex) { ?>
             <h3>Route's Regular Expression</h3>
             <pre><?php echo $this->app->e($ruleRegex); ?></pre>
+            <?php } ?>
         </section>
         <footer>
             <?php echo date('Y'); ?> &copy; Powered by, Avenue Framework - v<?php echo AVENUE_FRAMEWORK_VERSION; ?>

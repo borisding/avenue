@@ -120,6 +120,10 @@ class Route implements RouteInterface
         $this->rule = $args[0];
         $this->filters = $args[1]();
 
+        if (!is_array($this->filters)) {
+            throw new \LogicException('Route callback should be returning array.');
+        }
+
         if ($this->fulfill = $this->matchRoute()) {
             $this->setRouteParams()->initController();
         }
@@ -131,16 +135,18 @@ class Route implements RouteInterface
      */
     public function matchRoute()
     {
-        if (!is_array($this->filters)) {
-            throw new \LogicException('Route callback should be returning array.');
+        $sensitive = $this->app->arrGet('@sensitive', $this->filters, true);
+
+        if (!is_bool($sensitive)) {
+            throw new \InvalidArgumentException(sprintf('[%s] value must be Boolean.', '@sensitive'));
         }
 
         // replace with the regexp patterns
         $this->ruleRegex = strtr(strtr($this->rule, $this->filters), $this->regex);
-        $this->ruleRegex = str_replace(')', ')?', $this->ruleRegex);
-
+        $this->ruleRegex = '#^/?' . str_replace(')', ')?', $this->ruleRegex) . '/?$#' . (!$sensitive ? 'i' : '');
         $this->pathInfo = $this->app->request->getPathInfo();
-        return preg_match('#^/?' . $this->ruleRegex . '/?$#', $this->pathInfo);
+
+        return preg_match($this->ruleRegex, $this->pathInfo);
     }
 
     /**
@@ -181,7 +187,7 @@ class Route implements RouteInterface
     }
 
     /**
-     * Set the default values for prefix (directory), controller and action if empty.
+     * Check and reset respective default route params if not provided or exist.
      *
      * @return \Avenue\Route
      */
@@ -200,6 +206,11 @@ class Route implements RouteInterface
         // set default action if empty
         if (empty($this->getParams('action'))) {
             $this->setParam('action', static::DEFAULT_ACTION);
+        }
+
+        // set default sensitive if not set
+        if (!isset($this->filters['@sensitive'])) {
+            $this->setParam('sensitive', true);
         }
 
         // proceed to resource mapping if token exist
