@@ -107,11 +107,11 @@ class Route implements RouteInterface
     }
 
     /**
-     * Start with the route mapping by accepting the arguments from app route.
+     * Dispatch route's rule and callable for matching.
      *
      * @param array $args
      */
-    public function init(array $args)
+    public function dispatch(array $args)
     {
         if (count($args) !== 2) {
             throw new \InvalidArgumentException('Route method is expecting two arguments.');

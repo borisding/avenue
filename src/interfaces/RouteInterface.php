@@ -4,11 +4,11 @@ namespace Avenue\Interfaces;
 interface RouteInterface
 {
     /**
-     * Start route mapping based on the provided arguments.
+     * Dispatch route arguments for matching.
      *
      * @param array $args
      */
-    public function init(array $args);
+    public function dispatch(array $args);
 
     /**
      * Instantiate controller.

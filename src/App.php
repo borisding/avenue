@@ -148,7 +148,7 @@ class App implements AppInterface
     public function addRoute()
     {
         if (!$this->route->isFulfilled()) {
-            return $this->route->init(func_get_args());
+            return $this->route->dispatch(func_get_args());
         }
 
         return true;

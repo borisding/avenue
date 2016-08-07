@@ -64,7 +64,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
      */
     public function testInitInvalidNumberofArgumentsException()
     {
-        $this->route->init(['param1', 'param2', 'param3']);
+        $this->route->dispatch(['param1', 'param2', 'param3']);
     }
 
     /**
@@ -72,19 +72,19 @@ class RouteTest extends \PHPUnit_Framework_TestCase
      */
     public function testInitInvalidCallableForSecondArgumentsException()
     {
-        $this->route->init(['param1', 'param2']);
+        $this->route->dispatch(['param1', 'param2']);
     }
 
     public function testRouteIsFulfilled()
     {
-        $this->route->init([$this->rule, $this->callback]);
+        $this->route->dispatch([$this->rule, $this->callback]);
         $this->assertEquals(1, $this->route->isFulfilled());
     }
 
     public function testRouteIsNotFulfilled()
     {
         $this->http->set('PATH_INFO', '/foo/bar/123');
-        $this->route->init([$this->rule, $this->callback]);
+        $this->route->dispatch([$this->rule, $this->callback]);
         $this->assertEquals(0, $this->route->isFulfilled());
     }
 
@@ -93,7 +93,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
         $this->http->set('PATH_INFO', '/');
         $route = $this->getMock('Avenue\Route', ['initController'], [$this->app]);
         $route->setParam('controller', '');
-        $route->init([$this->rule, $this->callbackWithRegexp]);
+        $route->dispatch([$this->rule, $this->callbackWithRegexp]);
         $this->assertEquals($this->app->getConfig('defaultController'), $route->getParams('controller'));
     }
 
@@ -102,19 +102,19 @@ class RouteTest extends \PHPUnit_Framework_TestCase
         $this->http->set('PATH_INFO', '/foo');
         $route = $this->getMock('Avenue\Route', ['initController'], [$this->app]);
         $route->setParam('action', '');
-        $route->init([$this->rule, $this->callbackWithRegexp]);
+        $route->dispatch([$this->rule, $this->callbackWithRegexp]);
         $this->assertEquals('index', $route->getParams('action'));
     }
 
     public function testGetSpecificParams()
     {
-        $this->route->init([$this->rule, $this->callback]);
+        $this->route->dispatch([$this->rule, $this->callback]);
         $this->assertEquals('foo', $this->route->getParams('controller'));
     }
 
     public function testGetAllParams()
     {
-        $this->route->init([$this->rule, $this->callback]);
+        $this->route->dispatch([$this->rule, $this->callback]);
         $this->assertTrue(count(array_keys($this->route->getParams())) > 0);
     }
 
@@ -128,7 +128,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
     {
         $this->http->set('HTTP_X_HTTP_METHOD_OVERRIDE', 'GET');
         $this->http->setGet();
-        $this->route->init([$this->rule, $this->callback]);
+        $this->route->dispatch([$this->rule, $this->callback]);
         $this->assertEquals('App\Controllers\FooController', $this->route->getControllerNamespace());
     }
 
@@ -145,7 +145,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
                 '@id' => '123'
             ];
         };
-        $this->route->init([$this->rule, $callback]);
+        $this->route->dispatch([$this->rule, $callback]);
     }
 
     /**
@@ -161,14 +161,14 @@ class RouteTest extends \PHPUnit_Framework_TestCase
                 '@id' => '123'
             ];
         };
-        $this->route->init([$this->rule, $callback]);
+        $this->route->dispatch([$this->rule, $callback]);
     }
 
     public function testResourceWithGetAction()
     {
         $this->http->set('HTTP_X_HTTP_METHOD_OVERRIDE', 'GET');
         $this->http->setGet();
-        $this->route->init([$this->rule, $this->callbackWithResouce]);
+        $this->route->dispatch([$this->rule, $this->callbackWithResouce]);
         $this->assertEquals('get', $this->route->getParams('action'));
     }
 
@@ -176,7 +176,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
     {
         $this->http->set('HTTP_X_HTTP_METHOD_OVERRIDE', 'POST');
         $this->http->setPost();
-        $this->route->init([$this->rule, $this->callbackWithResouce]);
+        $this->route->dispatch([$this->rule, $this->callbackWithResouce]);
         $this->assertEquals('post', $this->route->getParams('action'));
     }
 
@@ -184,7 +184,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
     {
         $this->http->set('HTTP_X_HTTP_METHOD_OVERRIDE', 'PUT');
         $this->http->setPut();
-        $this->route->init([$this->rule, $this->callbackWithResouce]);
+        $this->route->dispatch([$this->rule, $this->callbackWithResouce]);
         $this->assertEquals('put', $this->route->getParams('action'));
     }
 
@@ -192,7 +192,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
     {
         $this->http->set('HTTP_X_HTTP_METHOD_OVERRIDE', 'DELETE');
         $this->http->setDelete();
-        $this->route->init([$this->rule, $this->callbackWithResouce]);
+        $this->route->dispatch([$this->rule, $this->callbackWithResouce]);
         $this->assertEquals('delete', $this->route->getParams('action'));
     }
 
@@ -208,7 +208,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
                 '@resource' => 'foo|bar',
             ];
         };
-        $this->route->init([$this->rule, $callbackWithTargetedController]);
+        $this->route->dispatch([$this->rule, $callbackWithTargetedController]);
         $this->assertEquals('get', $this->route->getParams('action'));
     }
 
@@ -227,7 +227,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
                 '@resource' => 'foo||bar',
             ];
         };
-        $this->route->init([$this->rule, $callbackWithTargetedController]);
+        $this->route->dispatch([$this->rule, $callbackWithTargetedController]);
         $this->assertEquals('get', $this->route->getParams('action'));
     }
 
@@ -241,7 +241,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
                 '@id' => '123'
             ];
         };
-        $this->route->init([$this->rule, $callback]);
+        $this->route->dispatch([$this->rule, $callback]);
         $this->assertEquals(1, $this->route->isFulfilled());
     }
 
@@ -255,7 +255,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
                 '@id' => '123'
             ];
         };
-        $this->route->init([$this->rule, $callback]);
+        $this->route->dispatch([$this->rule, $callback]);
         $this->assertEquals(0, $this->route->isFulfilled());
     }
 
@@ -269,7 +269,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
                 '@id' => ':lowernum'
             ];
         };
-        $this->route->init([$this->rule, $callback]);
+        $this->route->dispatch([$this->rule, $callback]);
         $this->assertEquals(1, $this->route->isFulfilled());
     }
 
@@ -283,7 +283,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
                 '@id' => 'uppernum'
             ];
         };
-        $this->route->init([$this->rule, $callback]);
+        $this->route->dispatch([$this->rule, $callback]);
         $this->assertEquals(0, $this->route->isFulfilled());
     }
 }
