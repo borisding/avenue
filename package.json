@@ -16,8 +16,8 @@
     "assets"
   ],
   "scripts": {
-    "build-dev": "grunt && grunt watch",
-    "build-prod": "grunt"
+    "build:dev": "grunt && grunt watch",
+    "build:prod": "grunt"
   },
   "devDependencies": {
     "grunt": "^1.0.1",
