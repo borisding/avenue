@@ -4,6 +4,9 @@
  */
 
 return [
+    // auto rendering response body once application run
+    'autoRender' => true,
+
     // current application's version
     'appVersion' => '1.0',
 

@@ -230,9 +230,11 @@ class App implements AppInterface
             return;
         }
 
-        // print out the response body for normal request
-        $this->response->render();
-        exit(0);
+        // print out the response body for normal request if auto rendering is true
+        if ($this->getConfig('autoRender') === true) {
+            $this->response->render();
+            exit(0);
+        }
     }
 
     /**
@@ -368,6 +370,9 @@ class App implements AppInterface
     public function getDefaultConfig()
     {
         return [
+            // default auto rendering response body
+            'autoRender' => true,
+
             // default current application's version
             'appVersion' => '1.0',
 
