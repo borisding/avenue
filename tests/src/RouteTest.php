@@ -91,7 +91,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
     public function testRouteDefaultController()
     {
         $this->http->set('PATH_INFO', '/');
-        $route = $this->getMock('Avenue\Route', ['initController'], [$this->app]);
+        $route = $this->getMock('\Avenue\Route', ['initController'], [$this->app]);
         $route->setParam('controller', '');
         $route->dispatch([$this->rule, $this->callbackWithRegexp]);
         $this->assertEquals($this->app->getConfig('defaultController'), $route->getParams('controller'));
@@ -100,7 +100,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
     public function testRouteDefaultControllerAction()
     {
         $this->http->set('PATH_INFO', '/foo');
-        $route = $this->getMock('Avenue\Route', ['initController'], [$this->app]);
+        $route = $this->getMock('\Avenue\Route', ['initController'], [$this->app]);
         $route->setParam('action', '');
         $route->dispatch([$this->rule, $this->callbackWithRegexp]);
         $this->assertEquals('index', $route->getParams('action'));

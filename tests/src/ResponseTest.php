@@ -25,6 +25,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 
     public function testWriteBody()
     {
+        $this->response->cleanup();
         $this->response->write('hello world!');
         $this->assertAttributeEquals('hello world!', 'body', $this->response);
     }
