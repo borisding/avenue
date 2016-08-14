@@ -55,25 +55,21 @@ class ControllerTest extends \PHPUnit_Framework_TestCase
 
     public function testControllerRequestEqualToAppRequest()
     {
-        $request = Reflection::getPropertyValue(new FooController($this->app), 'request');
-        $this->assertEquals($request, $this->app->request);
+        $this->assertAttributeEquals($this->app->request, 'request', new FooController($this->app));
     }
 
     public function testControllerResponseEqualToAppResponse()
     {
-        $response = Reflection::getPropertyValue(new FooController($this->app), 'response');
-        $this->assertEquals($response, $this->app->response);
+        $this->assertAttributeEquals($this->app->response, 'response', new FooController($this->app));
     }
 
     public function testControllerRouteEqualToAppRoute()
     {
-        $route = Reflection::getPropertyValue(new FooController($this->app), 'route');
-        $this->assertEquals($route, $this->app->route);
+        $this->assertAttributeEquals($this->app->route, 'route', new FooController($this->app));
     }
 
     public function testControllerViewEqualToAppView()
     {
-        $view = Reflection::getPropertyValue(new FooController($this->app), 'view');
-        $this->assertEquals($view, $this->app->view);
+        $this->assertAttributeEquals($this->app->view, 'view', new FooController($this->app));
     }
 }

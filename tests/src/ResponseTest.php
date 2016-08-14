@@ -19,8 +19,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 
     public function testStatusDescriptionsNotEmpty()
     {
-        $statusDescriptions = Reflection::getPropertyValue($this->response, 'statusDescriptions');
-        $this->assertNotEmpty($statusDescriptions);
+        $this->assertAttributeNotEmpty('statusDescriptions', $this->response, "message");
     }
 
     public function testWriteBody()
