@@ -203,6 +203,18 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('user=test', $this->request->getQueryString());
     }
 
+    public function testGetParsedQueryString()
+    {
+        $this->http->set('QUERY_STRING', 'foo=bar&abc[]=123');
+        $this->assertEquals(['foo' => 'bar', 'abc' => ['123']], $this->request->getParsedQueryString());
+    }
+
+    public function testGetParsedEmptyQueryString()
+    {
+        $this->http->set('QUERY_STRING', '');
+        $this->assertEquals([], $this->request->getParsedQueryString());
+    }
+    
     public function testGetHost()
     {
         $this->assertEquals('localhost', $this->request->getHost());

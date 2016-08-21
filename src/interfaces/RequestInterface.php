@@ -95,6 +95,11 @@ interface RequestInterface
     public function getQueryString();
 
     /**
+     * Get the parsed query string in array
+     */
+    public function getParsedQueryString();
+
+    /**
      * Get the host name.
      */
     public function getHost();

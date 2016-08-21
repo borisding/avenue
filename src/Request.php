@@ -305,6 +305,23 @@ class Request implements RequestInterface
     }
 
     /**
+     * Get and return the query string params in key/value pair.
+     *
+     * @return array
+     */
+    public function getParsedQueryString()
+    {
+        $queryString = $this->getQueryString();
+        $queryParams = [];
+
+        if (!empty($queryString)) {
+            parse_str($queryString, $queryParams);
+        }
+
+        return $queryParams;
+    }
+
+    /**
      * Get the host name.
      */
     public function getHost()
