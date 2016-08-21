@@ -403,14 +403,9 @@ class Request implements RequestInterface
     public function getBody()
     {
         $input = file_get_contents('php://input');
-
-        if (empty($input)) {
-            $input = '';
-        }
-
-        return $input;
+        return (!empty($input)) ? $input : '';
     }
-
+    
     /**
      * Return requested prefix (directory).
      */
