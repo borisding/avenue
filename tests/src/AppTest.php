@@ -36,22 +36,22 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddRouteInvalidNumberOfParameters()
     {
-        $this->app->addRoute('param1', 'param2', function() {});
+        $this->app->addRoute('param1', 'param2', []);
     }
 
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testAddRouteSecondParamIsNotCallable()
+    public function testAddRouteSecondParamIsNotAssociativeArray()
     {
         $this->app->addRoute('param1', 'param2');
     }
 
-    public function testAddRouteSecondParamIsCallable()
+    public function testAddRouteSecondParamIsAssociativeArray()
     {
-        $this->app->addRoute('param1', function() {
-            return [];
-        });
+        $this->app->addRoute('param1', [
+            'foo' => 'bar'
+        ]);
 
         // if route has passed, expects fullfiled is boolean
         $fulfilled = $this->app->route->isFulfilled();
@@ -59,24 +59,11 @@ class AppTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException LogicException
-     */
-    public function testAddRouteNotReturningArrayException()
-    {
-        $this->app->addRoute('param1', function() {
-            return '';
-        });
-    }
-
-    /**
      * @expectedException Exception
      */
     public function testRenderPageNotFoundException()
     {
-        $this->app->addRoute('/test', function() {
-            return [];
-        });
-
+        $this->app->addRoute('/test', []);
         $this->app->run();
     }
 

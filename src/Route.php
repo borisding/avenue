@@ -107,7 +107,7 @@ class Route implements RouteInterface
     }
 
     /**
-     * Dispatch route's rule and callable for matching.
+     * Dispatch route's rule and arguments for matching.
      *
      * @param array $args
      */
@@ -117,16 +117,12 @@ class Route implements RouteInterface
             throw new \InvalidArgumentException('Route method is expecting two arguments.');
         }
 
-        if (!is_callable($args[1])) {
-            throw new \InvalidArgumentException('Second argument must be callable.');
+        if (!$this->app->arrIsAssoc($args[1])) {
+            throw new \InvalidArgumentException('Invalid data type. Second argument must be associative array.');
         }
 
         $this->rule = $args[0];
-        $this->filters = $args[1]();
-
-        if (!is_array($this->filters)) {
-            throw new \LogicException('Route callback should be returning array.');
-        }
+        $this->filters = $args[1];
 
         if ($this->fulfill = $this->matchRoute()) {
             $this->setRouteParams()->initController();
