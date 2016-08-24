@@ -253,4 +253,9 @@ class AppTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals('default', $this->app->getDefaultController());
     }
+
+    public function testGetDefaultConfig()
+    {
+        $this->assertTrue(is_array($this->app->getDefaultConfig()));
+    }
 }
