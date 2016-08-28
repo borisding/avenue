@@ -202,19 +202,31 @@ class Command implements CommandInterface
 
     /**
      * Fetch all records with class behavior.
-     * Class name is required.
+     * Class name is required and constructor argument is optional.
      *
      * {@inheritDoc}
      * @see \Avenue\Interfaces\Database\CommandInterface::fetchClass()
      */
-    public function fetchClass($name)
+    public function fetchClass($name, array $ctorargs = [])
     {
         if (!class_exists($name)) {
             throw new \InvalidArgumentException(sprintf('Class [%s] does not exist!', $name));
         }
 
-        $this->getFetchMode('class', $name)->run();
+        $this->getFetchMode('class', $name, $ctorargs)->run();
         return $this->statement->fetchAll();
+    }
+
+    /**
+     * Fetch a column from the next row.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\Database\CommandInterface::fetchColumn()
+     */
+    public function fetchColumn($number = 0)
+    {
+        $this->run();
+        return $this->statement->fetchColumn($number);
     }
 
     /**
@@ -360,14 +372,15 @@ class Command implements CommandInterface
      *
      * @param mixed $type
      * @param mixed $className
+     * @param array $ctorargs
      * @return \Avenue\Database\Command
      */
-    protected function getFetchMode($type, $className = null)
+    protected function getFetchMode($type, $className = null, array $ctorargs = [])
     {
         $fetchType = $this->app->arrGet($type, $this->fetchTypes, PDO::FETCH_ASSOC);
 
         if ($type === 'class' && !empty($className)) {
-            $this->statement->setFetchMode($fetchType | PDO::FETCH_PROPS_LATE, $className);
+            $this->statement->setFetchMode($fetchType|PDO::FETCH_PROPS_LATE, $className, $ctorargs);
         } else {
             $this->statement->setFetchMode($fetchType);
         }

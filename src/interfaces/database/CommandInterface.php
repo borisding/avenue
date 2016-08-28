@@ -64,8 +64,16 @@ interface CommandInterface
      * Fetch record(s) with class behavior.
      *
      * @param mixed $name
+     * @param array $ctorargs
      */
-    public function fetchClass($name);
+    public function fetchClass($name, array $ctorargs);
+
+    /**
+     * Fetch a column from the next row.
+     *
+     * @param integer $number
+     */
+    public function fetchColumn($number);
 
     /**
      * Fetch and get total number of rows.
