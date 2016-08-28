@@ -1,30 +1,31 @@
 <?php
 /**
- * Database connection settings based on the environment.
+ * Database settings based on the environment.
  */
 
 return [
-    // db settings for 'development' environment
     'development' => [
-        'driver'    => 'mysql',
-        'host'      => 'localhost',
-        'database'  => 'test',
-        'username'  => 'root',
-        'password'  => 'root',
-        'charset'   => 'utf8',
-        'collation' => 'utf8_unicode_ci',
-        'prefix'    => ''
+        'master' => [
+            // database connection string
+            'dsn' => 'mysql:host=localhost;charset=utf8;dbname=test',
+            // database user name
+            'username' => 'root',
+            // database user password
+            'password' => 'root',
+            // pdo driver option in key/value pairs
+            'options' => []
+        ]
     ],
-
-    // db settings for 'production' environment
     'production' => [
-        'driver'    => 'mysql',
-        'host'      => 'localhost',
-        'database'  => 'productdb',
-        'username'  => 'root',
-        'password'  => 'root',
-        'charset'   => 'utf8',
-        'collation' => 'utf8_unicode_ci',
-        'prefix'    => ''
+        'master' => [
+            // database connection string
+            'dsn' => 'mysql:host=localhost;charset=utf8;dbname=production',
+            // database user name
+            'username' => 'root',
+            // database user password
+            'password' => 'root',
+            // pdo driver option in key/value pairs
+            'options' => []
+        ]
     ]
 ];
