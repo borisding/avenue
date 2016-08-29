@@ -5,10 +5,7 @@
 
 // register monolog dependency for logging
 $app->container('log', function($app) {
-    $loggingConfig = $app->getConfig('logging');
-    $channel = $loggingConfig['channel'];
-    $handlers = $loggingConfig['handlers'];
-    $processors = $loggingConfig['processors'];
+    extract($app->getConfig('logging'));
 
     $logger = new \Monolog\Logger($channel);
 
