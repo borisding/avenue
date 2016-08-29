@@ -183,7 +183,7 @@ class Command implements CommandInterface
      */
     public function fetchAll($type = 'assoc')
     {
-        $this->getFetchMode($type)->run();
+        $this->withFetchMode($type)->run();
         return $this->statement->fetchAll();
     }
 
@@ -196,7 +196,7 @@ class Command implements CommandInterface
      */
     public function fetchOne($type = 'assoc')
     {
-        $this->getFetchMode($type)->run();
+        $this->withFetchMode($type)->run();
         return $this->statement->fetch();
     }
 
@@ -213,7 +213,7 @@ class Command implements CommandInterface
             throw new \InvalidArgumentException(sprintf('Class [%s] does not exist!', $name));
         }
 
-        $this->getFetchMode('class', $name, $ctorargs)->run();
+        $this->withFetchMode('class', $name, $ctorargs)->run();
         return $this->statement->fetchAll();
     }
 
@@ -375,7 +375,7 @@ class Command implements CommandInterface
      * @param array $ctorargs
      * @return \Avenue\Database\Command
      */
-    protected function getFetchMode($type, $className = null, array $ctorargs = [])
+    protected function withFetchMode($type, $className = null, array $ctorargs = [])
     {
         $fetchType = $this->app->arrGet($type, $this->fetchTypes, PDO::FETCH_ASSOC);
 
