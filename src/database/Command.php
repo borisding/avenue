@@ -27,21 +27,21 @@ class Command implements CommandInterface
      *
      * @var mixed
      */
-    protected $statement;
+    private $statement;
 
     /**
      * Connection class instance.
      *
      * @var object
      */
-    protected static $connect;
+    private static $connect;
 
     /**
      * Supported fetch types.
      *
      * @var array
      */
-    protected $fetchTypes = [
+    private $fetchTypes = [
         'both' 	=> PDO::FETCH_BOTH,
         'obj'	=> PDO::FETCH_OBJ,
         'class'	=> PDO::FETCH_CLASS,
@@ -54,7 +54,7 @@ class Command implements CommandInterface
      *
      * @var array
      */
-    protected $fetchAllAlias = [
+    private $fetchAllAlias = [
         'fetchAllBoth'  => 'both',
         'fetchAllObj'   => 'obj',
         'fetchAllNum'   => 'num',
@@ -375,7 +375,7 @@ class Command implements CommandInterface
      * @param array $ctorargs
      * @return \Avenue\Database\Command
      */
-    protected function withFetchMode($type, $className = null, array $ctorargs = [])
+    private function withFetchMode($type, $className = null, array $ctorargs = [])
     {
         $fetchType = $this->app->arrGet($type, $this->fetchTypes, PDO::FETCH_ASSOC);
 
@@ -395,7 +395,7 @@ class Command implements CommandInterface
      * @throws \InvalidArgumentException
      * @return number
      */
-    protected function getParamScalar($value)
+    private function getParamScalar($value)
     {
         if (!is_scalar($value)) {
             throw new \InvalidArgumentException('Failed to bind parameter. Invalid scalar type.');
