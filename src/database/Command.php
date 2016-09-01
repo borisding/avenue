@@ -50,15 +50,19 @@ class Command implements CommandInterface
     ];
 
     /**
-     * Fetch all alias method.
+     * Fetch alias methods.
      *
      * @var array
      */
-    private $fetchAllAlias = [
+    private $fetchAlias = [
         'fetchAllBoth'  => 'both',
         'fetchAllObj'   => 'obj',
         'fetchAllNum'   => 'num',
-        'fetchAllAssoc' => 'assoc'
+        'fetchAllAssoc' => 'assoc',
+        'fetchOneBoth'  => 'both',
+        'fetchOneObj'   => 'obj',
+        'fetchOneNum'   => 'num',
+        'fetchOneAssoc' => 'assoc'
     ];
 
     /**
@@ -420,18 +424,32 @@ class Command implements CommandInterface
     }
 
     /**
-     * Fetch all alias method via magic call method.
+     * Fetch alias method via magic call method.
      * If none is found, throw invalid method exception.
+     *
+     * eg:
+     * for multiple records as object
+     *
+     * `$this->cmd('...')->fetchAllObj()` is same with `$this->cmd('...')->fetchAll('obj')`
+     *
+     * for single record as object
+     * `$this->cmd('...')->fetchOneObj()` is same with `$this->cmd('...')->fetchOne('obj')`
      *
      * @param mixed $method
      * @param array $params
      */
     public function __call($method, array $params = [])
     {
-        if (!isset($this->fetchAllAlias[$method])) {
+        if (!isset($this->fetchAlias[$method])) {
             throw new \PDOException('Calling invalid method ['. $method .']');
         }
 
-        return $this->fetchAll($this->fetchAllAlias[$method]);
+        // for single record
+        if (strtolower(substr($method, 0, 8)) === 'fetchone') {
+            return $this->fetchOne($this->fetchAlias[$method]);
+        }
+
+        // for multiple records
+        return $this->fetchAll($this->fetchAlias[$method]);
     }
 }
