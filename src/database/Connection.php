@@ -42,18 +42,11 @@ class Connection implements ConnectionInterface
     protected $slaveConfig = [];
 
     /**
-     * Database config.
-     *
-     * @var array
-     */
-    protected $databaseConfig = [];
-
-    /**
      * Default config for master/slave.
      *
      * @var array
      */
-    protected $defaultConfig = [
+    protected $config = [
         'dsn' => '',
         'username' => '',
         'password' => '',
@@ -65,14 +58,14 @@ class Connection implements ConnectionInterface
      * Define respective database config.
      *
      * @param App $app
+     * @param array $databaseConfig
      * @throws \InvalidArgumentException
      */
-    public function __construct(App $app)
+    public function __construct(App $app, array $databaseConfig = [])
     {
         $this->app = $app;
-        $this->databaseConfig = $this->getDatabaseConfig();
 
-        if (empty($this->databaseConfig)) {
+        if (empty($databaseConfig)) {
             throw new \InvalidArgumentException(sprintf(
                 'Database is not configured for [%s] environment!',
                 $this->app->getEnvironment()
@@ -80,23 +73,8 @@ class Connection implements ConnectionInterface
         }
 
         // assign respective configurations for master/slave
-        $this->masterConfig = $this->app->arrGet('master', $this->databaseConfig, []);
-        $this->slaveConfig = $this->app->arrGet('slave', $this->databaseConfig, []);
-    }
-
-    /**
-     * Retrieve database configuration based on environment.
-     *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\ConnectionInterface::getDatabaseConfig()
-     */
-    public function getDatabaseConfig()
-    {
-        return $this->app->arrGet(
-            $this->app->getEnvironment(),
-            $this->app->getConfig('database'),
-            []
-        );
+        $this->masterConfig = $this->app->arrGet('master', $databaseConfig, []);
+        $this->slaveConfig = $this->app->arrGet('slave', $databaseConfig, []);
     }
 
     /**
@@ -159,11 +137,11 @@ class Connection implements ConnectionInterface
     protected function connectPdo(array $config)
     {
         try {
-            extract(array_merge($this->defaultConfig, $config));
+            extract(array_merge($this->config, $config));
 
             // replace with user's driver option, if any
             $options = array_replace(
-                $this->defaultConfig['options'],
+                $this->config['options'],
                 $this->app->arrGet('options', $config, [])
             );
 

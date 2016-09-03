@@ -84,10 +84,8 @@ class Command implements CommandInterface
 
         // instantiate connection
         if (empty(self::$connect)) {
-            self::$connect = new Connection($this->app);
+            self::$connect = new Connection($this->app, $this->getDatabaseConfig());
         }
-
-        return self::$connect;
     }
 
     /**
@@ -369,6 +367,18 @@ class Command implements CommandInterface
     public function ddp()
     {
         return $this->statement->debugDumpParams();
+    }
+
+    /**
+     * Get database configuration.
+     */
+    private function getDatabaseConfig()
+    {
+        return $this->app->arrGet(
+            $this->app->getEnvironment(),
+            $this->app->getConfig('database'),
+            []
+        );
     }
 
     /**
