@@ -47,6 +47,13 @@ interface CommandInterface
     public function run();
 
     /**
+     * Execute prepared statement with actual param values.
+     *
+     * @param array $params
+     */
+    public function runWith(array $params);
+
+    /**
      * Fetch all records method based on type.
      *
      * @param mixed $type
@@ -111,6 +118,11 @@ interface CommandInterface
      * Cancel transaction.
      */
     public function cancel();
+
+    /**
+     * Get the total row.
+     */
+    public function getTotalRow();
 
     /**
      * Get inserted ID.

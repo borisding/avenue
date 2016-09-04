@@ -168,11 +168,19 @@ class Command implements CommandInterface
      */
     public function run()
     {
-        if (empty($this->statement)) {
-            throw new \PDOException('PDO prepared statement is empty!');
-        }
-
         $this->statement->execute();
+        return $this;
+    }
+
+    /**
+     * Execute prepared statement with actual param values.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\Database\CommandInterface::runWith()
+     */
+    public function runWith(array $params)
+    {
+        $this->statement->execute($params);
         return $this;
     }
 
@@ -327,6 +335,17 @@ class Command implements CommandInterface
     public function cancel()
     {
         return $this->getPdoMaster()->rollBack();
+    }
+
+    /**
+     * Get the total rows.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\Database\CommandInterface::getTotalRow()
+     */
+    public function getTotalRow()
+    {
+        return $this->statement->rowCount();
     }
 
     /**
