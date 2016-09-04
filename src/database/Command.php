@@ -367,14 +367,8 @@ class Command implements CommandInterface
      */
     public function getTableName()
     {
-        $model = $namespace = get_class($this);
-
-        if (strpos($namespace, '\\') !== false) {
-            $chunk = explode('\\', $namespace);
-            $model = array_pop($chunk);
-        }
-
-        return strtolower($model);
+        $namespace = get_class($this);
+        return strtolower(substr($namespace, strrpos($namespace, '\\') + 1));
     }
 
     /**
