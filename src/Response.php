@@ -123,11 +123,8 @@ class Response implements ResponseInterface
             // processed as multiple headers for the same type
             // when format is provided as index based array
             if ($this->app->arrIsIndex($format)) {
-                $i = 0;
-
-                while ($i < count($format)) {
-                    header($type . ': ' . $format[$i], false);
-                    $i++;
+                foreach ($format as $value) {
+                    header($type . ': ' . $value, false);
                 }
             } else {
                 header($type . ': ' . $format);

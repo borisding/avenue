@@ -291,12 +291,10 @@ class Command implements CommandInterface
             }
         // for '?' binding
         } else {
-            $i = 0;
             $column = 1;
 
-            while ($i < count($params)) {
-                $this->bind($column, $params[$i], $reference);
-                $i++;
+            foreach ($params as $value) {
+                $this->bind($column, $value, $reference);
                 $column++;
             }
         }
