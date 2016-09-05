@@ -396,6 +396,26 @@ class Request implements RequestInterface
     }
 
     /**
+     * Get IP address.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\RequestInterface::getIpAddress()
+     */
+    public function getIpAddress()
+    {
+        $ipAddress = $this->app->arrGet('REMOTE_ADDR', $_SERVER);
+
+        foreach (['HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR'] as $key) {
+            if (!empty($this->app->arrGet($key, $_SERVER))) {
+                $ipAddress = $this->app->arrGet($key, $_SERVER);
+                break;
+            }
+        }
+
+        return $ipAddress;
+    }
+
+    /**
      * Return the raw data via request body.
      *
      * @return string
@@ -405,7 +425,7 @@ class Request implements RequestInterface
         $input = file_get_contents('php://input');
         return (!empty($input)) ? $input : '';
     }
-    
+
     /**
      * Return requested prefix (directory).
      */

@@ -214,7 +214,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->http->set('QUERY_STRING', '');
         $this->assertEquals([], $this->request->getParsedQueryString());
     }
-    
+
     public function testGetHost()
     {
         $this->assertEquals('localhost', $this->request->getHost());
@@ -273,5 +273,29 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     {
         Reflection::setPropertyValue($this->app->route, 'params', ['action' => 'index']);
         $this->assertEquals('index', $this->request->getAction());
+    }
+
+    public function testGetIpAddressViaRemoteAddr()
+    {
+        $this->http->set('REMOTE_ADDR', '127.0.0.1');
+        $this->http->set('HTTP_CLIENT_IP', '');
+        $this->http->set('HTTP_X_FORWARDED_FOR', '');
+        $this->assertEquals('127.0.0.1', $this->request->getIpAddress());
+    }
+
+    public function testGetIpAddressViaHttpClientIp()
+    {
+        $this->http->set('REMOTE_ADDR', '');
+        $this->http->set('HTTP_CLIENT_IP', '127.0.0.2');
+        $this->http->set('HTTP_X_FORWARDED_FOR', '');
+        $this->assertEquals('127.0.0.2', $this->request->getIpAddress());
+    }
+
+    public function testGetIpAddressViaHttpXForwardedFor()
+    {
+        $this->http->set('REMOTE_ADDR', '');
+        $this->http->set('HTTP_CLIENT_IP', '');
+        $this->http->set('HTTP_X_FORWARDED_FOR', '127.0.0.3');
+        $this->assertEquals('127.0.0.3', $this->request->getIpAddress());
     }
 }

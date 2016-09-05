@@ -139,6 +139,11 @@ interface RequestInterface
     public function redirect($path, $baseUrl = true);
 
     /**
+     * Get IP address.
+     */
+    public function getIpAddress();
+
+    /**
      * Get the raw data of request body.
      */
     public function getBody();
