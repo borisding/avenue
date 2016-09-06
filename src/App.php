@@ -7,6 +7,7 @@ use Avenue\Route;
 use Avenue\View;
 use Avenue\Exception;
 use Avenue\Mcrypt;
+use Avenue\State\Cookie;
 use Avenue\Helpers\HelperBundleTrait;
 use Avenue\Interfaces\AppInterface;
 
@@ -20,6 +21,7 @@ use Avenue\Interfaces\AppInterface;
  * @method static \Avenue\Route route()
  * @method static \Avenue\View view()
  * @method static \Avenue\Mcrypt mcrypt()
+ * @method static \Avenue\State\Cookie cookie()
  * @method static \Avenue\Exception exception()
  *
  * 2. Method helpers for overloading via call magic method.
@@ -29,6 +31,7 @@ use Avenue\Interfaces\AppInterface;
  * @method \Avenue\Route route()
  * @method \Avenue\View view()
  * @method \Avenue\Mcrypt mcrypt()
+ * @method \Avenue\State\Cookie cookie()
  * @method \Avenue\Exception exception()
  *
  * 3. Method helpers for singletons.
@@ -38,6 +41,7 @@ use Avenue\Interfaces\AppInterface;
  * @method \Avenue\Route singleton('route')
  * @method \Avenue\View singleton('view')
  * @method \Avenue\Mcrypt singleton('mcrypt')
+ * @method \Avenue\State\Cookie singleton('cookie')
  * @method \Avenue\Exception singleton('exception')
  *
  * 4. Method helpers for resolvers.
@@ -47,6 +51,7 @@ use Avenue\Interfaces\AppInterface;
  * @method \Avenue\Route resolve('route')
  * @method \Avenue\View resolve('view')
  * @method \Avenue\Mcrypt resolve('mcrypt')
+ * @method \Avenue\State\Cookie resolve('cookie')
  * @method \Avenue\Exception resolve('exception')
  */
 
@@ -131,7 +136,7 @@ class App implements AppInterface
         if (empty(static::$config)) {
             static::$config = array_merge($this->getDefaultConfig(), $config);
         }
-        
+
         $this
         ->registerServices()
         ->registerTimezone()
@@ -315,6 +320,10 @@ class App implements AppInterface
 
         $this->container('mcrypt', function($app) {
             return new Mcrypt($app, $this->getConfig('encryption'));
+        });
+
+        $this->container('cookie', function($app) {
+            return new Cookie($app, $this->getConfig('state')['cookie']);
         });
 
         return $this->factory();

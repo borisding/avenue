@@ -1,0 +1,29 @@
+<?php
+/**
+ * Configuration of both cookie and session.
+ *
+ */
+return [
+    'cookie' => [
+        // cookie's expiration
+        'expire' => 3600,
+
+        // cookie's path that is available
+        'path' => '',
+
+        // domain where cookie is available
+        'domain' => '',
+
+        // only transmitted on https
+        'secure' => false,
+
+        // only for http protocol, not allowed for javascript
+        'httpOnly' => true,
+
+        // whether to encrypt cookie value
+        'encrypt' => true,
+
+        // this is for signed cookie purpose
+        'secret' => '<please change this to your own secret key!>'
+    ]
+];

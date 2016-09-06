@@ -29,5 +29,8 @@ return [
     'database' => require_once 'database.php',
 
     // logging configuration
-    'logging' => require_once 'logging.php'
+    'logging' => require_once 'logging.php',
+
+    // state configuration
+    'state' => require_once 'state.php'
 ];
