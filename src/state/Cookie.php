@@ -155,7 +155,7 @@ class Cookie implements CookieInterface
     protected function hashing($key, $value)
     {
         $secret = $this->config['secret'];
-        $hashed = hash_hmac('sha1', $value . $key . $secret, $secret);
+        $hashed = hash_hmac('sha256', $value . $key . $secret, $secret);
 
         return $hashed;
     }
