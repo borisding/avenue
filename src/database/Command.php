@@ -168,8 +168,7 @@ class Command implements CommandInterface
      */
     public function run()
     {
-        $this->statement->execute();
-        return $this;
+        return $this->statement->execute();
     }
 
     /**
@@ -180,8 +179,7 @@ class Command implements CommandInterface
      */
     public function runWith(array $params)
     {
-        $this->statement->execute($params);
-        return $this;
+        return $this->statement->execute($params);
     }
 
     /**

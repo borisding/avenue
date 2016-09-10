@@ -21,9 +21,25 @@ return [
         'httpOnly' => true,
 
         // whether to encrypt cookie value
-        'encrypt' => true,
+        'encrypt' => false,
 
         // this is for signed cookie purpose
-        'secret' => '<please change this to your own secret key!>'
+        'secret' => '<please change this secret key!>'
+    ],
+    'session' => [
+        // table name for database storage
+        'table' => 'session',
+
+        // session lifetime in seconds for garbage collector
+        'lifetime' => 3600,
+
+        // whether to encrypt session value
+        'encrypt' => false,
+
+        // reading from master
+        'readMaster' => true,
+
+        // this is for session csrf token
+        'secret' => '<please change this secret key!>'
     ]
 ];

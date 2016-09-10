@@ -8,6 +8,8 @@ use Avenue\View;
 use Avenue\Exception;
 use Avenue\Mcrypt;
 use Avenue\State\Cookie;
+use Avenue\State\Session;
+use Avenue\State\SessionDatabaseHandler;
 use Avenue\Helpers\HelperBundleTrait;
 use Avenue\Interfaces\AppInterface;
 
@@ -22,6 +24,7 @@ use Avenue\Interfaces\AppInterface;
  * @method static \Avenue\View view()
  * @method static \Avenue\Mcrypt mcrypt()
  * @method static \Avenue\State\Cookie cookie()
+ * @method static \Avenue\State\Session session()
  * @method static \Avenue\Exception exception()
  *
  * 2. Method helpers for overloading via call magic method.
@@ -32,6 +35,7 @@ use Avenue\Interfaces\AppInterface;
  * @method \Avenue\View view()
  * @method \Avenue\Mcrypt mcrypt()
  * @method \Avenue\State\Cookie cookie()
+ * @method \Avenue\State\Session session()
  * @method \Avenue\Exception exception()
  *
  * 3. Method helpers for singletons.
@@ -42,6 +46,7 @@ use Avenue\Interfaces\AppInterface;
  * @method \Avenue\View singleton('view')
  * @method \Avenue\Mcrypt singleton('mcrypt')
  * @method \Avenue\State\Cookie singleton('cookie')
+ * @method \Avenue\State\Session singleton('session')
  * @method \Avenue\Exception singleton('exception')
  *
  * 4. Method helpers for resolvers.
@@ -52,6 +57,7 @@ use Avenue\Interfaces\AppInterface;
  * @method \Avenue\View resolve('view')
  * @method \Avenue\Mcrypt resolve('mcrypt')
  * @method \Avenue\State\Cookie resolve('cookie')
+ * @method \Avenue\State\Session resolve('session')
  * @method \Avenue\Exception resolve('exception')
  */
 
@@ -324,6 +330,13 @@ class App implements AppInterface
 
         $this->container('cookie', function($app) {
             return new Cookie($app, $this->getConfig('state')['cookie']);
+        });
+
+        $this->container('session', function($app) {
+            return new Session(new SessionDatabaseHandler(
+                $app,
+                $this->getConfig('state')['session'])
+            );
         });
 
         return $this->factory();
