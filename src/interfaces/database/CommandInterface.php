@@ -4,21 +4,6 @@ namespace Avenue\Interfaces\Database;
 interface CommandInterface
 {
     /**
-     * Disconnect database.
-     */
-    public function disconnect();
-
-    /**
-     * Get master PDO instance.
-     */
-    public function getPdoMaster();
-
-    /**
-     * Get slave PDO instance.
-     */
-    public function getPdoSlave();
-
-    /**
      * Method for prepared statement.
      * Allowed to decide for master or slave.
      *

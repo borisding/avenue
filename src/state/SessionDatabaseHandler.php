@@ -1,7 +1,6 @@
 <?php
 namespace Avenue\State;
 
-use PDO;
 use Avenue\App;
 use Avenue\Mcrypt;
 use Avenue\Database\Command;
@@ -14,14 +13,14 @@ class SessionDatabaseHandler extends Command implements SessionHandlerInterface
      *
      * @var mixed
      */
-    protected $mcrypt;
+    private $mcrypt;
 
     /**
      * Default session configuration
      *
      * @var array
      */
-    protected $config = [
+    private $config = [
         'table' => 'session',
         'lifetime' => 0,
         'encrypt' => false,
@@ -34,7 +33,7 @@ class SessionDatabaseHandler extends Command implements SessionHandlerInterface
      *
      * @var boolean
      */
-    protected $readMasterBool;
+    private $readMasterBool;
 
     /**
      * Weight of frequency to trigger garbage collection.
@@ -54,18 +53,18 @@ class SessionDatabaseHandler extends Command implements SessionHandlerInterface
         parent::__construct($app);
 
         $this->config = array_merge($this->config, $config);
-        $this->table = $this->getConfig('table');
+        $this->table = $this->getSessionConfig('table');
 
         // set read master flag
-        $this->readMasterBool = $this->getConfig('readMaster') === true;
+        $this->readMasterBool = $this->getSessionConfig('readMaster') === true;
 
         // get the mcrypt instance if 'encrypt' set as true
-        if ($this->getConfig('encrypt')) {
+        if ($this->getSessionConfig('encrypt')) {
             $this->mcrypt = $this->app->mcrypt();
         }
 
         // set gc max lifetime at run time
-        ini_set('session.gc_maxlifetime', intval($this->getConfig('lifetime')));
+        ini_set('session.gc_maxlifetime', intval($this->getSessionConfig('lifetime')));
 
         // set session cookie accessible via http only
         ini_set('session.cookie_httponly', 1);
@@ -81,7 +80,7 @@ class SessionDatabaseHandler extends Command implements SessionHandlerInterface
     public function open($path, $name)
     {
         if (mt_rand(1, static::GC_WEIGHT) === static::GC_WEIGHT) {
-            $this->gc($this->getConfig('lifetime'));
+            $this->gc($this->getSessionConfig('lifetime'));
         }
 
         return true;
@@ -124,7 +123,6 @@ class SessionDatabaseHandler extends Command implements SessionHandlerInterface
      */
     public function write($id, $value)
     {
-        $driver = $this->getPdoMaster()->getAttribute(PDO::ATTR_DRIVER_NAME);
         $params = [
             ':id' => $id,
             ':value' => $this->encrypt($value),
@@ -132,7 +130,7 @@ class SessionDatabaseHandler extends Command implements SessionHandlerInterface
         ];
 
         // mysql/maria
-        if ($driver == 'mysql') {
+        if ($this->getMasterDriver() == 'mysql') {
             $sql = sprintf('replace into %s values (:id, :value, :timestamp)', $this->table);
         // others
         } else {
@@ -178,7 +176,7 @@ class SessionDatabaseHandler extends Command implements SessionHandlerInterface
      *
      * @param mixed $name
      */
-    public function getConfig($name)
+    public function getSessionConfig($name)
     {
         return $this->app->arrGet($name, $this->config);
     }
@@ -188,7 +186,7 @@ class SessionDatabaseHandler extends Command implements SessionHandlerInterface
      *
      * @param mixed $value
      */
-    protected function encrypt($value)
+    private function encrypt($value)
     {
         if ($this->mcrypt instanceof Mcrypt) {
             return $this->mcrypt->encrypt($value);
@@ -202,7 +200,7 @@ class SessionDatabaseHandler extends Command implements SessionHandlerInterface
      *
      * @param mixed $value
      */
-    protected function decrypt($value)
+    private function decrypt($value)
     {
         if ($this->mcrypt instanceof Mcrypt) {
             return $this->mcrypt->decrypt($value);

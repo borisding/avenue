@@ -6,15 +6,8 @@ use Avenue\App;
 use Avenue\Database\Connection;
 use Avenue\Interfaces\Database\CommandInterface;
 
-class Command implements CommandInterface
+class Command extends Connection implements CommandInterface
 {
-    /**
-     * App class instance.
-     *
-     * @var object
-     */
-    protected $app;
-
     /**
      * Table name of targeted model.
      *
@@ -28,13 +21,6 @@ class Command implements CommandInterface
      * @var mixed
      */
     private $statement;
-
-    /**
-     * Connection class instance.
-     *
-     * @var object
-     */
-    private static $connect;
 
     /**
      * Supported fetch types.
@@ -68,70 +54,29 @@ class Command implements CommandInterface
     /**
      * Command class constructor.
      * Define table name if not specified.
-     * Instantiate connection class.
      *
      * @param App $app
-     * @return object
      */
-    protected function __construct(App $app)
+    public function __construct(App $app)
     {
-        $this->app = $app;
+        parent::__construct($app);
 
         // assign table based on the class model if table is not specified
         if (empty($this->table)) {
             $this->table = $this->getTableName();
         }
-
-        // instantiate connection
-        if (empty(self::$connect)) {
-            self::$connect = new Connection($this->app, $this->getDatabaseConfig());
-        }
-    }
-
-    /**
-     * Disconnect database connection.
-     * This will trigger Connection class destructor.
-     *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::disconnect()
-     */
-    public function disconnect()
-    {
-        return self::$connect = null;
-    }
-
-    /**
-     * Get PDO instance for master database.
-     *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::getPdoMaster()
-     */
-    public function getPdoMaster()
-    {
-        return self::$connect->withMaster();
-    }
-
-    /**
-     * Get PDO instance for slave database.
-     *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::getPdoSlave()
-     */
-    public function getPdoSlave()
-    {
-        return self::$connect->withSlave();
     }
 
     /**
      * Command for prepared statement.
-     * Default for master database.
+     * Default for master database connection.
      *
      * {@inheritDoc}
      * @see \Avenue\Interfaces\Database\CommandInterface::cmd()
      */
     public function cmd($sql, $master = true)
     {
-        $conn = ($master !== true) ? $this->getPdoSlave() : $this->getPdoMaster();
+        $conn = ($master !== true) ? $this->getSlavePdo() : $this->getMasterPdo();
         $this->statement = $conn->prepare($sql);
 
         unset($conn);
@@ -258,19 +203,15 @@ class Command implements CommandInterface
      */
     public function bind($key, $value, $reference = false)
     {
-        try {
-            $type = $this->getParamScalar($value);
+        $type = $this->getParamScalar($value);
 
-            if ($reference) {
-                $this->statement->bindParam($key, $value, $type);
-            } else {
-                $this->statement->bindValue($key, $value, $type);
-            }
-
-            return $this;
-        } catch (\PDOException $e) {
-            throw new \RuntimeException($e->getMessage(), $e->getCode());
+        if ($reference) {
+            $this->statement->bindParam($key, $value, $type);
+        } else {
+            $this->statement->bindValue($key, $value, $type);
         }
+
+        return $this;
     }
 
     /**
@@ -308,7 +249,7 @@ class Command implements CommandInterface
      */
     public function begin()
     {
-        return $this->getPdoMaster()->beginTransaction();
+        return $this->getMasterPdo()->beginTransaction();
     }
 
     /**
@@ -319,7 +260,7 @@ class Command implements CommandInterface
      */
     public function end()
     {
-        return $this->getPdoMaster()->commit();
+        return $this->getMasterPdo()->commit();
     }
 
     /**
@@ -330,7 +271,18 @@ class Command implements CommandInterface
      */
     public function cancel()
     {
-        return $this->getPdoMaster()->rollBack();
+        return $this->getMasterPdo()->rollBack();
+    }
+
+    /**
+     * Get inserted ID.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\Database\CommandInterface::getInsertedId()
+     */
+    public function getInsertedId()
+    {
+        return $this->getMasterPdo()->lastInsertId();
     }
 
     /**
@@ -342,17 +294,6 @@ class Command implements CommandInterface
     public function getTotalRow()
     {
         return $this->statement->rowCount();
-    }
-
-    /**
-     * Get inserted ID.
-     *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::getInsertedId()
-     */
-    public function getInsertedId()
-    {
-        return $this->getPdoMaster()->lastInsertId();
     }
 
     /**
@@ -376,18 +317,6 @@ class Command implements CommandInterface
     public function ddp()
     {
         return $this->statement->debugDumpParams();
-    }
-
-    /**
-     * Get database configuration.
-     */
-    private function getDatabaseConfig()
-    {
-        return $this->app->arrGet(
-            $this->app->getEnvironment(),
-            $this->app->getConfig('database'),
-            []
-        );
     }
 
     /**

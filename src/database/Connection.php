@@ -19,34 +19,34 @@ class Connection implements ConnectionInterface
      *
      * @var mixed
      */
-    protected $master;
+    private $master;
 
     /**
      * Slave connection.
      * @var mixed
      */
-    protected $slave;
+    private $slave;
 
     /**
      * Master config.
      *
      * @var array
      */
-    protected $masterConfig = [];
+    private $masterConfig = [];
 
     /**
      * Slave config.
      *
      * @var array
      */
-    protected $slaveConfig = [];
+    private $slaveConfig = [];
 
     /**
      * Default config for master/slave.
      *
      * @var array
      */
-    protected $config = [
+    private $config = [
         'dsn' => '',
         'username' => '',
         'password' => '',
@@ -61,9 +61,16 @@ class Connection implements ConnectionInterface
      * @param array $databaseConfig
      * @throws \InvalidArgumentException
      */
-    public function __construct(App $app, array $databaseConfig = [])
+    public function __construct(App $app)
     {
         $this->app = $app;
+
+        // get database config based on the environment
+        $databaseConfig = $this->app->arrGet(
+            $this->app->getEnvironment(),
+            $this->app->getConfig('database'),
+            []
+        );
 
         if (empty($databaseConfig)) {
             throw new \InvalidArgumentException(sprintf(
@@ -75,28 +82,60 @@ class Connection implements ConnectionInterface
         // assign respective configurations for master/slave
         $this->masterConfig = $this->app->arrGet('master', $databaseConfig, []);
         $this->slaveConfig = $this->app->arrGet('slave', $databaseConfig, []);
+
+        unset($databaseConfig);
     }
 
     /**
-     * Get the PDO available database driver.
+     * Get all PDO available database drivers.
      *
      * {@inheritDoc}
      * @see \Avenue\Interfaces\Database\ConnectionInterface::getDrivers()
      */
-    public function getDrivers()
+    public function getAllDrivers()
     {
         return PDO::getAvailableDrivers();
+    }
+
+    /**
+     * Get master PDO connection driver.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\Database\ConnectionInterface::getMasterDriver()
+     */
+    public function getMasterDriver()
+    {
+        if ($this->master instanceof PDO) {
+            return $this->master->getAttribute(PDO::ATTR_DRIVER_NAME);
+        }
+
+        return null;
+    }
+
+    /**
+     * Get slave PDO connection driver.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\Database\ConnectionInterface::getSlaveDriver()
+     */
+    public function getSlaveDriver()
+    {
+        if ($this->slave instanceof PDO) {
+            return $this->slave->getAttribute(PDO::ATTR_DRIVER_NAME);
+        }
+
+        return null;
     }
 
     /**
      * Connect master database via PDO connection.
      *
      * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\ConnectionInterface::withMaster()
+     * @see \Avenue\Interfaces\Database\ConnectionInterface::getMasterPdo()
      */
-    public function withMaster()
+    public function getMasterPdo()
     {
-        // avoid reconnect if already connected for same master
+        // avoid reconnect if already connected
         if ($this->master instanceof PDO) {
             return $this->master;
         }
@@ -109,13 +148,13 @@ class Connection implements ConnectionInterface
      * Connect with slave database via PDO connection.
      *
      * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\ConnectionInterface::withSlave()
+     * @see \Avenue\Interfaces\Database\ConnectionInterface::getSlavePdo()
      */
-    public function withSlave()
+    public function getSlavePdo()
     {
         // if slave is not configured, divert to master instead
         if (empty($this->slaveConfig)) {
-            $this->slave = $this->withMaster();
+            $this->slave = $this->getMasterPdo();
         // for multiple slaves, pick random slave
         } elseif ($this->app->arrIsIndex($this->slaveConfig)) {
             $this->slave = $this->connectPdo($this->slaveConfig[array_rand($this->slaveConfig)]);
@@ -130,11 +169,10 @@ class Connection implements ConnectionInterface
     /**
      * Establish database connection via PDO with config.
      *
-     * @param array $config
-     * @throws \RuntimeException
-     * @return \PDO
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\Database\ConnectionInterface::connectPdo()
      */
-    protected function connectPdo(array $config)
+    public function connectPdo(array $config)
     {
         try {
             extract(array_merge($this->config, $config));
@@ -147,17 +185,41 @@ class Connection implements ConnectionInterface
 
             return new PDO($dsn, $username, $password, $options);
         } catch (\PDOException $e) {
-            $this->app->response->withStatus(500);
             throw new \RuntimeException($e->getMessage(), $e->getCode());
         }
     }
 
     /**
-     * Destrcutor for disconnecting database.
+     * Disconnect both master and slave connections.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\Database\ConnectionInterface::disconnect()
      */
-    public function __destruct()
+    public function disconnect()
     {
-        $this->master = null;
-        $this->slave = null;
+        $this->disconnectMaster();
+        $this->disconnectSlave();
+    }
+
+    /**
+     * Disconnect master PDO connection.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\Database\ConnectionInterface::disconnectMaster()
+     */
+    public function disconnectMaster()
+    {
+        return $this->master = null;
+    }
+
+    /**
+     * Disconnect slave PDO connection.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\Database\ConnectionInterface::disconnectSlave()
+     */
+    public function disconnectSlave()
+    {
+        return $this->slave = null;
     }
 }
