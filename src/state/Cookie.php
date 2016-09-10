@@ -118,7 +118,7 @@ class Cookie implements CookieInterface
             return $value;
         }
 
-        return '';
+        return null;
     }
 
     /**
@@ -179,7 +179,7 @@ class Cookie implements CookieInterface
 
         // remove the tempered cookie if not valid
         $this->remove($key);
-        return '';
+        return null;
     }
 
     /**
