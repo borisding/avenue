@@ -2,7 +2,7 @@
 namespace Avenue\State;
 
 use Avenue\Interfaces\State\SessionInterface;
-use Avenue\State\SessionDatabaseHandler;
+use SessionHandlerInterface;
 
 class Session implements SessionInterface
 {
@@ -24,9 +24,10 @@ class Session implements SessionInterface
      * Session class constructor.
      * Register respective handler methods before starting session.
      *
-     * @param SessionDatabaseHandler $handler
+     * @param SessionHandlerInterface $handler
+     * @throws \InvalidArgumentException
      */
-    public function __construct(SessionDatabaseHandler $handler)
+    public function __construct(SessionHandlerInterface $handler)
     {
         $this->handler = $handler;
 
