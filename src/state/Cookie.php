@@ -82,7 +82,7 @@ class Cookie implements CookieInterface
     public function set($key, $value = null)
     {
         if (empty(trim($key))) {
-            throw new \InvalidArgumentException('The key must not be empty!');
+            throw new \InvalidArgumentException('Cookie key is missing!');
         }
 
         $value = $this->encrypt($value);
