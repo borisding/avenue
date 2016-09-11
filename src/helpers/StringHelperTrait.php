@@ -142,4 +142,20 @@ trait StringHelperTrait
 
         return $ret === 0;
     }
+
+    /**
+     * Repeating a string based on the array's start/end index.
+     * Then glue with specified delimiter.
+     *
+     * @param mixed $value
+     * @param mixed $delimiter
+     * @param mixed $start
+     * @param mixed $end
+     * @return string
+     */
+    public function fillRepeat($value, $delimiter, $start, $end)
+    {
+        return implode($delimiter, array_fill($start, $end, $value));
+    }
+
 }

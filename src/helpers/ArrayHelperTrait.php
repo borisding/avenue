@@ -67,20 +67,6 @@ trait ArrayHelperTrait
     }
 
     /**
-     * Fill array with a value based on start and end index.
-     * Then join it with passed in delimiter as a string.
-     *
-     * @param mixed $delimiter
-     * @param mixed $value
-     * @param mixed $start
-     * @param mixed $end
-     */
-    public function arrFillJoin($delimiter, $value, $start, $end)
-    {
-        return implode($delimiter, array_fill($start, $end, $value));
-    }
-
-    /**
      * Removed empty element from numeric array.
      * Elements will be re-indexed after removal.
      *

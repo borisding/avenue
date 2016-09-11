@@ -81,9 +81,9 @@ class HelperBundleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foo', $firstKey);
     }
 
-    public function testArrFillJoinWithDelimiter()
+    public function testRepeatFillString()
     {
-        $result = $this->app->arrFillJoin(',', '?', 0, 2);
+        $result = $this->app->fillRepeat('?', ',', 0, 2);
         $this->assertEquals('?,?', $result);
     }
 
