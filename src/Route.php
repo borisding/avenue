@@ -266,14 +266,15 @@ class Route implements RouteInterface
 
         // throw exception if no controller class found
         if (!class_exists($controllerNamespace)) {
-            $this->app->response->withStatus(404);
-            throw new \LogicException(sprintf('Controller [%s] not found.', $controllerNamespace));
+            throw new \LogicException(
+                sprintf('Controller [%s] not found.', $controllerNamespace),
+                404
+            );
         }
 
         // check if controller class has parent controller
         if (!isset(class_parents($controllerNamespace)[static::BASE_CONTROLLER])) {
-            $this->app->response->withStatus(400);
-            throw new \LogicException('Controller must be extending the base controller!');
+            throw new \LogicException('Controller must be extending the base controller!', 400);
         }
 
         return new $controllerNamespace($this->app);

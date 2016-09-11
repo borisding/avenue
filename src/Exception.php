@@ -34,10 +34,18 @@ class Exception implements ExceptionInterface
     }
 
     /**
+     * Decide response status code based on the exception code.
      * Triggering string magic method by printing out the object.
      */
     public function render()
     {
+        $code = $this->getCode();
+
+        if ($code && $code < 400) {
+            $code = 500;
+        }
+
+        $this->app->response->withStatus($code);
         echo $this;
     }
 

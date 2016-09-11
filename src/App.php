@@ -189,7 +189,6 @@ class App implements AppInterface
     public function resolve($name)
     {
         if (!array_key_exists($name, static::$services)) {
-            $this->response->withStatus(500);
             throw new \OutOfBoundsException(sprintf('Service [%s] is not registered!', $name));
         }
 
@@ -229,8 +228,7 @@ class App implements AppInterface
 
         // throw page not found exception, if any
         if (!$this->route->isFulfilled()) {
-            $this->response->withStatus(404);
-            throw new \Exception('Page not found!');
+            throw new \Exception('Page not found!', 404);
         }
 
         // exit if request is via ajax
@@ -292,7 +290,6 @@ class App implements AppInterface
                 return;
             }
 
-            $this->response->withStatus(500);
             throw new \ErrorException($message, 0, $severity, $file, $line);
         });
 
