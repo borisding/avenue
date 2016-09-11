@@ -41,7 +41,7 @@ class Exception implements ExceptionInterface
     {
         $code = $this->getCode();
 
-        if ($code && $code < 400) {
+        if (!is_int($code) || $code < 400 || $code > 599) {
             $code = 500;
         }
 
