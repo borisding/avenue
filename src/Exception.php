@@ -39,6 +39,8 @@ class Exception implements ExceptionInterface
      */
     public function render()
     {
+        error_reporting(0);
+
         $code = $this->getCode();
 
         if (!is_int($code) || $code < 400 || $code > 599) {
