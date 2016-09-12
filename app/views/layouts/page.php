@@ -47,6 +47,6 @@
     </footer>
 
     <script src="<?= $baseUrl; ?>assets/components/jquery/dist/jquery.min.js?v=<?= $version; ?>"></script>
-    <script src="<?= $baseUrl; ?>assets/components/bootstrap/dist/js/bootstrap.min.js?v=<?= $version; ?>"></scripts>
+    <script src="<?= $baseUrl; ?>assets/components/bootstrap/dist/js/bootstrap.min.js?v=<?= $version; ?>"></script>
   </body>
 </html>
