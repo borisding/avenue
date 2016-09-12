@@ -15,7 +15,7 @@ class ConnectionTest extends AbstractDatabaseTest
     public function testDatabaseIsNotConfiguredForEnvironnment()
     {
         $config = $this->config;
-        $config = $config['database'] = [];
+        $config['database'] = [];
 
         $app = new App();
         Reflection::setPropertyValue($app, 'config', $config, true);
