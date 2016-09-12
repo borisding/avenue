@@ -51,7 +51,7 @@ class ConnectionTest extends AbstractDatabaseTest
         $this->assertTrue($slave instanceof PDO);
     }
 
-    public function testDiverSlaveToMasterWhenNotConfigured()
+    public function testDivertSlaveToMasterWhenNotConfigured()
     {
         $config = $this->config;
         $config['database']['development']['slave'] = null;
