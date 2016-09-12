@@ -14,13 +14,8 @@ class ConnectionTest extends AbstractDatabaseTest
      */
     public function testDatabaseIsNotConfiguredForEnvironnment()
     {
-        $config = [
-            'appVersion' => '1.0',
-            'httpVersion' => '1.1',
-            'timezone' => 'UTC',
-            'environment' => 'development',
-            'database' => []
-        ];
+        $config = $this->config;
+        $config = $config['database'] = [];
 
         $app = new App();
         Reflection::setPropertyValue($app, 'config', $config, true);
@@ -56,17 +51,34 @@ class ConnectionTest extends AbstractDatabaseTest
         $this->assertTrue($slave instanceof PDO);
     }
 
+    public function testDiverSlaveToMasterWhenNotConfigured()
+    {
+        $config = $this->config;
+        $config['database']['development']['slave'] = null;
+        $app = new App();
+        Reflection::setPropertyValue($app, 'config', $config, true);
+
+        $connection = new Connection($app);
+        $master = $connection->getMasterPdo();
+        $slave = $connection->getSlavePdo();
+
+        $this->assertEquals($slave, $master);
+    }
+
     public function testConnectPdo()
     {
-        $config = [
-            'dsn' => 'sqlite::memory:',
-            'username' => 'test',
-            'password' => 'test',
-            'options' => []
-        ];
-
+        $config = $this->config['database']['development']['master'];
         $pdo = $this->connection->connectPdo($config);
         $this->assertTrue($pdo instanceof PDO);
+    }
+
+    /**
+     * @expectedException RuntimeException
+     */
+    public function testConnectPdoRuntimeException()
+    {
+        $config = $this->config['database']['development']['master'] = [];
+        $pdo = $this->connection->connectPdo($config);
     }
 
     public function testDisconnect()
