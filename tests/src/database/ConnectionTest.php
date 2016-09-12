@@ -9,6 +9,12 @@ use Avenue\Tests\Database\AbstractDatabaseTest;
 
 class ConnectionTest extends AbstractDatabaseTest
 {
+    public function setUp()
+    {
+        parent::setUp();
+        $this->connection = new Connection($this->app);
+    }
+
     /**
      * @expectedException InvalidArgumentException
      */

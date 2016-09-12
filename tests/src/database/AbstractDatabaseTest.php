@@ -1,16 +1,12 @@
 <?php
 namespace Avenue\Tests\Database;
 
-use PDO;
 use Avenue\App;
-use Avenue\Database\Connection;
 use Avenue\Tests\Reflection;
 
 abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase
 {
     protected $app;
-
-    protected $connection;
 
     protected $config = [
         'appVersion' => '1.0',
@@ -37,17 +33,5 @@ abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase
 
         $this->app = new App();
         Reflection::setPropertyValue($this->app, 'config', $this->config, true);
-        $this->connection = new Connection($this->app);
-    }
-
-    protected function createMemoryTable()
-    {
-        $tableSql = "CREATE TABLE programming_language (
-            id   INTEGER PRIMARY KEY AUTOINCREMENT,
-            name VARCHAR(50) NOT NULL
-        )";
-
-        $pdo = new PDO('sqlite::memory:');
-        $pdo->exec($tableSql);
     }
 }
