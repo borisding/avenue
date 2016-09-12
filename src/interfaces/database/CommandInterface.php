@@ -68,6 +68,11 @@ interface CommandInterface
     public function fetchColumn($number);
 
     /**
+     * Fetch and get total number of rows.
+     */
+    public function fetchTotalRows();
+
+    /**
      * Bind parameters for prepared statement.
      *
      * @param mixed $key
