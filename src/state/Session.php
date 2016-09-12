@@ -32,7 +32,7 @@ class Session implements SessionInterface
         $this->handler = $handler;
 
         // check if secret key is empty
-        if (empty(trim($this->handler->getSessionConfig('secret')))) {
+        if (empty(trim($this->handler->getConfig('secret')))) {
             throw new \InvalidArgumentException('Secret must not be empty!');
         }
 
@@ -143,13 +143,9 @@ class Session implements SessionInterface
      */
     public function setCsrfToken()
     {
-        $csrfToken = hash_hmac(
-            'sha256',
-            uniqid(mt_rand()),
-            $this->handler->getSessionConfig('secret')
-        );
-
+        $csrfToken = hash_hmac('sha256', uniqid(mt_rand()), $this->handler->getConfig('secret'));
         $this->set(static::CSRF_TOKEN_NAME, $csrfToken);
+
         return $csrfToken;
     }
 

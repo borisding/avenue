@@ -6,21 +6,35 @@ use Avenue\Mcrypt;
 use Avenue\Database\Command;
 use SessionHandlerInterface;
 
-class SessionDatabaseHandler extends Command implements SessionHandlerInterface
+class SessionDatabaseHandler implements SessionHandlerInterface
 {
+    /**
+     * App class instance.
+     *
+     * @var mixed
+     */
+    protected $app;
+
+    /**
+     * Database class instance.
+     *
+     * @var mixed
+     */
+    protected $db;
+
     /**
      * Mcrypt class instance.
      *
      * @var mixed
      */
-    private $mcrypt;
+    protected $mcrypt;
 
     /**
      * Default session configuration
      *
      * @var array
      */
-    private $config = [
+    protected $config = [
         'table' => 'session',
         'lifetime' => 0,
         'encrypt' => false,
@@ -29,11 +43,18 @@ class SessionDatabaseHandler extends Command implements SessionHandlerInterface
     ];
 
     /**
+     * Database session table.
+     *
+     * @var mixed
+     */
+    protected $table;
+
+    /**
      * Reading from master flag.
      *
      * @var boolean
      */
-    private $readMasterBool;
+    protected $readMaster;
 
     /**
      * Weight of frequency to trigger garbage collection.
@@ -50,21 +71,27 @@ class SessionDatabaseHandler extends Command implements SessionHandlerInterface
      */
     public function __construct(App $app, array $config = [])
     {
-        parent::__construct($app);
-
+        $this->app = $app;
         $this->config = array_merge($this->config, $config);
-        $this->table = $this->getSessionConfig('table');
+
+        // instantiate db instance
+        if (!$this->db instanceof Command) {
+            $this->db = new Command($app);
+        }
+
+        // set table name for session
+        $this->table = $this->getConfig('table');
 
         // set read master flag
-        $this->readMasterBool = $this->getSessionConfig('readMaster') === true;
+        $this->readMaster = $this->getConfig('readMaster') === true;
 
         // get the mcrypt instance if 'encrypt' set as true
-        if ($this->getSessionConfig('encrypt')) {
+        if ($this->getConfig('encrypt')) {
             $this->mcrypt = $this->app->mcrypt();
         }
 
-        // set gc max lifetime at run time
-        ini_set('session.gc_maxlifetime', intval($this->getSessionConfig('lifetime')));
+        // set gc max lifetime
+        ini_set('session.gc_maxlifetime', intval($this->getConfig('lifetime')));
 
         // set session cookie accessible via http only
         ini_set('session.cookie_httponly', 1);
@@ -80,7 +107,7 @@ class SessionDatabaseHandler extends Command implements SessionHandlerInterface
     public function open($path, $name)
     {
         if (mt_rand(1, static::GC_WEIGHT) === static::GC_WEIGHT) {
-            $this->gc($this->getSessionConfig('lifetime'));
+            $this->gc($this->getConfig('lifetime'));
         }
 
         return true;
@@ -106,7 +133,7 @@ class SessionDatabaseHandler extends Command implements SessionHandlerInterface
     public function read($id)
     {
         $sql = sprintf('select value from %s where id = :id', $this->table);
-        $value = $this->cmd($sql, $this->readMasterBool)->bind(':id', $id)->fetchColumn();
+        $value = $this->db->cmd($sql, $this->readMaster)->bind(':id', $id)->fetchColumn();
 
         if ($value) {
             return $this->decrypt($value);
@@ -130,12 +157,12 @@ class SessionDatabaseHandler extends Command implements SessionHandlerInterface
         ];
 
         // mysql/maria
-        if ($this->getMasterDriver() == 'mysql') {
+        if ($this->db->getMasterDriver() == 'mysql') {
             $sql = sprintf('replace into %s values (:id, :value, :timestamp)', $this->table);
         // others
         } else {
             $sql = sprintf('select count(id) as total from %s where id = :id', $this->table);
-            $total = $this->cmd($sql)->bind(':id', $id)->fetchColumn();
+            $total = $this->db->cmd($sql)->bind(':id', $id)->fetchColumn();
 
             if ($total > 0) {
                 $sql = sprintf('update %s set value = :value, timestamp = :timestamp where id = :id', $this->table);
@@ -144,7 +171,7 @@ class SessionDatabaseHandler extends Command implements SessionHandlerInterface
             }
         }
 
-        return $this->cmd($sql)->runWith($params);
+        return $this->db->cmd($sql)->runWith($params);
     }
 
     /**
@@ -155,7 +182,7 @@ class SessionDatabaseHandler extends Command implements SessionHandlerInterface
     public function destroy($id)
     {
         $sql = sprintf('delete from %s where id = :id', $this->table);
-        return $this->cmd($sql)->runWith([':id' => $id]);
+        return $this->db->cmd($sql)->runWith([':id' => $id]);
     }
 
     /**
@@ -168,7 +195,7 @@ class SessionDatabaseHandler extends Command implements SessionHandlerInterface
         $previous = time() - intval($lifetime);
         $sql = sprintf('delete from %s where timestamp < :timestamp', $this->table);
 
-        return $this->cmd($sql)->runWith([':timestamp' => $previous]);
+        return $this->db->cmd($sql)->runWith([':timestamp' => $previous]);
     }
 
     /**
@@ -176,7 +203,7 @@ class SessionDatabaseHandler extends Command implements SessionHandlerInterface
      *
      * @param mixed $name
      */
-    public function getSessionConfig($name)
+    public function getConfig($name)
     {
         return $this->app->arrGet($name, $this->config);
     }
@@ -186,7 +213,7 @@ class SessionDatabaseHandler extends Command implements SessionHandlerInterface
      *
      * @param mixed $value
      */
-    private function encrypt($value)
+    protected function encrypt($value)
     {
         if ($this->mcrypt instanceof Mcrypt) {
             return $this->mcrypt->encrypt($value);
@@ -200,7 +227,7 @@ class SessionDatabaseHandler extends Command implements SessionHandlerInterface
      *
      * @param mixed $value
      */
-    private function decrypt($value)
+    protected function decrypt($value)
     {
         if ($this->mcrypt instanceof Mcrypt) {
             return $this->mcrypt->decrypt($value);
