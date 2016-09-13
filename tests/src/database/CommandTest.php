@@ -141,65 +141,65 @@ class CommandTest extends AbstractDatabaseTest
         $this->assertTrue($this->app->arrIsIndex($result[0]));
     }
 
-    public function testFetchAllBothAliasMethod()
+    public function testFetchBothAllAliasMethod()
     {
-        $result1 = $this->db->cmd($this->selectAllSql())->fetchAllBoth();
+        $result1 = $this->db->cmd($this->selectAllSql())->fetchBothAll();
         $result2 = $this->db->cmd($this->selectAllSql())->fetchAll('both');
 
         $this->assertEquals($result1, $result2);
     }
 
-    public function testFetchAllObjAliasMethod()
+    public function testFetchObjAllAliasMethod()
     {
-        $result1 = $this->db->cmd($this->selectAllSql())->fetchAllObj();
+        $result1 = $this->db->cmd($this->selectAllSql())->fetchObjAll();
         $result2 = $this->db->cmd($this->selectAllSql())->fetchAll('obj');
 
         $this->assertEquals($result1, $result2);
     }
 
-    public function testFetchAllNumAliasMethod()
+    public function testFetchNumAllAliasMethod()
     {
-        $result1 = $this->db->cmd($this->selectAllSql())->fetchAllNum();
+        $result1 = $this->db->cmd($this->selectAllSql())->fetchNumAll();
         $result2 = $this->db->cmd($this->selectAllSql())->fetchAll('num');
 
         $this->assertEquals($result1, $result2);
     }
 
-    public function testFetchAllAssocAliasMethod()
+    public function testFetchAssocAllAliasMethod()
     {
-        $result1 = $this->db->cmd($this->selectAllSql())->fetchAllAssoc();
+        $result1 = $this->db->cmd($this->selectAllSql())->fetchAssocAll();
         $result2 = $this->db->cmd($this->selectAllSql())->fetchAll('assoc');
 
         $this->assertEquals($result1, $result2);
     }
 
-    public function testFetchOneBothAliasMethod()
+    public function testFetchBothOneAliasMethod()
     {
-        $result1 = $this->db->cmd($this->selectAllSql())->fetchOneBoth();
+        $result1 = $this->db->cmd($this->selectAllSql())->fetchBothOne();
         $result2 = $this->db->cmd($this->selectAllSql())->fetchOne('both');
 
         $this->assertEquals($result1, $result2);
     }
 
-    public function testFetchOneObjAliasMethod()
+    public function testFetchObjOneAliasMethod()
     {
-        $result1 = $this->db->cmd($this->selectAllSql())->fetchOneObj();
+        $result1 = $this->db->cmd($this->selectAllSql())->fetchObjOne();
         $result2 = $this->db->cmd($this->selectAllSql())->fetchOne('obj');
 
         $this->assertEquals($result1, $result2);
     }
 
-    public function testFetchOneNumAliasMethod()
+    public function testFetchNumOneAliasMethod()
     {
-        $result1 = $this->db->cmd($this->selectAllSql())->fetchOneNum();
+        $result1 = $this->db->cmd($this->selectAllSql())->fetchNumOne();
         $result2 = $this->db->cmd($this->selectAllSql())->fetchOne('num');
 
         $this->assertEquals($result1, $result2);
     }
 
-    public function testFetchOneAssocAliasMethod()
+    public function testFetchAssocOneAliasMethod()
     {
-        $result1 = $this->db->cmd($this->selectAllSql())->fetchOneAssoc();
+        $result1 = $this->db->cmd($this->selectAllSql())->fetchAssocOne();
         $result2 = $this->db->cmd($this->selectAllSql())->fetchOne('assoc');
 
         $this->assertEquals($result1, $result2);
@@ -212,19 +212,35 @@ class CommandTest extends AbstractDatabaseTest
         $this->assertEquals($total, count(array_values($this->data)));
     }
 
-    public function testFetchClassMethod()
+    public function testFetchClassAllMethod()
     {
         $class = '\App\Models\Mocks\Programming';
-        $result = $this->db->cmd($this->selectAllSql())->fetchClass($class);
+        $result = $this->db->cmd($this->selectAllSql())->fetchClassAll($class);
         $this->assertEquals($result[0]->getId(), 1);
+    }
+
+    public function testFetchClassOneMethod()
+    {
+        $class = '\App\Models\Mocks\Programming';
+        $record = $this->db->cmd($this->selectAllSql())->fetchClassOne($class);
+        $this->assertEquals($record->getId(), 1);
     }
 
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testFetchClassMethodException()
+    public function testFetchClassAllMethodException()
     {
         $class = '\App\Models\Mocks\UnknownClass';
-        $result = $this->db->cmd($this->selectAllSql())->fetchClass($class);
+        $result = $this->db->cmd($this->selectAllSql())->fetchClassAll($class);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testFetchClassOneMethodException()
+    {
+        $class = '\App\Models\Mocks\UnknownClass';
+        $result = $this->db->cmd($this->selectAllSql())->fetchClassOne($class);
     }
 }

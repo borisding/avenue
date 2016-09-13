@@ -53,12 +53,20 @@ interface CommandInterface
     public function fetchOne($type);
 
     /**
-     * Fetch record(s) with class behavior.
+     * Fetch single record with class behavior.
      *
      * @param mixed $name
-     * @param array $ctorargs
+     * @param array $ctorArgs
      */
-    public function fetchClass($name, array $ctorargs);
+    public function fetchClassOne($name, array $ctorArgs);
+
+    /**
+     * Fetch multiple records with class behavior.
+     *
+     * @param mixed $name
+     * @param array $ctorArgs
+     */
+    public function fetchClassAll($name, array $ctorArgs);
 
     /**
      * Fetch a column from the next row.

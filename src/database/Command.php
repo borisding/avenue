@@ -41,14 +41,14 @@ class Command extends Connection implements CommandInterface
      * @var array
      */
     private $fetchAlias = [
-        'fetchAllBoth'  => 'both',
-        'fetchAllObj'   => 'obj',
-        'fetchAllNum'   => 'num',
-        'fetchAllAssoc' => 'assoc',
-        'fetchOneBoth'  => 'both',
-        'fetchOneObj'   => 'obj',
-        'fetchOneNum'   => 'num',
-        'fetchOneAssoc' => 'assoc'
+        'fetchBothAll'  => 'both',
+        'fetchObjAll'   => 'obj',
+        'fetchNumAll'   => 'num',
+        'fetchAssocAll' => 'assoc',
+        'fetchBothOne'  => 'both',
+        'fetchObjOne'   => 'obj',
+        'fetchNumOne'   => 'num',
+        'fetchAssocOne' => 'assoc'
     ];
 
     /**
@@ -154,19 +154,26 @@ class Command extends Connection implements CommandInterface
     }
 
     /**
-     * Fetch all records with class behavior.
-     * Class name is required and constructor argument is optional.
+     * Fetch single records with class behavior.
      *
      * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::fetchClass()
+     * @see \Avenue\Interfaces\Database\CommandInterface::fetchClassOne()
      */
-    public function fetchClass($name, array $ctorargs = [])
+    public function fetchClassOne($name, array $ctorArgs = [])
     {
-        if (!class_exists($name)) {
-            throw new \InvalidArgumentException(sprintf('Class [%s] does not exist!', $name));
-        }
+        $this->withClassModeRun($name, $ctorArgs);
+        return $this->statement->fetch();
+    }
 
-        $this->withFetchMode('class', $name, $ctorargs)->run();
+    /**
+     * Fetch multiple records with class behavior.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\Database\CommandInterface::fetchClassAll()
+     */
+    public function fetchClassAll($name, array $ctorArgs = [])
+    {
+        $this->withClassModeRun($name, $ctorArgs);
         return $this->statement->fetchAll();
     }
 
@@ -320,19 +327,35 @@ class Command extends Connection implements CommandInterface
     }
 
     /**
+     * Set class mode and run targeted class.
+     *
+     * @param mixed $name
+     * @param array $ctorArgs
+     * @throws \InvalidArgumentException
+     */
+    private function withClassModeRun($name, array $ctorArgs = [])
+    {
+        if (!class_exists($name)) {
+            throw new \InvalidArgumentException(sprintf('Class [%s] does not exist!', $name));
+        }
+
+        return $this->withFetchMode('class', $name, $ctorArgs)->run();
+    }
+
+    /**
      * Deciding the fetch mode based on the fetch type.
      *
      * @param mixed $type
      * @param mixed $className
-     * @param array $ctorargs
+     * @param array $ctorArgs
      * @return \Avenue\Database\Command
      */
-    private function withFetchMode($type, $className = null, array $ctorargs = [])
+    private function withFetchMode($type, $className = null, array $ctorArgs = [])
     {
         $fetchType = $this->app->arrGet($type, $this->fetchTypes, PDO::FETCH_ASSOC);
 
         if ($type === 'class' && !empty($className)) {
-            $this->statement->setFetchMode($fetchType|PDO::FETCH_PROPS_LATE, $className, $ctorargs);
+            $this->statement->setFetchMode($fetchType|PDO::FETCH_PROPS_LATE, $className, $ctorArgs);
         } else {
             $this->statement->setFetchMode($fetchType);
         }
@@ -378,10 +401,10 @@ class Command extends Connection implements CommandInterface
      * eg:
      * for multiple records as object
      *
-     * `$this->cmd('...')->fetchAllObj()` is same with `$this->cmd('...')->fetchAll('obj')`
+     * `$this->cmd('...')->fetchObjAll()` is same with `$this->cmd('...')->fetchAll('obj')`
      *
      * for single record as object
-     * `$this->cmd('...')->fetchOneObj()` is same with `$this->cmd('...')->fetchOne('obj')`
+     * `$this->cmd('...')->fetchObjOne()` is same with `$this->cmd('...')->fetchOne('obj')`
      *
      * @param mixed $method
      * @param array $params
@@ -393,7 +416,7 @@ class Command extends Connection implements CommandInterface
         }
 
         // for single record
-        if (strtolower(substr($method, 0, 8)) === 'fetchone') {
+        if (strtolower(substr($method, -3)) === 'one') {
             return $this->fetchOne($this->fetchAlias[$method]);
         }
 
