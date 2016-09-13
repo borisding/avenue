@@ -173,8 +173,8 @@ class App implements AppInterface
      */
     public function container($name, \Closure $callback)
     {
-        if (!$this->isAlnum($name)) {
-            throw new \InvalidArgumentException('Invalid registered name! Alphanumeric only.');
+        if (!$this->isValidMethodName($name)) {
+            throw new \InvalidArgumentException('Invalid registered name for container!');
         }
 
         static::$services[$name] = $callback;

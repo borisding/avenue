@@ -137,8 +137,8 @@ class View implements ViewInterface
             throw new \InvalidArgumentException('Helper name already registered!');
         }
 
-        if (!$this->app->isAlnum($name)) {
-            throw new \InvalidArgumentException('Invalid helper name! Alphanumeric only.');
+        if (!$this->app->isValidMethodName($name)) {
+            throw new \InvalidArgumentException('Invalid helper function name!');
         }
 
         $this->helpers[$name] = $callback;

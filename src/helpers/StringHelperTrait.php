@@ -91,7 +91,7 @@ trait StringHelperTrait
      */
     public function isAlnum($input)
     {
-        return preg_match('/^[a-zA-Z0-9-]+$/', $input) === 1;
+        return preg_match('/^[a-zA-Z0-9]+$/', $input) === 1;
     }
 
     /**
@@ -113,6 +113,18 @@ trait StringHelperTrait
     public function isDigit($input)
     {
         return preg_match('/^[0-9]+$/', $input) === 1;
+    }
+
+    /**
+     * Quick check for valid method name. Basically, same with class regexp.
+     *
+     * @link: http://php.net/manual/en/language.oop5.basic.php
+     * @param mixed $input
+     * @return boolean
+     */
+    public function isValidMethodName($input)
+    {
+        return preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $input) === 1;
     }
 
     /**

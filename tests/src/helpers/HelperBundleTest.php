@@ -210,7 +210,7 @@ class HelperBundleTest extends \PHPUnit_Framework_TestCase
 
     public function testInputAlnumIsFalse()
     {
-        $input = 'abc123_~!@';
+        $input = 'abc123_-~!@';
         $this->assertFalse($this->app->isAlnum($input));
     }
 
@@ -250,5 +250,41 @@ class HelperBundleTest extends \PHPUnit_Framework_TestCase
         $secret = 'hello-world';
         $md5Hashed = hash_hmac('md5', '123', $secret);
         $this->assertFalse($this->app->hashedCompare('8352444af31e496ec5f66846c47ee305', $md5Hashed));
+    }
+
+    public function testIsValidMethodName()
+    {
+        $methodName1 = 'abc';
+        $this->assertTrue($this->app->isValidMethodName($methodName1));
+
+        $methodName2 = 'ABC';
+        $this->assertTrue($this->app->isValidMethodName($methodName2));
+
+        $methodName3 = 'abcABC';
+        $this->assertTrue($this->app->isValidMethodName($methodName3));
+
+        $methodName4 = 'abcABC_123';
+        $this->assertTrue($this->app->isValidMethodName($methodName4));
+
+        $methodName5 = '_abc_ABC_123';
+        $this->assertTrue($this->app->isValidMethodName($methodName5));
+    }
+
+    public function testIsInvalidValidMethodName()
+    {
+        $methodName1 = 'abc!@#';
+        $this->assertFalse($this->app->isValidMethodName($methodName1));
+
+        $methodName2 = '~!@ABC';
+        $this->assertFalse($this->app->isValidMethodName($methodName2));
+
+        $methodName3 = '123abcABC';
+        $this->assertFalse($this->app->isValidMethodName($methodName3));
+
+        $methodName4 = 'abcABC_123_!@#';
+        $this->assertFalse($this->app->isValidMethodName($methodName4));
+
+        $methodName5 = '_abc-ABC-123';
+        $this->assertFalse($this->app->isValidMethodName($methodName5));
     }
 }
