@@ -89,12 +89,6 @@ class SessionDatabaseHandler implements SessionHandlerInterface
         if ($this->getConfig('encrypt')) {
             $this->mcrypt = $this->app->mcrypt();
         }
-
-        // set gc max lifetime
-        ini_set('session.gc_maxlifetime', intval($this->getConfig('lifetime')));
-
-        // set session cookie accessible via http only
-        ini_set('session.cookie_httponly', 1);
     }
 
     /**

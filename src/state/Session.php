@@ -161,10 +161,16 @@ class Session implements SessionInterface
     }
 
     /**
-     * Setting before start the session.
+     * Runtime and handlers settings before starting the session.
      */
     protected function prepare()
     {
+        // set gc max lifetime
+        ini_set('session.gc_maxlifetime', intval($this->handler->getConfig('lifetime')));
+
+        // set session cookie accessible via http only
+        ini_set('session.cookie_httponly', 1);
+
         // register respective handler methods
         session_set_save_handler(
             [$this->handler, 'open'],
