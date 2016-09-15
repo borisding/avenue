@@ -96,10 +96,15 @@ class Response implements ResponseInterface
 
         $httpVersion = $this->app->getHttpVersion();
         $httpProtocol = 'HTTP/' . (!empty($httpVersion) ? $httpVersion : '1.1');
+
         $body = $this->getBody();
 
         if (is_int($statusCode)) {
-            header(sprintf('%s %d %s', $httpProtocol, $statusCode, $statusDescription), true, $statusCode);
+            header(
+                sprintf('%s %d %s', $httpProtocol, $statusCode, $statusDescription),
+                true,
+                $statusCode
+            );
         }
 
         if (!$this->hasCache() && !empty($body)) {
@@ -123,6 +128,7 @@ class Response implements ResponseInterface
             // processed as multiple headers for the same type
             // when format is provided as index based array
             if ($this->app->arrIsIndex($format)) {
+
                 foreach ($format as $value) {
                     header($type . ': ' . $value, false);
                 }

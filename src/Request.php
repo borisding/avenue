@@ -187,12 +187,12 @@ class Request implements RequestInterface
      */
     public function getRequestMethod($lowerCase = false)
     {
-        if ($this->getHeader('X-Http-Method-Override')) {
+        $requestMethod = $this->app->arrGet('REQUEST_METHOD', $_SERVER, static::GET_METHOD);
+
+        if (!empty($this->getHeader('X-Http-Method-Override'))) {
             $requestMethod = $this->getHeader('X-Http-Method-Override');
-        } elseif (isset($_POST['_method']) && !empty($_POST['_method'])) {
-            $requestMethod = $_POST['_method'];
-        } else {
-            $requestMethod = $this->app->arrGet('REQUEST_METHOD', $_SERVER, static::GET_METHOD);
+        } elseif (!empty($this->app->arrGet('_method', $_POST))) {
+            $requestMethod = $this->app->arrGet('_method', $_POST);
         }
 
         return ($lowerCase) ? strtolower($requestMethod) : $requestMethod;
@@ -275,7 +275,7 @@ class Request implements RequestInterface
      * @param mixed $key
      * @return mixed
      */
-    protected function processHeaderName($key)
+    private function processHeaderName($key)
     {
         $key = str_replace('_', ' ', $key);
         $key = ucwords(strtolower($key));
@@ -406,6 +406,7 @@ class Request implements RequestInterface
         $ipAddress = $this->app->arrGet('REMOTE_ADDR', $_SERVER);
 
         foreach (['HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR'] as $key) {
+
             if (!empty($this->app->arrGet($key, $_SERVER))) {
                 $ipAddress = $this->app->arrGet($key, $_SERVER);
                 break;
