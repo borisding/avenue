@@ -65,25 +65,36 @@ class Connection implements ConnectionInterface
     {
         $this->app = $app;
 
-        // get database config based on the environment
-        $databaseConfig = $this->app->arrGet(
-            $this->app->getEnvironment(),
-            $this->app->getConfig('database'),
-            []
-        );
-
-        if (empty($databaseConfig)) {
-            throw new \InvalidArgumentException(sprintf(
-                'Database is not configured for [%s] environment!',
-                $this->app->getEnvironment()
-            ));
-        }
+        // get database config
+        $databaseConfig = $this->getDatabaseConfig();
 
         // assign respective configurations for master/slave
         $this->masterConfig = $this->app->arrGet('master', $databaseConfig, []);
         $this->slaveConfig = $this->app->arrGet('slave', $databaseConfig, []);
 
         unset($databaseConfig);
+    }
+
+    /**
+     * Get the database configuration based on the environment's setting.
+     *
+     * @throws \InvalidArgumentException
+     * @return mixed
+     */
+    private function getDatabaseConfig()
+    {
+        $environment = $this->app->getEnvironment();
+        $config = $this->app->getConfig('database');
+        $config = $this->app->arrGet($environment, $config, []);
+
+        if (empty($config)) {
+            throw new \InvalidArgumentException(sprintf(
+                'Database is not configured for [%s] environment!',
+                $environment
+            ));
+        }
+
+        return $config;
     }
 
     /**
