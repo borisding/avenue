@@ -1,6 +1,6 @@
 <?php
 /**
- * File to place other service providers.
+ * File to place other service providers of 3rd party dependencies.
  */
 
 // register monolog dependency for logging

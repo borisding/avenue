@@ -12,44 +12,21 @@ $app = new \Avenue\App($config);
 
 
 /**
- * Application's error handler.
- * Error details & stack trace only be displayed in development environment.
- */
-
-$app->container('errorHandler', function($app) {
-    $environment = $app->getEnvironment();
-    $status = $app->response->getStatusCode();
-
-    // example of error messages handling based on the environment
-    // can modify based on the different context
-    if ($environment === 'staging' || $environment === 'production') {
-        error_reporting(0);
-        $message = ($status === 404) ? 'Page not found.' : 'Sorry! Something went wrong.';
-        $app->response->write($message);
-        $app->response->render();
-    } else {
-        error_reporting(-1);
-        $app->exception()->render();
-    }
-
-    return $app;
-});
-
-
-/**
  * Respective registered services for application.
- * 3rd party dependencies, application routes, and view helpers.
+ * 3rd party dependencies, app handlers, routes, and view helpers.
  */
 
-// include application services.
-require_once 'services.php';
+// include app handlers.
+require_once 'handlers.php';
 
-// include application view helpers.
-require_once 'views/helpers.php';
+// include app dependencies.
+require_once 'dependencies.php';
 
-// include application routes
+// include app routes
 require_once 'routes.php';
 
+// include app view helpers.
+require_once 'views/helpers.php';
 
 /**
  * Boot to run application.
