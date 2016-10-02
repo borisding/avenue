@@ -74,16 +74,13 @@ class SessionDatabaseHandler implements SessionHandlerInterface
         $this->app = $app;
         $this->config = array_merge($this->config, $config);
 
+        $this->table = $this->getConfig('table');
+        $this->readMaster = $this->getConfig('readMaster') === true;
+
         // instantiate db instance
         if (!$this->db instanceof Command) {
             $this->db = new Command($app);
         }
-
-        // set table name for session
-        $this->table = $this->getConfig('table');
-
-        // set read master flag
-        $this->readMaster = $this->getConfig('readMaster') === true;
 
         // get the mcrypt instance if 'encrypt' set as true
         if ($this->getConfig('encrypt')) {

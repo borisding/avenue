@@ -116,11 +116,11 @@ class Connection implements ConnectionInterface
      */
     public function getMasterDriver()
     {
-        if ($this->master instanceof PDO) {
-            return $this->master->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if (!$this->master instanceof PDO) {
+            $this->master = $this->getMasterPdo();
         }
 
-        return null;
+        return $this->master->getAttribute(PDO::ATTR_DRIVER_NAME);
     }
 
     /**
@@ -131,11 +131,11 @@ class Connection implements ConnectionInterface
      */
     public function getSlaveDriver()
     {
-        if ($this->slave instanceof PDO) {
-            return $this->slave->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if (!$this->slave instanceof PDO) {
+            $this->slave = $this->getSlavePdo();
         }
 
-        return null;
+        return $this->slave->getAttribute(PDO::ATTR_DRIVER_NAME);
     }
 
     /**
