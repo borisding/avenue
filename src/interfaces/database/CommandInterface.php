@@ -113,9 +113,9 @@ interface CommandInterface
     public function cancel();
 
     /**
-     * Get the total row.
+     * Get the number of affected rows.
      */
-    public function getTotalRow();
+    public function getAffectedRows();
 
     /**
      * Get inserted ID.

@@ -293,12 +293,12 @@ class Command extends Connection implements CommandInterface
     }
 
     /**
-     * Get the total rows.
+     * Get the number of affected rows.
      *
      * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::getTotalRow()
+     * @see \Avenue\Interfaces\Database\CommandInterface::getAffectedRows()
      */
-    public function getTotalRow()
+    public function getAffectedRows()
     {
         return $this->statement->rowCount();
     }
