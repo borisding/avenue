@@ -4,16 +4,26 @@ namespace Avenue\Database;
 use PDO;
 use Avenue\App;
 use Avenue\Database\Connection;
+use Avenue\Database\CommandWrapperTrait;
 use Avenue\Interfaces\Database\CommandInterface;
 
 class Command extends Connection implements CommandInterface
 {
+    use CommandWrapperTrait;
+
     /**
      * Table name of targeted model.
      *
      * @var mixed
      */
     protected $table;
+
+    /**
+     * Default table's primary key column name.
+     *
+     * @var string
+     */
+    protected $pk = 'id';
 
     /**
      * Prepared statement.

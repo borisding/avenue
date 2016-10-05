@@ -131,4 +131,45 @@ interface CommandInterface
      * Debug and dump params for prepared statement.
      */
     public function ddp();
+
+    /**
+     * Handling select all query with fetch type and flag read from master.
+     *
+     * @param mixed $ids
+     * @param mixed $master
+     * @param mixed $type
+     */
+    public function selectAll($ids, $master, $type);
+
+    /**
+     * Handling select columns query with fetch type and flag read from master.
+     *
+     * @param array $columns
+     * @param mixed $ids
+     * @param mixed $master
+     * @param mixed $type
+     */
+    public function selectWith(array $columns, $ids, $master, $type);
+
+    /**
+     * Handling insert query method.
+     *
+     * @param array $params
+     */
+    public function insert(array $params);
+
+    /**
+     * Handling delete query method.
+     *
+     * @param mixed $values
+     */
+    public function delete($values);
+
+    /**
+     * Handling update query method.
+     *
+     * @param array $params
+     * @param mixed $ids
+     */
+    public function update(array $params, $ids);
 }
