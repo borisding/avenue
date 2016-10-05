@@ -53,8 +53,7 @@ trait CommandWrapperTrait
             $sql .= sprintf('%s in (%s)', $this->pk, $this->getPlaceholders($ids));
         }
 
-        $readMaster = $master === true;
-        $query = $this->cmd($sql, $readMaster);
+        $query = $this->cmd($sql, $master === true);
 
         if (is_array($ids)) {
             $query = $query->batch($ids);
