@@ -47,7 +47,7 @@ trait CommandWrapperTrait
         }
 
         if (!empty($ids) && !is_array($ids)) {
-            $ids = [$ids];
+            $ids = (array)$ids;
             $sql .= sprintf('%s = %s', $this->pk, '?');
         } elseif ($this->app->arrIsIndex($ids)) {
             $sql .= sprintf('%s in (%s)', $this->pk, $this->getPlaceholders($ids));
@@ -95,7 +95,7 @@ trait CommandWrapperTrait
         $sql = sprintf('delete from %s where ', $this->table);
 
         if (!is_array($ids)) {
-            $ids = [$ids];
+            $ids = (array)$ids;
             $sql .= sprintf('%s = %s', $this->pk, '?');
         } elseif ($this->app->arrIsIndex($ids)) {
             $sql .= sprintf('%s in (%s)', $this->pk, $this->getPlaceholders($ids));
