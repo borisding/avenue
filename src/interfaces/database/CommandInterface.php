@@ -133,23 +133,42 @@ interface CommandInterface
     public function ddp();
 
     /**
-     * Handling select all query with fetch type and flag read from master.
+     * Handling default select all query from master.
      *
      * @param mixed $ids
-     * @param mixed $master
+     * @param array $clause
      * @param mixed $type
      */
-    public function selectAll($ids, $master, $type);
+    public function selectAll($ids, array $clause, $type);
 
     /**
-     * Handling select columns query with fetch type and flag read from master.
+     * Handling default select all query from slave.
+     *
+     * @param mixed $ids
+     * @param array $clause
+     * @param mixed $type
+     */
+    public function selectAllSlave($ids, array $clause, $type);
+
+    /**
+     * Handling default select column(s) query from master.
      *
      * @param array $columns
      * @param mixed $ids
-     * @param mixed $master
+     * @param array $clause
      * @param mixed $type
      */
-    public function selectWith(array $columns, $ids, $master, $type);
+    public function select(array $columns, $ids, array $clause, $type);
+
+    /**
+     * Handling default select column(s) query from slave.
+     *
+     * @param array $columns
+     * @param mixed $ids
+     * @param array $clause
+     * @param mixed $type
+     */
+    public function selectSlave(array $columns, $ids, array $clause, $type);
 
     /**
      * Handling insert query method.
@@ -161,15 +180,17 @@ interface CommandInterface
     /**
      * Handling delete query method.
      *
-     * @param mixed $values
+     * @param mixed $ids
+     * @param array $clause
      */
-    public function delete($values);
+    public function delete($ids, array $clause);
 
     /**
      * Handling update query method.
      *
      * @param array $params
      * @param mixed $ids
+     * @param array $clause
      */
-    public function update(array $params, $ids);
+    public function update(array $params, $ids, array $clause);
 }
