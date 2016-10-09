@@ -135,62 +135,74 @@ interface CommandInterface
     /**
      * Handling default select all query from master.
      *
-     * @param mixed $ids
-     * @param array $clause
+     * @param mixed $clause
+     * @param mixed $params
      * @param mixed $type
      */
-    public function selectAll($ids, array $clause, $type);
+    public function selectAll($clause, $params, $type);
 
     /**
      * Handling default select all query from slave.
      *
-     * @param mixed $ids
-     * @param array $clause
+     * @param mixed $clause
+     * @param mixed $params
      * @param mixed $type
      */
-    public function selectAllSlave($ids, array $clause, $type);
+    public function selectAllSlave($clause, $params, $type);
 
     /**
      * Handling default select column(s) query from master.
      *
      * @param array $columns
-     * @param mixed $ids
-     * @param array $clause
+     * @param mixed $clause
+     * @param mixed $params
      * @param mixed $type
      */
-    public function select(array $columns, $ids, array $clause, $type);
+    public function select(array $columns, $clause, $params, $type);
 
     /**
      * Handling default select column(s) query from slave.
      *
      * @param array $columns
-     * @param mixed $ids
-     * @param array $clause
+     * @param mixed $clause
+     * @param mixed $params
      * @param mixed $type
      */
-    public function selectSlave(array $columns, $ids, array $clause, $type);
+    public function selectSlave(array $columns, $clause, $params, $type);
 
     /**
      * Handling insert query method.
      *
      * @param array $params
      */
-    public function insert(array $params);
+    public function insert(array $columns);
+
+    /**
+     * Handling delete all records query method.
+     */
+    public function deleteAll();
 
     /**
      * Handling delete query method.
      *
-     * @param mixed $ids
-     * @param array $clause
+     * @param mixed $clause
+     * @param mixed $params
      */
-    public function delete($ids, array $clause);
+    public function delete($clause, $params);
+
+    /**
+     * Handling update all query method.
+     *
+     * @param array $columns
+     */
+    public function updateAll(array $columns);
 
     /**
      * Handling update query method.
      *
-     * @param array $params
-     * @param mixed $ids
-     * @param array $clause
+     * @param array $columns
+     * @param mixed $clause
+     * @param mixed $params
      */
-    public function update(array $params, $ids, array $clause);
+    public function update(array $columns, $clause, $params);
 }

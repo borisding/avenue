@@ -28,9 +28,7 @@ class CommandTest extends AbstractDatabaseTest
         parent::setUp();
 
         $this->db = new Command($this->app);
-
         Reflection::setPropertyValue($this->db, 'table', 'programming');
-        Reflection::setPropertyValue($this->db, 'pk', 'id');
 
         $this->table = Reflection::getPropertyValue($this->db, 'table');
         $this->prepareMasterData();
@@ -250,39 +248,42 @@ class CommandTest extends AbstractDatabaseTest
         $result = $this->db->cmd($this->selectAllSql())->fetchClassOne($class);
     }
 
+    /**
+     * Tests for CRUD wrappers.
+     */
     public function testSelectAllWithoutParameters()
     {
         $result = $this->db->selectAll();
         $this->assertEquals(5, count($result));
     }
 
-    public function testSelectAllWithId()
+    public function testSelectAllWithSingleUnnamedParameter()
     {
-        $result = $this->db->selectAll(1);
+        $result = $this->db->selectAll('id = ?', 1);
         $this->assertEquals(1, count($result));
     }
 
-    public function testSelectAllWithIds()
+    public function testSelectAllWithSingleNamedParameter()
     {
-        $result = $this->db->selectAll([1, 2, 3]);
-        $this->assertEquals(3, count($result));
+        $result = $this->db->selectAll('id = :id', [':id' => 1]);
+        $this->assertEquals(1, count($result));
     }
 
-    public function testSelectAllWithWithClause()
+    public function testSelectAllWithMultipleUnnamedParameters()
     {
-        $result = $this->db->selectAll(1, ['or id = ?' => 2]);
+        $result = $this->db->selectAll('id = ? or id = ?', [1, 2]);
         $this->assertEquals(2, count($result));
     }
 
-    public function testSelectAllWithClauseMultipleValues()
+    public function testSelectAllWithMultipleNamedParameters()
     {
-        $result = $this->db->selectAll(1, ['or id = ? or id = ?' => [2, 3]]);
-        $this->assertEquals(3, count($result));
+        $result = $this->db->selectAll('id = :id1 or id = :id2', [':id1' => 1, ':id2' => 2]);
+        $this->assertEquals(2, count($result));
     }
 
-    public function testSelectAllWithClauseAndType()
+    public function testSelectAllWithType()
     {
-        $result = $this->db->selectAll(1, ['or id = ?' => 2], 'obj');
+        $result = $this->db->selectAll('id = ?', 1, 'obj');
         $this->assertTrue($result[0] instanceof stdClass);
     }
 
@@ -299,41 +300,41 @@ class CommandTest extends AbstractDatabaseTest
         $this->assertEquals(5, count($result));
     }
 
-    public function testSelectColumnWithId()
+    public function testSelectColumnWithSingleUnnamedParameter()
     {
-        $result = $this->db->select(['name'], 1);
+        $result = $this->db->select(['name'], 'id = ?', 1);
         $this->assertEquals(1, count($result));
     }
 
-    public function testSelectColumnWithIds()
+    public function testSelectColumnWithSingleNamedParameter()
     {
-        $result = $this->db->select(['name'], [1, 2, 3]);
-        $this->assertEquals(3, count($result));
+        $result = $this->db->select(['name'], 'id = :id', [':id' => 1]);
+        $this->assertEquals(1, count($result));
     }
 
-    public function testSelectColumnWithClause()
+    public function testSelectColumnWithMultipleUnnamedParameters()
     {
-        $result = $this->db->select(['name'], 1, ['or id = ?' => 2]);
+        $result = $this->db->select(['name'], 'id = ? or id = ?', [1, 2]);
         $this->assertEquals(2, count($result));
     }
 
-    public function testSelectColumnWithClauseMultipleValues()
+    public function testSelectColumnWithMultipleNamedParameters()
     {
-        $result = $this->db->select(['name'], 1, ['or id = ? or id = ?' => [2, 3]]);
-        $this->assertEquals(3, count($result));
+        $result = $this->db->select(['name'], 'id = :id1 or id = :id2', [':id1' => 1, ':id2' => 2]);
+        $this->assertEquals(2, count($result));
     }
 
-    public function testSelectWithClauseAndType()
-    {
-        $result = $this->db->select(['name'], 1, ['or id = ?' => 2], 'obj');
-        $this->assertTrue($result[0] instanceof stdClass);
-    }
-
-    public function testSelectSlaveCloumn()
+    public function testSelectSlaveWithoutParameters()
     {
         $this->prepareSlaveData();
-        $result = $this->db->select(['name']);
+        $result = $this->db->selectSlave(['name']);
         $this->assertEquals(5, count($result));
+    }
+
+    public function testSelectWithType()
+    {
+        $result = $this->db->select(['name'], 'id = ?', 1, 'obj');
+        $this->assertTrue($result[0] instanceof stdClass);
     }
 
     public function testInsert()
@@ -343,89 +344,81 @@ class CommandTest extends AbstractDatabaseTest
         $this->assertEquals(6, count($result));
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testDeleteInvalidIdException()
+    public function testDeleteAll()
     {
-        $this->db->delete(null);
+        $this->db->deleteAll();
+        $result = $this->db->select(['name']);
+        $this->assertEquals(0, count($result));
     }
 
-    public function testDeleteSingle()
+    public function testDeleteSingleWithUnnamedParameter()
     {
-        $this->db->delete(1);
+        $this->db->delete('id = ?', 1);
         $result = $this->db->select(['name']);
         $this->assertEquals(4, count($result));
     }
 
-    public function testDeleteMultiple()
+    public function testDeleteSingleWithNamedParameter()
     {
-        $this->db->delete([1, 2, 3]);
+        $this->db->delete('id = :id', [':id' => 1]);
         $result = $this->db->select(['name']);
-        $this->assertEquals(2, count($result));
+        $this->assertEquals(4, count($result));
     }
 
-    public function testDeleteMultipleWithClauseSingleValue()
+    public function testDeleteMultipleWithUnnamedParameters()
     {
-        $this->db->delete(1, ['or id = ?' => 2]);
+        $this->db->delete('id = ? or id = ?', [1, 2]);
         $result = $this->db->select(['name']);
         $this->assertEquals(3, count($result));
     }
 
-    public function testDeleteMultipleWithClauseMultipleValues()
+    public function testDeleteMultipleWithNamedParameters()
     {
-        $this->db->delete(1, ['or id = ? or id = ?' => [2, 3]]);
+        $this->db->delete('id = :id1 or id = :id2', [':id1' => 1, ':id2' => 2]);
         $result = $this->db->select(['name']);
-        $this->assertEquals(2, count($result));
+        $this->assertEquals(3, count($result));
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testUpdateInvalidParamsException()
+    public function testUpdateAll()
     {
-        $this->db->update([], 1);
+        $this->db->updateAll(['name' => 'Scala']);
+        $result = $this->db->cmd(sprintf('select * from %s where name = \'Scala\'', $this->table))->fetchAll();
+        $this->assertEquals(5, count($result));
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testUpdateInvalidIdException()
+    public function testUpdateSingleWithUnnamedParameter()
     {
-        $this->db->update([[
-            'name' => 'Scala'
-        ]], null);
-    }
-
-    public function testUpdateSingle()
-    {
-        $this->db->update(['name' => 'Scala'], 1);
+        $this->db->update(['name' => 'Scala'], 'id = ?', 1);
         $result = $this->db->select(['name']);
         $this->assertEquals('Scala', $result[0]['name']);
     }
 
-    public function testUpdateMultiple()
+    public function testUpdateSingleWithNamedParameter()
     {
-        $this->db->update(['name' => 'Scala'], [1, 2]);
+        $this->db->update(['name' => 'Scala'], 'id = :id', 1);
+        $result = $this->db->select(['name']);
+        $this->assertEquals('Scala', $result[0]['name']);
+    }
+
+    public function testUpdateMultipleWithUnnamedParameters()
+    {
+        $this->db->update(['name' => 'Scala'], 'id = ? or id = ?', [1, 2]);
         $result = $this->db->select(['name']);
         $this->assertEquals('Scala', $result[0]['name']);
         $this->assertEquals('Scala', $result[1]['name']);
     }
 
-    public function testUpdateWithClauseSingleValue()
+    public function testUpdateMultipleWithNamedParameters()
     {
-        $this->db->update(['name' => 'Scala'], 1, ['or id = ?' => 2]);
+        $this->db->update(['name' => 'Scala'], 'id = :id1 or id = :id2', [':id1' => 1, ':id2' => 2]);
         $result = $this->db->select(['name']);
         $this->assertEquals('Scala', $result[0]['name']);
         $this->assertEquals('Scala', $result[1]['name']);
     }
 
-    public function testUpdateWithClauseMultipleValues()
+    public function testGetPlaceholders()
     {
-        $this->db->update(['name' => 'Scala'], 1, ['or id = ? or id = ?' => [2, 3]]);
-        $result = $this->db->select(['name']);
-        $this->assertEquals('Scala', $result[0]['name']);
-        $this->assertEquals('Scala', $result[1]['name']);
-        $this->assertEquals('Scala', $result[2]['name']);
+        $placeholders = $this->db->getPlaceholders([1, 2, 3]);
+        $this->assertEquals('?, ?, ?', $placeholders);
     }
 }

@@ -4,74 +4,74 @@ namespace Avenue\Database;
 trait CommandWrapperTrait
 {
     /**
-     * Select all query wrapper with PK's value(s) and parameters from master.
+     * Select all query wrapper with/without clause and parameters from master.
      *
-     * @param mixed $ids
-     * @param array $clause
+     * @param mixed $clause
+     * @param mixed $params
      * @param string $type
      */
-    public function selectAll($ids = null, array $clause = [], $type = 'assoc')
+    public function selectAll($clause = null, $params = null, $type = 'assoc')
     {
         return $this->getSelectWhereClause(
             $this->getSelectAllClause(),
-            $ids,
             $clause,
+            $params,
             $type,
             true
         );
     }
 
     /**
-     * Select all query wrapper with PK's value(s) and parameters from slave.
+     * Select all query wrapper with/without clause and parameters from slave.
      *
-     * @param mixed $ids
-     * @param array $clause
+     * @param mixed $clause
+     * @param mixed $params
      * @param string $type
      */
-    public function selectAllSlave($ids = null, array $clause = [], $type = 'assoc')
+    public function selectAllSlave($clause = null, $params = null, $type = 'assoc')
     {
         return $this->getSelectWhereClause(
             $this->getSelectAllClause(),
-            $ids,
             $clause,
+            $params,
             $type,
             false
         );
     }
 
     /**
-     * Select column(s) query wrapper with PK's value(s) and parameters from master.
+     * Select column(s) query wrapper with/without clause and parameters from master.
      *
      * @param array $columns
-     * @param mixed $ids
-     * @param array $clause
+     * @param mixed $clause
+     * @param mixed $params
      * @param string $type
      */
-    public function select(array $columns, $ids = null, array $clause = [], $type = 'assoc')
+    public function select(array $columns, $clause = null, $params = null, $type = 'assoc')
     {
         return $this->getSelectWhereClause(
             $this->getSelectClause($columns),
-            $ids,
             $clause,
+            $params,
             $type,
             true
         );
     }
 
     /**
-     * Select column(s) query wrapper with PK's value(s) and parameters from slave.
+     * Select column(s) query wrapper with/without clause and parameters from slave.
      *
      * @param array $columns
-     * @param mixed $ids
-     * @param array $clause
+     * @param mixed $clause
+     * @param mixed $params
      * @param string $type
      */
-    public function selectSlave(array $columns, $ids = null, array $clause = [], $type = 'assoc')
+    public function selectSlave(array $columns, $clause = null, $params = null, $type = 'assoc')
     {
         return $this->getSelectWhereClause(
             $this->getSelectClause($columns),
-            $ids,
             $clause,
+            $params,
             $type,
             false
         );
@@ -88,7 +88,7 @@ trait CommandWrapperTrait
     }
 
     /**
-     * Return select statement with accepted column(s).
+     * Return select clause with accepted column(s).
      *
      * @param array $columns
      * @return string
@@ -107,45 +107,37 @@ trait CommandWrapperTrait
      * @param mixed $type
      * @param mixed $master
      */
-    private function getSelectWhereClause($sql, $values, array $clause, $type, $master)
+    private function getSelectWhereClause($sql, $clause, $params, $type, $master)
     {
-        if (empty($values)) {
-            $values = [];
-        } else {
-            $sql .= ' where ';
-
-            if (!is_array($values)) {
-                $values = (array)$values;
-                $sql .= sprintf('%s = %s', $this->pk, '?');
-            } else {
-                $sql .= sprintf('%s in (%s)', $this->pk, $this->getPlaceholders($values));
-            }
+        if (!empty($clause)) {
+            $sql .= sprintf(' where %s', $clause);
         }
 
-        $sql = $this->getClauseExtension($sql, $clause);
-        $values = $this->getClauseInputs($values, $clause);
+        if (!empty($params) && !is_array($params)) {
+            $params = (array)$params;
+        }
 
         $query = $this->cmd($sql, $master === true);
 
-        if (!empty($values) && is_array($values)) {
-            $query = $query->batch($values);
+        if (is_array($params)) {
+            $query = $query->batch($params);
         }
 
         return $query->fetchAll($type);
     }
 
     /**
-     * Insert query wrapper with accepted params.
+     * Insert query wrapper with accepted columns key/value pair values.
      *
-     * @param array $params
+     * @param array $columns
      */
-    public function insert(array $params)
+    public function insert(array $columns)
     {
-        $values = array_values($params);
+        $values = array_values($columns);
         $sql = sprintf(
             'insert into %s (%s) values (%s)',
             $this->table,
-            implode(', ', array_keys($params)),
+            implode(', ', array_keys($columns)),
             $this->getPlaceholders($values)
         );
 
@@ -156,65 +148,51 @@ trait CommandWrapperTrait
     }
 
     /**
-     * Delete query wrapper with accepted PK value(s).
-     *
-     * @param mixed $ids
-     * @param array $clause
+     * Delete all records query wrapper.
      */
-    public function delete($ids, array $clause = [])
+    public function deleteAll()
     {
-        if (empty($ids)) {
-            throw new \InvalidArgumentException('[ids] argument must not be empty!', 400);
-        }
-
-        $sql = sprintf('delete from %s where ', $this->table);
-
-        if (!is_array($ids)) {
-            $ids = (array)$ids;
-            $sql .= sprintf('%s = %s', $this->pk, '?');
-        } else {
-            $sql .= sprintf('%s in (%s)', $this->pk, $this->getPlaceholders($ids));
-        }
-
-        $sql = $this->getClauseExtension($sql, $clause);
-        $values = $this->getClauseInputs($ids, $clause);
-
-         return $this
-        ->cmd($sql)
-        ->batch($values)
+        return $this
+        ->cmd(sprintf('delete from %s', $this->table))
         ->run();
     }
 
     /**
-     * Update query wrapper with accepted params and PK value(s).
+     * Delete query wrapper with clause and parameters.
      *
-     * @param array $params
-     * @param mixed $ids
-     * @param array $clause
+     * @param mixed $clause
+     * @param mixed $params
      */
-    public function update(array $params, $ids, array $clause = [])
+    public function delete($clause, $params = null)
     {
-        if (empty($params) || empty($ids)) {
-            throw new \InvalidArgumentException('[params] or [ids] argument must not be empty!', 400);
+        $sql = sprintf('delete from %s where %s', $this->table, $clause);
+
+        if (!empty($params) && !is_array($params)) {
+            $params = (array)$params;
         }
 
-        $values = array_values($params);
+        $query = $this->cmd($sql);
+
+        if (is_array($params)) {
+            $query = $query->batch($params);
+        }
+
+        return $query->run();
+    }
+
+    /**
+     * Update all records query with accepted columns key/pair values.
+     *
+     * @param array $columns
+     */
+    public function updateAll(array $columns)
+    {
+        $values = array_values($columns);
         $sql = sprintf(
-            'update %s set %s where ',
+            'update %s set %s',
             $this->table,
-            implode(' = ?, ', array_keys($params)) . ' = ?'
+            implode(' = ?, ', array_keys($columns)) . ' = ?'
         );
-
-        if (!is_array($ids)) {
-            array_push($values, $ids);
-            $sql .= sprintf('%s = %s', $this->pk, '?');
-        } else {
-            $values = array_merge($values, $ids);
-            $sql .= sprintf('%s in (%s)', $this->pk, $this->getPlaceholders($ids));
-        }
-
-        $sql = $this->getClauseExtension($sql, $clause);
-        $values = $this->getClauseInputs($values, $clause);
 
         return $this
         ->cmd($sql)
@@ -223,54 +201,55 @@ trait CommandWrapperTrait
     }
 
     /**
-     * Return sql statement with the first key of clause values.
+     * Update query wrapper with accepted columns key/pair values, clause and params.
      *
-     * @param mixed $sql
-     * @param array $clause
-     * @return mixed
+     * @param array $columns
+     * @param mixed $clause
+     * @param mixed $params
      */
-    private function getClauseExtension($sql, array $clause)
+    public function update(array $columns, $clause, $params = null)
     {
-        if (!empty($clause)) {
-            $sql .= sprintf(' %s', key($clause));
-        }
+        $values = array_values($columns);
+        $sql = sprintf(
+            'update %s set %s where %s',
+            $this->table,
+            implode(' = ?, ', array_keys($columns)) . ' = ?',
+            $clause
+        );
 
-        return $sql;
-    }
+        if (!empty($params)) {
 
-    /**
-     * Return placeholder input value(s) as assigned to clause.
-     *
-     * @param array $values
-     * @param array $clause
-     * @return array
-     */
-    private function getClauseInputs(array $values, array $clause)
-    {
-        if (empty($clause)) {
-            return $values;
-        }
+            if (!is_array($params)) {
+                array_push($values, $params);
+            } elseif ($this->app->arrIsIndex($params)) {
+                $values = array_merge($values, $params);
+            } elseif ($this->app->arrIsAssoc($params)) {
 
-        $inputs = array_values($clause)[0];
+                foreach ($params as $param => $value) {
+                    // replace first occurance with unnamed parameter to align
+                    // reassgin sql and move forward
+                    $position = strpos($sql, $param);
 
-        if (!empty($inputs)) {
-
-            if (!is_array($inputs)) {
-                array_push($values, $inputs);
-            } else {
-                $values = array_merge($values, $inputs);
+                    if ($position !== false) {
+                        $sql = substr_replace($sql, '?', $position, strlen($param));
+                        array_push($values, $value);
+                    }
+                }
             }
         }
 
-        return $values;
+        return $this
+        ->cmd($sql)
+        ->batch($values)
+        ->run();
     }
 
     /**
      * Return the filled placeholders based on the values.
      *
-     * @param mixed $values
+     * @param array $values
      */
-    private function getPlaceholders($values)
+    public function getPlaceholders(array $values)
     {
         return $this->app->fillRepeat('?', ', ', 0, count($values));
     }

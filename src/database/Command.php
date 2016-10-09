@@ -19,13 +19,6 @@ class Command extends Connection implements CommandInterface
     protected $table;
 
     /**
-     * Default table's primary key column name.
-     *
-     * @var string
-     */
-    protected $pk = 'id';
-
-    /**
      * Prepared statement.
      *
      * @var mixed
