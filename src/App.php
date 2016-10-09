@@ -388,7 +388,7 @@ class App implements AppInterface
      */
     public function getDefaultConfig()
     {
-        return require __DIR__ . '/includes/default_config.php';
+        return require __DIR__ . '/_includes/default_config.php';
     }
 
     /**
