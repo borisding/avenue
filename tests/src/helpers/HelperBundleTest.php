@@ -64,23 +64,6 @@ class HelperBundleTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->app->arrIsIndex($arr));
     }
 
-    public function testArrFirstKeyIsNull()
-    {
-        $emptyArray = [];
-        $testValue = $this->app->arrFirstKey($emptyArray);
-        $this->assertNull($testValue);
-    }
-
-    public function testGetArrFirstKey()
-    {
-        $arr = [
-            'foo' => 'bar',
-            'hello' => 'world'
-        ];
-        $firstKey = $this->app->arrFirstKey($arr);
-        $this->assertEquals('foo', $firstKey);
-    }
-
     public function testRepeatFillString()
     {
         $result = $this->app->fillRepeat('?', ',', 0, 2);
@@ -92,55 +75,6 @@ class HelperBundleTest extends \PHPUnit_Framework_TestCase
         $arr = ['a', 'b', '', 'd', null, 'f'];
         $result = $this->app->arrRemoveEmpty($arr);
         $this->assertEquals(4, count($result));
-    }
-
-    public function testArrayIndexedToJson()
-    {
-        $arr = ['a', 'b', 'c'];
-        $jsonData = $this->app->arrToJson($arr);
-        $this->assertEquals('["a","b","c"]', $jsonData);
-    }
-
-    public function testArrayAssocToJson()
-    {
-        $arr = [
-            'foo' => 'bar',
-            'hello' => 'world'
-        ];
-        $jsonData = $this->app->arrToJson($arr);
-        $this->assertEquals('{"foo":"bar","hello":"world"}', $jsonData);
-    }
-
-    public function testArrayAssocToJsonWithValueOnly()
-    {
-        $arr = [
-            'foo' => 'bar',
-            'hello' => 'world'
-        ];
-        $jsonData = $this->app->arrToJson($arr, true);
-        $this->assertEquals('["bar","world"]', $jsonData);
-    }
-
-    public function testJsonToArr()
-    {
-        $jsonData = '{
-           "test": 123,
-           "hello": "world"
-        }';
-
-        $arr = $this->app->jsonToArr($jsonData);
-        $this->assertEquals(['test' => 123, 'hello' => 'world'], $arr);
-    }
-
-    public function testJsonToObj()
-    {
-        $jsonData = '{
-           "test": 123,
-           "hello": "world"
-        }';
-
-        $jsonObj = $this->app->jsonToObj($jsonData);
-        $this->assertEquals('123', $jsonObj->test);
     }
 
     public function testEscapeInputString()

@@ -51,22 +51,6 @@ trait ArrayHelperTrait
     }
 
     /**
-     * Return associative array's first key.
-     *
-     * @param array $arr
-     * @return NULL|unknown
-     */
-    public function arrFirstKey(array $arr)
-    {
-        if (empty($arr)) {
-            return null;
-        }
-
-        $arrKeys = array_keys($arr);
-        return $arrKeys[0];
-    }
-
-    /**
      * Removed empty element from numeric array.
      * Elements will be re-indexed after removal.
      *
@@ -75,20 +59,5 @@ trait ArrayHelperTrait
     public function arrRemoveEmpty(array $arr)
     {
         return array_values(array_filter($arr));
-    }
-
-    /**
-     * Shortcut of converting array to JSON format.
-     *
-     * @param array $arr
-     * @param string $valueOnly
-     */
-    public function arrToJson(array $arr = [], $valueOnly = false)
-    {
-        if ($valueOnly) {
-            $arr = array_values($arr);
-        }
-
-        return json_encode($arr);
     }
 }

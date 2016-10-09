@@ -4,26 +4,6 @@ namespace Avenue\Helpers;
 trait StringHelperTrait
 {
     /**
-     * Convert JSON data into array associative format.
-     *
-     * @param mixed $data
-     */
-    public function jsonToArr($data)
-    {
-        return json_decode($data, true);
-    }
-
-    /**
-     * Convert JSON data into object format.
-     *
-     * @param mixed $data
-     */
-    public function jsonToObj($data)
-    {
-        return json_decode($data);
-    }
-
-    /**
      * Escaping and converting to html entities from input.
      *
      * @param mixed $input
