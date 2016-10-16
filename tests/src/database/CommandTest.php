@@ -293,6 +293,12 @@ class CommandTest extends AbstractDatabaseTest
         $this->assertEquals('Go', $result[0]['name']);
     }
 
+    public function testSelectAllWithOrderByClauseInUpperCase()
+    {
+        $result = $this->db->selectAll('ORDER BY id DESC');
+        $this->assertEquals('Go', $result[0]['name']);
+    }
+
     public function testSelectAllWithOrderByLimitClause()
     {
         $result = $this->db->selectAll('order by id desc limit ?', 2);
@@ -382,6 +388,12 @@ class CommandTest extends AbstractDatabaseTest
     public function testSelectWithOrderByClause()
     {
         $result = $this->db->select(['name'], 'order by id desc');
+        $this->assertEquals('Go', $result[0]['name']);
+    }
+
+    public function testSelectWithOrderByClauseInUpperCase()
+    {
+        $result = $this->db->select(['name'], 'ORDER BY id DESC');
         $this->assertEquals('Go', $result[0]['name']);
     }
 
