@@ -110,11 +110,17 @@ trait CommandWrapperTrait
     private function getSelectWhereClause($sql, $clause, $params, $type, $master)
     {
         if (!empty($clause)) {
+            $clause = trim(preg_replace('/[\s]+/', ' ', $clause));
 
-            if (stripos($clause, 'limit') !== false) {
-                $sql .= sprintf(' %s', $clause);
-            } else {
+            $limitPosition = stripos($clause, 'limit');
+            $orderByPosition = stripos($clause, 'order by');
+
+            if (($orderByPosition === false && $limitPosition === false) ||
+                ($orderByPosition !== false && $orderByPosition > 0) ||
+                ($orderByPosition === false && $limitPosition > 0)) {
                 $sql .= sprintf(' where %s', $clause);
+            } elseif ($orderByPosition !== false || $limitPosition !== false) {
+                $sql .= sprintf(' %s', $clause);
             }
         }
 

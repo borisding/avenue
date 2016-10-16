@@ -287,6 +287,36 @@ class CommandTest extends AbstractDatabaseTest
         $this->assertEquals(3, count($result));
     }
 
+    public function testSelectAllWithOrderByClause()
+    {
+        $result = $this->db->selectAll('order by id desc');
+        $this->assertEquals('Go', $result[0]['name']);
+    }
+
+    public function testSelectAllWithOrderByLimitClause()
+    {
+        $result = $this->db->selectAll('order by id desc limit ?', 2);
+        $this->assertEquals('Go', $result[0]['name']);
+    }
+
+    public function testSelectAllWithWhereConditionAndOrderByLimitClause()
+    {
+        $result = $this->db->selectAll('id > ? order by id desc limit ?', [3, 2]);
+        $this->assertEquals('Go', $result[0]['name']);
+    }
+
+    public function testSelectAllWithWhereConditionLimitClause()
+    {
+        $result = $this->db->selectAll('id > ? limit ?', [3, 2]);
+        $this->assertEquals('Java', $result[0]['name']);
+    }
+
+    public function testSelectAllWithExtraSpacesOrderByLimitClause()
+    {
+        $result = $this->db->selectAll('     order   by id desc  limit   ?', 2);
+        $this->assertEquals('Go', $result[0]['name']);
+    }
+
     public function testSelectAllWithType()
     {
         $result = $this->db->selectAll('id = ?', 1, 'obj');
@@ -341,6 +371,36 @@ class CommandTest extends AbstractDatabaseTest
     {
         $result = $this->db->select(['name'], 'limit ?', 3);
         $this->assertEquals(3, count($result));
+    }
+
+    public function testSelectWithOrderByClause()
+    {
+        $result = $this->db->select(['name'], 'order by id desc');
+        $this->assertEquals('Go', $result[0]['name']);
+    }
+
+    public function testSelectWithOrderByLimitClause()
+    {
+        $result = $this->db->select(['name'], 'order by id desc limit ?', 2);
+        $this->assertEquals('Go', $result[0]['name']);
+    }
+
+    public function testSelectWithWhereConditionAndOrderByLimitClause()
+    {
+        $result = $this->db->select(['name'], 'id > ? order by id desc limit ?', [3, 2]);
+        $this->assertEquals('Go', $result[0]['name']);
+    }
+
+    public function testSelectWithWhereConditionLimitClause()
+    {
+        $result = $this->db->select(['name'], 'id > ? limit ?', [3, 2]);
+        $this->assertEquals('Java', $result[0]['name']);
+    }
+
+    public function testSelectWithExtraSpacesOrderByLimitClause()
+    {
+        $result = $this->db->select(['name'], '     order   by id desc  limit   ?', 2);
+        $this->assertEquals('Go', $result[0]['name']);
     }
 
     public function testSelectWithType()
