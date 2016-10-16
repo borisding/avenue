@@ -110,7 +110,12 @@ trait CommandWrapperTrait
     private function getSelectWhereClause($sql, $clause, $params, $type, $master)
     {
         if (!empty($clause)) {
-            $sql .= sprintf(' where %s', $clause);
+
+            if (stripos($clause, 'limit') !== false) {
+                $sql .= sprintf(' %s', $clause);
+            } else {
+                $sql .= sprintf(' where %s', $clause);
+            }
         }
 
         if (!empty($params) && !is_array($params)) {

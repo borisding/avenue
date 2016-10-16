@@ -281,6 +281,12 @@ class CommandTest extends AbstractDatabaseTest
         $this->assertEquals(2, count($result));
     }
 
+    public function testSelectAllWithLimitClause()
+    {
+        $result = $this->db->selectAll('limit ?', 3);
+        $this->assertEquals(3, count($result));
+    }
+
     public function testSelectAllWithType()
     {
         $result = $this->db->selectAll('id = ?', 1, 'obj');
@@ -329,6 +335,12 @@ class CommandTest extends AbstractDatabaseTest
         $this->prepareSlaveData();
         $result = $this->db->selectSlave(['name']);
         $this->assertEquals(5, count($result));
+    }
+
+    public function testSelectWithLimitClause()
+    {
+        $result = $this->db->select(['name'], 'limit ?', 3);
+        $this->assertEquals(3, count($result));
     }
 
     public function testSelectWithType()
