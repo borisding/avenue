@@ -311,6 +311,12 @@ class CommandTest extends AbstractDatabaseTest
         $this->assertEquals('Java', $result[0]['name']);
     }
 
+    public function testSelectAllWithWhereConditionOrderByClause()
+    {
+        $result = $this->db->selectAll('id > ? order by id desc', 3);
+        $this->assertEquals('Go', $result[0]['name']);
+    }
+
     public function testSelectAllWithExtraSpacesOrderByLimitClause()
     {
         $result = $this->db->selectAll('     order   by id desc  limit   ?', 2);
@@ -395,6 +401,12 @@ class CommandTest extends AbstractDatabaseTest
     {
         $result = $this->db->select(['name'], 'id > ? limit ?', [3, 2]);
         $this->assertEquals('Java', $result[0]['name']);
+    }
+
+    public function testSelectWithWhereConditionOrderByClause()
+    {
+        $result = $this->db->select(['name'], 'id > ? order by id desc', 3);
+        $this->assertEquals('Go', $result[0]['name']);
     }
 
     public function testSelectWithExtraSpacesOrderByLimitClause()
