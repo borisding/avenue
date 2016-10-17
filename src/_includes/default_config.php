@@ -29,5 +29,8 @@ return [
     'database' => [],
 
     // default logging configuration
-    'logging' => []
+    'logging' => [],
+
+    // default state configuration
+    'state' => []
 ];
