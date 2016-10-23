@@ -39,7 +39,12 @@ define('AVENUE_TESTS_DIR', AVENUE_ROOT_DIR . '/tests');
 $PATH_TO_VENDOR_AUTOLOAD_FILE = AVENUE_VENDOR_DIR. '/autoload.php';
 
 if (!file_exists($PATH_TO_VENDOR_AUTOLOAD_FILE)) {
-    die('Vendor autoload not found!');
+    exit('Vendor autoload not found!');
+}
+
+// check if mbstring extension is available
+if (!extension_loaded('mbstring')) {
+    exit('mbstring PHP extension is required!');
 }
 
 // check and define custom constant if mcrypt extension is not available
