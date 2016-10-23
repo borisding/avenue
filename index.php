@@ -31,37 +31,8 @@ define('AVENUE_PUBLIC_DIR', AVENUE_ROOT_DIR . '/public');
 defined('AVENUE_VENDOR_DIR') or
 define('AVENUE_VENDOR_DIR', AVENUE_ROOT_DIR . '/vendor');
 
-// include vendor's autoload
-$PATH_TO_VENDOR_AUTOLOAD_FILE = AVENUE_VENDOR_DIR. '/autoload.php';
-
-if (!file_exists($PATH_TO_VENDOR_AUTOLOAD_FILE)) {
-    exit('Vendor autoload not found!');
-}
-
-// check if mbstring extension is available
-if (!extension_loaded('mbstring')) {
-    exit('mbstring PHP extension is required!');
-}
-
-// check and define custom constant if mcrypt extension is not available
-// to avoid throwing error for default constant in class
-if (!extension_loaded('mcrypt')) {
-    define('MCRYPT_RIJNDAEL_256', '');
-    define('MCRYPT_MODE_CBC', '');
-}
-
-// built-in PHP server request URI handling
-// let static file(s) can be recognized and output as is
-if (php_sapi_name() === 'cli-server') {
-    $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-
-    if (is_file(AVENUE_ROOT_DIR . $path)) {
-        return false;
-    }
-}
-
-// include vendor's autoloader
-require_once $PATH_TO_VENDOR_AUTOLOAD_FILE;
+// include runtime file for checking prerequisite
+require_once 'runtime.php';
 
 // include bootstrap file, where app started
 require_once AVENUE_APP_DIR . '/bootstrap.php';
