@@ -35,7 +35,22 @@ define('AVENUE_VENDOR_DIR', AVENUE_ROOT_DIR . '/vendor');
 defined('AVENUE_TESTS_DIR') or
 define('AVENUE_TESTS_DIR', AVENUE_ROOT_DIR . '/tests');
 
-// include vendor's autoload
+// check if `pdo` extension is available
+if (!extension_loaded('pdo')) {
+    exit('PDO PHP extension is required!');
+}
+
+// check if `mbstring` extension is available
+if (!extension_loaded('mbstring')) {
+    exit('Mbstring PHP extension is required!');
+}
+
+// check if `mcrypt` extension is available
+if (!extension_loaded('mcrypt')) {
+    exit('Mcrypt PHP extension is required!');
+}
+
+// path to vendor's autoload file
 $autoload = AVENUE_VENDOR_DIR. '/autoload.php';
 
 if (!file_exists($autoload)) {
@@ -47,18 +62,3 @@ $autoloader = require $autoload;
 
 // set tests namespace at runtime
 $autoloader->addPsr4('Avenue\\Tests\\', __DIR__);
-
-// check if `pdo` extension is available
-if (!extension_loaded('pdo')) {
-    exit('pdo PHP extension is required!');
-}
-
-// check if `mbstring` extension is available
-if (!extension_loaded('mbstring')) {
-    exit('mbstring PHP extension is required!');
-}
-
-// check if `mcrypt` extension is available
-if (!extension_loaded('mcrypt')) {
-     exit('Mcrypt PHP extension is required!');
-}
