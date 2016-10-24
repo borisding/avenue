@@ -4,6 +4,9 @@
  */
 
 return [
+    // secret key used for application, etc encryption
+    'secretKey' => '<change this to your own secret key!>',
+
     // auto rendering response body once application run
     'autoRender' => true,
 
@@ -21,9 +24,6 @@ return [
 
     // default controller to be assigned when @controller param is empty
     'defaultController' => 'default',
-
-    // secret key used for application, etc encryption
-    'secretKey' => '<change this to your own secret key!>',
 
     // encryption configuration
     'encryption' => require_once 'encryption.php',

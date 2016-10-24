@@ -36,7 +36,7 @@ class Crypt implements CryptInterface
     {
         $this->secretKey = $secretKey;
 
-        if (empty($this->secretKey)) {
+        if (empty(trim($this->secretKey))) {
             throw new \InvalidArgumentException('Secret key must not be empty!');
         }
     }
