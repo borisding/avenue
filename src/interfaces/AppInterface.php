@@ -73,6 +73,11 @@ interface AppInterface
     public function getDefaultController();
 
     /**
+     * Get the app's secret key.
+     */
+    public function getSecretKey();
+
+    /**
      * Get the app instance.
      */
     public static function getInstance();

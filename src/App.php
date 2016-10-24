@@ -6,6 +6,7 @@ use Avenue\Response;
 use Avenue\Route;
 use Avenue\View;
 use Avenue\Exception;
+use Avenue\Crypt;
 use Avenue\Mcrypt;
 use Avenue\State\Cookie;
 use Avenue\State\Session;
@@ -321,6 +322,10 @@ class App implements AppInterface
             return new Exception($app, $this->exception);
         });
 
+        $this->container('crypt', function($app) {
+            return new Crypt($this->getSecretKey());
+        });
+
         $this->container('mcrypt', function($app) {
             return new Mcrypt($app, $this->getConfig('encryption'));
         });
@@ -444,6 +449,17 @@ class App implements AppInterface
     public function getDefaultController()
     {
         return $this->getConfig('defaultController');
+    }
+
+    /**
+     * Retrieving secret key config.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::getSecretKey()
+     */
+    public function getSecretKey()
+    {
+        return $this->getConfig('secretKey');
     }
 
     /**

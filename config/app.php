@@ -22,6 +22,9 @@ return [
     // default controller to be assigned when @controller param is empty
     'defaultController' => 'default',
 
+    // secret key used for application, etc encryption
+    'secretKey' => '<change this to your own secret key!>',
+
     // encryption configuration
     'encryption' => require_once 'encryption.php',
 
