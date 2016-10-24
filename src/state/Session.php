@@ -7,13 +7,6 @@ use SessionHandlerInterface;
 class Session implements SessionInterface
 {
     /**
-     * Session database handler class instance.
-     *
-     * @var mixed
-     */
-    protected $handler;
-
-    /**
      * CSRF token name.
      *
      * @var string
@@ -21,19 +14,35 @@ class Session implements SessionInterface
     const CSRF_TOKEN_NAME = 'csrfToken';
 
     /**
+     * Session database handler class instance.
+     *
+     * @var mixed
+     */
+    protected $handler;
+
+    /**
+     * App's secret key.
+     *
+     * @var mixed
+     */
+    protected $secretKey;
+
+    /**
      * Session class constructor.
      * Register respective handler methods before starting session.
      *
      * @param SessionHandlerInterface $handler
+     * @param mixed $secretKey
      * @throws \InvalidArgumentException
      */
-    public function __construct(SessionHandlerInterface $handler)
+    public function __construct(SessionHandlerInterface $handler, $secretKey)
     {
         $this->handler = $handler;
+        $this->secretKey = $secretKey;
 
         // check if secret key is empty
-        if (empty(trim($this->handler->getConfig('secret')))) {
-            throw new \InvalidArgumentException('Secret must not be empty!');
+        if (empty(trim($this->secretKey))) {
+            throw new \InvalidArgumentException('Secret key must not be empty!');
         }
 
         $this->prepare()->start();
@@ -143,7 +152,7 @@ class Session implements SessionInterface
      */
     public function setCsrfToken()
     {
-        $csrfToken = hash_hmac('sha256', uniqid(mt_rand()), $this->handler->getConfig('secret'));
+        $csrfToken = hash_hmac('sha256', uniqid(mt_rand()), $this->secretKey);
         $this->set(static::CSRF_TOKEN_NAME, $csrfToken);
 
         return $csrfToken;

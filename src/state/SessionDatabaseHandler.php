@@ -2,7 +2,7 @@
 namespace Avenue\State;
 
 use Avenue\App;
-use Avenue\Mcrypt;
+use Avenue\Crypt;
 use Avenue\Database\Command;
 use SessionHandlerInterface;
 
@@ -16,18 +16,18 @@ class SessionDatabaseHandler implements SessionHandlerInterface
     protected $app;
 
     /**
+     * Crypt class instance.
+     *
+     * @var mixed
+     */
+    protected $crypt;
+
+    /**
      * Database class instance.
      *
      * @var mixed
      */
     protected $db;
-
-    /**
-     * Mcrypt class instance.
-     *
-     * @var mixed
-     */
-    protected $mcrypt;
 
     /**
      * Default session configuration
@@ -37,9 +37,8 @@ class SessionDatabaseHandler implements SessionHandlerInterface
     protected $config = [
         'table' => 'session',
         'lifetime' => 0,
-        'encrypt' => false,
         'readMaster' => true,
-        'secret' => ''
+        'encrypt' => false
     ];
 
     /**
@@ -77,14 +76,14 @@ class SessionDatabaseHandler implements SessionHandlerInterface
         $this->table = $this->getConfig('table');
         $this->readMaster = $this->getConfig('readMaster') === true;
 
+        // get the crypt instance if 'encrypt' set as true
+        if ($this->getConfig('encrypt')) {
+            $this->crypt = $this->app->crypt();
+        }
+
         // instantiate db instance
         if (!$this->db instanceof Command) {
             $this->db = new Command($app);
-        }
-
-        // get the mcrypt instance if 'encrypt' set as true
-        if ($this->getConfig('encrypt')) {
-            $this->mcrypt = $this->app->mcrypt();
         }
     }
 
@@ -206,8 +205,8 @@ class SessionDatabaseHandler implements SessionHandlerInterface
      */
     protected function encrypt($value)
     {
-        if ($this->mcrypt instanceof Mcrypt) {
-            return $this->mcrypt->encrypt($value);
+        if ($this->crypt instanceof Crypt) {
+            return $this->crypt->encrypt($value);
         }
 
         return $value;
@@ -220,8 +219,8 @@ class SessionDatabaseHandler implements SessionHandlerInterface
      */
     protected function decrypt($value)
     {
-        if ($this->mcrypt instanceof Mcrypt) {
-            return $this->mcrypt->decrypt($value);
+        if ($this->crypt instanceof Crypt) {
+            return $this->crypt->decrypt($value);
         }
 
         return $value;

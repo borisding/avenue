@@ -319,25 +319,25 @@ class App implements AppInterface
         });
 
         $this->container('exception', function($app) {
-            return new Exception($app, $this->exception);
+            return new Exception($app, $app->exception);
         });
 
         $this->container('crypt', function($app) {
-            return new Crypt($this->getSecretKey());
+            return new Crypt($app->getSecretKey());
         });
 
         $this->container('mcrypt', function($app) {
-            return new Mcrypt($app, $this->getConfig('encryption'));
+            return new Mcrypt($app, $app->getConfig('encryption'));
         });
 
         $this->container('cookie', function($app) {
-            return new Cookie($app, $this->getConfig('state')['cookie']);
+            return new Cookie($app, $app->getConfig('state')['cookie']);
         });
 
         $this->container('session', function($app) {
-            return new Session(new SessionDatabaseHandler(
-                $app,
-                $this->getConfig('state')['session'])
+            return new Session(
+                new SessionDatabaseHandler($app, $app->getConfig('state')['session']),
+                $app->getSecretKey()
             );
         });
 

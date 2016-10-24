@@ -2,7 +2,7 @@
 namespace Avenue\State;
 
 use Avenue\App;
-use Avenue\Mcrypt;
+use Avenue\Crypt;
 use Avenue\Interfaces\State\CookieInterface;
 
 class Cookie implements CookieInterface
@@ -15,11 +15,18 @@ class Cookie implements CookieInterface
     protected $app;
 
     /**
-     * Mcrypt class instance.
+     * App's secret key.
      *
      * @var mixed
      */
-    protected $mcrypt;
+    protected $secretKey;
+
+    /**
+     * Crypt class instance.
+     *
+     * @var mixed
+     */
+    protected $crypt;
 
     /**
      * Default cookie configuration.
@@ -32,8 +39,7 @@ class Cookie implements CookieInterface
         'domain' => '',
         'secure' => false,
         'httpOnly' => false,
-        'encrypt' => false,
-        'secret' => ''
+        'encrypt' => false
     ];
 
     /**
@@ -61,15 +67,16 @@ class Cookie implements CookieInterface
     {
         $this->app = $app;
         $this->config = array_merge($this->config, $config);
+        $this->secretKey = $this->app->getSecretKey();
 
-        // get the mcrypt instance if 'encrypt' set as true
+        // get the crypt instance if 'encrypt' set as true
         if ($this->config['encrypt']) {
-            $this->mcrypt = $this->app->mcrypt();
+            $this->crypt = $this->app->crypt();
         }
 
         // check if secret key is empty
-        if (empty(trim($this->config['secret']))) {
-            throw new \InvalidArgumentException('Secret must not be empty!');
+        if (empty(trim($this->secretKey))) {
+            throw new \InvalidArgumentException('Secret key must not be empty!');
         }
     }
 
@@ -101,7 +108,6 @@ class Cookie implements CookieInterface
         // for immediate cookie assignment
         $_COOKIE[$key] = $value;
     }
-
 
     /**
      * Get the plain text of cookie value.
@@ -151,13 +157,11 @@ class Cookie implements CookieInterface
      *
      * @param mixed $key
      * @param mixed $value
+     * @return string
      */
     protected function hashing($key, $value)
     {
-        $secret = $this->config['secret'];
-        $hashed = hash_hmac('sha256', $value . $key . $secret, $secret);
-
-        return $hashed;
+        return hash_hmac('sha256', $value . $key . $this->secretKey, $this->secretKey);
     }
 
     /**
@@ -190,8 +194,8 @@ class Cookie implements CookieInterface
      */
     protected function encrypt($value)
     {
-        if ($this->mcrypt instanceof Mcrypt) {
-            return $this->mcrypt->encrypt($value);
+        if ($this->crypt instanceof Crypt) {
+            return $this->crypt->encrypt($value);
         }
 
         return $value;
@@ -204,8 +208,8 @@ class Cookie implements CookieInterface
      */
     protected function decrypt($value)
     {
-        if ($this->mcrypt instanceof Mcrypt) {
-            return $this->mcrypt->decrypt($value);
+        if ($this->crypt instanceof Crypt) {
+            return $this->crypt->decrypt($value);
         }
 
         return $value;
