@@ -51,9 +51,9 @@ if (!extension_loaded('mbstring')) {
     exit('Mbstring PHP extension is required!');
 }
 
-// check if `mcrypt` extension is available
-if (!extension_loaded('mcrypt')) {
-    exit('Mcrypt PHP extension is required!');
+// check if `openssl` extension is available
+if (!extension_loaded('openssl')) {
+    exit('OpenSSL PHP extension is required!');
 }
 
 // path to vendor's autoload file
