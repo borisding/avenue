@@ -140,7 +140,7 @@ class App implements AppInterface
         }
 
         if (empty(static::$config)) {
-            static::$config = array_merge($this->getDefaultConfig(), $config);
+            static::$config = $config;
         }
 
         $this
@@ -378,17 +378,6 @@ class App implements AppInterface
         }
 
         return static::$config[$key];
-    }
-
-    /**
-     * List of default value for configurations.
-     *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::getDefaultConfig()
-     */
-    public function getDefaultConfig()
-    {
-        return require __DIR__ . '/_includes/default_config.php';
     }
 
     /**

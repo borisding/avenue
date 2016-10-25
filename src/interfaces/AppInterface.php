@@ -43,11 +43,6 @@ interface AppInterface
     public function getConfig($key);
 
     /**
-     * Get the default list of app config.
-     */
-    public function getDefaultConfig();
-
-    /**
      * Get application version.
      */
     public function getAppVersion();
