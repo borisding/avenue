@@ -7,7 +7,6 @@ use Avenue\Route;
 use Avenue\View;
 use Avenue\Exception;
 use Avenue\Crypt;
-use Avenue\Mcrypt;
 use Avenue\State\Cookie;
 use Avenue\State\Session;
 use Avenue\State\SessionDatabaseHandler;
@@ -23,7 +22,7 @@ use Avenue\Interfaces\AppInterface;
  * @method static \Avenue\Response response()
  * @method static \Avenue\Route route()
  * @method static \Avenue\View view()
- * @method static \Avenue\Mcrypt mcrypt()
+ * @method static \Avenue\Crypt crypt()
  * @method static \Avenue\State\Cookie cookie()
  * @method static \Avenue\State\Session session()
  * @method static \Avenue\Exception exception()
@@ -34,7 +33,7 @@ use Avenue\Interfaces\AppInterface;
  * @method \Avenue\Response response()
  * @method \Avenue\Route route()
  * @method \Avenue\View view()
- * @method \Avenue\Mcrypt mcrypt()
+ * @method \Avenue\Crypt crypt()
  * @method \Avenue\State\Cookie cookie()
  * @method \Avenue\State\Session session()
  * @method \Avenue\Exception exception()
@@ -45,7 +44,7 @@ use Avenue\Interfaces\AppInterface;
  * @method \Avenue\Response singleton('response')
  * @method \Avenue\Route singleton('route')
  * @method \Avenue\View singleton('view')
- * @method \Avenue\Mcrypt singleton('mcrypt')
+ * @method \Avenue\Crypt singleton('crypt')
  * @method \Avenue\State\Cookie singleton('cookie')
  * @method \Avenue\State\Session singleton('session')
  * @method \Avenue\Exception singleton('exception')
@@ -56,7 +55,7 @@ use Avenue\Interfaces\AppInterface;
  * @method \Avenue\Response resolve('response')
  * @method \Avenue\Route resolve('route')
  * @method \Avenue\View resolve('view')
- * @method \Avenue\Mcrypt resolve('mcrypt')
+ * @method \Avenue\Crypt resolve('crypt')
  * @method \Avenue\State\Cookie resolve('cookie')
  * @method \Avenue\State\Session resolve('session')
  * @method \Avenue\Exception resolve('exception')
@@ -324,10 +323,6 @@ class App implements AppInterface
 
         $this->container('crypt', function($app) {
             return new Crypt($app->getSecretKey());
-        });
-
-        $this->container('mcrypt', function($app) {
-            return new Mcrypt($app, $app->getConfig('encryption'));
         });
 
         $this->container('cookie', function($app) {

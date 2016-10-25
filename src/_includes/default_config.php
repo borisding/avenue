@@ -22,9 +22,6 @@ return [
     // default controller to be assigned when @controller param is empty
     'defaultController' => 'default',
 
-    // default encryption configuration
-    'encryption' => [],
-
     // default database configuration
     'database' => [],
 

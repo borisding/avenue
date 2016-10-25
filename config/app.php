@@ -25,9 +25,6 @@ return [
     // default controller to be assigned when @controller param is empty
     'defaultController' => 'default',
 
-    // encryption configuration
-    'encryption' => require_once 'encryption.php',
-
     // database configuration
     'database' => require_once 'database.php',
 
