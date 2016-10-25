@@ -6,18 +6,11 @@ use Avenue\Interfaces\CryptInterface;
 class Crypt implements CryptInterface
 {
     /**
-     * Targeted cipher to use for AES-256 encryption.
+     * Targeted OpenSSL AES-256 cipher to use for encryption.
      *
      * @var string
      */
-    const CIPHER = 'AES-256-CBC';
-
-    /**
-     * Targeted length to use for salt.
-     *
-     * @var integer
-     */
-    const LENGTH = 16;
+    const AES256_CIPHER = 'AES-256-CBC';
 
     /**
      * App's secret key.
@@ -49,13 +42,13 @@ class Crypt implements CryptInterface
      */
     public function encrypt($data)
     {
-        $salt = openssl_random_pseudo_bytes(static::LENGTH);
-        $hashed = $this->generateHashed($salt);
+        $salt = openssl_random_pseudo_bytes(16);
+        $key = $this->generateKey($salt);
 
-        $key = $this->generateKey($hashed);
         $iv = $this->generateVector($salt);
+        $cipher = $this->getCipher();
 
-        return base64_encode($salt . openssl_encrypt($data, static::CIPHER, $key, 1, $iv));
+        return base64_encode($salt . openssl_encrypt($data, $cipher, $key, 1, $iv));
     }
 
     /**
@@ -67,45 +60,44 @@ class Crypt implements CryptInterface
     public function decrypt($data)
     {
         $decoded = base64_decode($data);
-        $salt = substr($decoded, 0, static::LENGTH);
-        $encrypted = substr($decoded, strlen($salt));
+        $salt = substr($decoded, 0, 16);
+        $encrypted = substr($decoded, 16);
 
-        $hashed = $this->generateHashed($salt);
-        $key = $this->generateKey($hashed);
+        $key = $this->generateKey($salt);
         $iv = $this->generateVector($salt);
+        $cipher = $this->getCipher();
 
-        return openssl_decrypt($encrypted, static::CIPHER, $key, 1, $iv);
+        return openssl_decrypt($encrypted, $cipher, $key, 1, $iv);
     }
 
     /**
-     * Generate 32-bytes key with reversed hashed string.
+     * Get the targeted AES-256 cipher.
      *
-     * @param string $hashed
      * @return string
      */
-    protected function generateKey($hashed)
+    protected function getCipher()
     {
-        return strrev($hashed);
+        return static::AES256_CIPHER;
     }
 
     /**
-     * Generate 16-bytes vector with reversed salt string in raw output.
+     * Generate 16-bytes vector with pseudo-random salt bytes in raw output.
      *
      * @param string $salt
      * @return string
      */
     protected function generateVector($salt)
     {
-        return md5(strrev($salt), true);
+        return md5($salt, true);
     }
 
     /**
-     * Generate hashed string with secret key and salt in raw output.
+     * Generate 32-bytes key with secret key and pseudo-random salt bytes in raw output.
      *
      * @param string $salt
      * @return string
      */
-    protected function generateHashed($salt)
+    protected function generateKey($salt)
     {
         return hash_hmac('sha256', $this->secretKey . '~~~' . $salt, $salt, true);
     }
