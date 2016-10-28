@@ -5,7 +5,7 @@
 
 return [
     // secret used for application, etc encryption
-    'secret' => '<IMPORTANT: Please change secret to random string!>',
+    'secret' => '<IMPORTANT: Please change this secret value to random string!>',
 
     // auto rendering response body once application run
     'autoRender' => true,
