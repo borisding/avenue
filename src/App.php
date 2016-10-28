@@ -322,7 +322,7 @@ class App implements AppInterface
         });
 
         $this->container('crypt', function($app) {
-            return new Crypt($app->getSecretKey());
+            return new Crypt($app->getSecret());
         });
 
         $this->container('cookie', function($app) {
@@ -330,10 +330,7 @@ class App implements AppInterface
         });
 
         $this->container('session', function($app) {
-            return new Session(
-                new SessionDatabaseHandler($app, $app->getConfig('state')['session']),
-                $app->getSecretKey()
-            );
+            return new Session(new SessionDatabaseHandler($app, $app->getConfig('state')['session']));
         });
 
         return $this->factory();
@@ -439,11 +436,11 @@ class App implements AppInterface
      * Retrieving secret key config.
      *
      * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::getSecretKey()
+     * @see \Avenue\Interfaces\AppInterface::getSecret()
      */
-    public function getSecretKey()
+    public function getSecret()
     {
-        return $this->getConfig('secretKey');
+        return $this->getConfig('secret');
     }
 
     /**

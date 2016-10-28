@@ -15,11 +15,11 @@ class Cookie implements CookieInterface
     protected $app;
 
     /**
-     * App's secret key.
+     * App's secret.
      *
      * @var mixed
      */
-    protected $secretKey;
+    protected $secret;
 
     /**
      * Crypt class instance.
@@ -67,16 +67,16 @@ class Cookie implements CookieInterface
     {
         $this->app = $app;
         $this->config = array_merge($this->config, $config);
-        $this->secretKey = $this->app->getSecretKey();
+        $this->secret = $this->app->getSecret();
 
         // get the crypt instance if 'encrypt' set as true
-        if ($this->config['encrypt']) {
+        if ($this->getConfig('encrypt')) {
             $this->crypt = $this->app->crypt();
         }
 
         // check if secret key is empty
-        if (empty(trim($this->secretKey))) {
-            throw new \InvalidArgumentException('Secret key must not be empty!');
+        if (empty(trim($this->secret))) {
+            throw new \InvalidArgumentException('Secret must not be empty!');
         }
     }
 
@@ -100,7 +100,7 @@ class Cookie implements CookieInterface
         }
 
         // extract respective config keys as parameters
-        extract($this->config);
+        extract($this->getConfig());
 
         // set cookie with respective attributes
         setcookie($key, $value, time() + $expire, $path, $domain, $secure, $httpOnly);
@@ -135,7 +135,7 @@ class Cookie implements CookieInterface
      */
     public function remove($key)
     {
-        setcookie($key, '', time() - 3600, $this->config['path'], $this->config['domain']);
+        setcookie($key, '', time() - 3600, $this->getConfig('path'), $this->getConfig('domain'));
         unset($_COOKIE[$key]);
     }
 
@@ -153,6 +153,22 @@ class Cookie implements CookieInterface
     }
 
     /**
+     * Return cookie specific config based on the name.
+     * Giving all cookie config instead if name is not provided.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\State\CookieInterface::getConfig()
+     */
+    public function getConfig($name = null)
+    {
+        if (empty($name)) {
+            return $this->config;
+        }
+
+        return $this->app->arrGet($name, $this->config);
+    }
+
+    /**
      * Create cookie signature by hashing value with key and secret.
      *
      * @param mixed $key
@@ -161,7 +177,7 @@ class Cookie implements CookieInterface
      */
     protected function hashing($key, $value)
     {
-        return hash_hmac('sha256', $value . $key . $this->secretKey, $this->secretKey);
+        return hash_hmac('sha256', $value . $key . $this->secret, $this->secret);
     }
 
     /**

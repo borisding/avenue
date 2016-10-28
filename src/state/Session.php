@@ -21,30 +21,14 @@ class Session implements SessionInterface
     protected $handler;
 
     /**
-     * App's secret key.
-     *
-     * @var mixed
-     */
-    protected $secretKey;
-
-    /**
      * Session class constructor.
      * Register respective handler methods before starting session.
      *
      * @param SessionHandlerInterface $handler
-     * @param mixed $secretKey
-     * @throws \InvalidArgumentException
      */
-    public function __construct(SessionHandlerInterface $handler, $secretKey)
+    public function __construct(SessionHandlerInterface $handler)
     {
         $this->handler = $handler;
-        $this->secretKey = $secretKey;
-
-        // check if secret key is empty
-        if (empty(trim($this->secretKey))) {
-            throw new \InvalidArgumentException('Secret key must not be empty!');
-        }
-
         $this->prepare()->start();
     }
 
@@ -152,8 +136,8 @@ class Session implements SessionInterface
      */
     public function setCsrfToken()
     {
-        $csrfToken = hash_hmac('sha256', uniqid(mt_rand()), $this->secretKey);
-        $this->set(static::CSRF_TOKEN_NAME, $csrfToken);
+        $csrfToken = hash_hmac('sha256', uniqid(mt_rand()), $this->handler->getAppSecret());
+        $this->set($this->getCsrfTokenName(), $csrfToken);
 
         return $csrfToken;
     }
@@ -166,7 +150,17 @@ class Session implements SessionInterface
      */
     public function getCsrfToken()
     {
-        return $this->get(static::CSRF_TOKEN_NAME);
+        return $this->get($this->getCsrfTokenName());
+    }
+
+    /**
+     * Return the CSRF token's name.
+     *
+     * @return string
+     */
+    protected function getCsrfTokenName()
+    {
+        return static::CSRF_TOKEN_NAME;
     }
 
     /**

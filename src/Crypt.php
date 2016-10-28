@@ -17,20 +17,20 @@ class Crypt implements CryptInterface
      *
      * @var string
      */
-    protected $secretKey;
+    protected $secret;
 
     /**
      * Crypt class constructor.
      *
-     * @param mixed $secretKey
+     * @param mixed $secret
      * @throws \InvalidArgumentException
      */
-    public function __construct($secretKey)
+    public function __construct($secret)
     {
-        $this->secretKey = $secretKey;
+        $this->secret = $secret;
 
-        if (empty(trim($this->secretKey))) {
-            throw new \InvalidArgumentException('Secret key must not be empty!');
+        if (empty(trim($this->secret))) {
+            throw new \InvalidArgumentException('Secret must not be empty!');
         }
     }
 
@@ -99,6 +99,6 @@ class Crypt implements CryptInterface
      */
     protected function generateKey($salt)
     {
-        return hash_hmac('sha256', $this->secretKey . '~~~' . $salt, $salt, true);
+        return hash_hmac('sha256', $this->secret . '~~~' . $salt, $salt, true);
     }
 }

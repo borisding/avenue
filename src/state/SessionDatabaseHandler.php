@@ -189,12 +189,32 @@ class SessionDatabaseHandler implements SessionHandlerInterface
     }
 
     /**
-     * Return the session database config based on the name.
+     * Return the app's secret as configured.
      *
-     * @param mixed $name
+     * @throws \InvalidArgumentException
+     * @return string
      */
-    public function getConfig($name)
+    public function getAppSecret()
     {
+        $secret = $this->app->getSecret();
+
+        if (empty(trim($secret))) {
+            throw new \InvalidArgumentException('Secret must not be empty!');
+        }
+
+        return $secret;
+    }
+
+    /**
+     * Return session specific config based on the name.
+     * Giving all session config instead if name is not provided.
+     */
+    public function getConfig($name = null)
+    {
+        if (empty($name)) {
+            return $this->config;
+        }
+
         return $this->app->arrGet($name, $this->config);
     }
 

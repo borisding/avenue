@@ -8,8 +8,10 @@
 - Take advantages of PHP new features (namespaces, traits, short array syntax, etc.)
 - Fast, lightweight and extensible.
 
-## Documentation
-(Work in progress)
+## TODO
+
+- Documentation.
+- Fixing broken and add more tests.
 
 ## License
 - [MIT](https://github.com/borisding/avenue/blob/master/LICENSE)

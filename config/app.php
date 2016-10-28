@@ -4,8 +4,8 @@
  */
 
 return [
-    // secret key used for application, etc encryption
-    'secretKey' => '<IMPORTANT: Please change secret to random key!>',
+    // secret used for application, etc encryption
+    'secret' => '<IMPORTANT: Please change secret to random string!>',
 
     // auto rendering response body once application run
     'autoRender' => true,

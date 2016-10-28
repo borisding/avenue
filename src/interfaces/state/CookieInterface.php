@@ -29,4 +29,11 @@ interface CookieInterface
      * Remove all cookie values.
      */
     public function removeAll();
+
+    /**
+     * Return cookie specific config based on the name.
+     *
+     * @param mixed $name
+     */
+    public function getConfig($name);
 }
