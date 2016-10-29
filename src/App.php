@@ -136,8 +136,8 @@ class App implements AppInterface
     public function __construct(array $config = [])
     {
         static::$app = $this;
-
         $this->config = $config;
+
         $this
         ->registerServices()
         ->registerTimezone()
@@ -184,7 +184,7 @@ class App implements AppInterface
     public function resolve($name)
     {
         if (!array_key_exists($name, static::$services)) {
-            throw new \OutOfBoundsException(sprintf('Service [%s] is not registered!', $name));
+            throw new \LogicException(sprintf('Service [%s] is not registered!', $name));
         }
 
         $callback = static::$services[$name];
