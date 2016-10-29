@@ -2,44 +2,18 @@
 namespace Avenue\State;
 
 use Avenue\App;
-use Avenue\Crypt;
 use Avenue\Database\Command;
+use Avenue\State\SessionHandler;
 use SessionHandlerInterface;
 
-class SessionDatabaseHandler implements SessionHandlerInterface
+class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInterface
 {
-    /**
-     * App class instance.
-     *
-     * @var mixed
-     */
-    protected $app;
-
-    /**
-     * Crypt class instance.
-     *
-     * @var mixed
-     */
-    protected $crypt;
-
     /**
      * Database class instance.
      *
      * @var mixed
      */
     protected $db;
-
-    /**
-     * Default session configuration
-     *
-     * @var array
-     */
-    protected $config = [
-        'table' => 'session',
-        'lifetime' => 0,
-        'readMaster' => true,
-        'encrypt' => false
-    ];
 
     /**
      * Database session table.
@@ -70,16 +44,10 @@ class SessionDatabaseHandler implements SessionHandlerInterface
      */
     public function __construct(App $app, array $config = [])
     {
-        $this->app = $app;
-        $this->config = array_merge($this->config, $config);
+        parent::__construct($app, $config);
 
         $this->table = $this->getConfig('table');
         $this->readMaster = $this->getConfig('readMaster') === true;
-
-        // get the crypt instance if 'encrypt' set as true
-        if ($this->getConfig('encrypt')) {
-            $this->crypt = $this->app->crypt();
-        }
 
         // instantiate db instance
         if (!$this->db instanceof Command) {
@@ -186,63 +154,5 @@ class SessionDatabaseHandler implements SessionHandlerInterface
         $sql = sprintf('delete from %s where timestamp < :timestamp', $this->table);
 
         return $this->db->cmd($sql)->runWith([':timestamp' => $previous]);
-    }
-
-    /**
-     * Return the app's secret as configured.
-     *
-     * @throws \InvalidArgumentException
-     * @return string
-     */
-    public function getAppSecret()
-    {
-        $secret = $this->app->getSecret();
-
-        if (empty(trim($secret))) {
-            throw new \InvalidArgumentException('Secret must not be empty!');
-        }
-
-        return $secret;
-    }
-
-    /**
-     * Return session specific config based on the name.
-     * Giving all session config instead if name is not provided.
-     */
-    public function getConfig($name = null)
-    {
-        if (empty($name)) {
-            return $this->config;
-        }
-
-        return $this->app->arrGet($name, $this->config);
-    }
-
-    /**
-     * Get the encrypted session value.
-     *
-     * @param mixed $value
-     */
-    protected function encrypt($value)
-    {
-        if ($this->crypt instanceof Crypt) {
-            return $this->crypt->encrypt($value);
-        }
-
-        return $value;
-    }
-
-    /**
-     * Decrypt the session value.
-     *
-     * @param mixed $value
-     */
-    protected function decrypt($value)
-    {
-        if ($this->crypt instanceof Crypt) {
-            return $this->crypt->decrypt($value);
-        }
-
-        return $value;
     }
 }

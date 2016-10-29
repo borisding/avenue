@@ -2,7 +2,7 @@
 namespace Avenue\State;
 
 use Avenue\Interfaces\State\SessionInterface;
-use SessionHandlerInterface;
+use Avenue\State\SessionHandler;
 
 class Session implements SessionInterface
 {
@@ -24,12 +24,12 @@ class Session implements SessionInterface
      * Session class constructor.
      * Register respective handler methods before starting session.
      *
-     * @param SessionHandlerInterface $handler
+     * @param SessionHandler $handler
      */
-    public function __construct(SessionHandlerInterface $handler)
+    public function __construct(SessionHandler $handler)
     {
         $this->handler = $handler;
-        $this->prepare()->start();
+        $this->setup()->start();
     }
 
     /**
@@ -166,7 +166,7 @@ class Session implements SessionInterface
     /**
      * Runtime and handlers settings before starting the session.
      */
-    protected function prepare()
+    protected function setup()
     {
         // set gc max lifetime
         ini_set('session.gc_maxlifetime', intval($this->handler->getConfig('lifetime')));
