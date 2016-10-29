@@ -101,6 +101,13 @@ class App implements AppInterface
     public $exception;
 
     /**
+     * List of respective configurations.
+     *
+     * @var array
+     */
+    protected $config = [];
+
+    /**
      * App instance.
      *
      * @var object
@@ -122,27 +129,15 @@ class App implements AppInterface
     protected static $instances = [];
 
     /**
-     * List of respective configurations.
-     *
-     * @var array
-     */
-    protected static $config = [];
-
-    /**
-     * App constructor
+     * App class constructor.
      *
      * @param array $config
      */
     public function __construct(array $config = [])
     {
-        if (empty(static::$app)) {
-            static::$app = $this;
-        }
+        static::$app = $this;
 
-        if (empty(static::$config)) {
-            static::$config = $config;
-        }
-
+        $this->config = $config;
         $this
         ->registerServices()
         ->registerTimezone()
@@ -360,21 +355,21 @@ class App implements AppInterface
      */
     public function getConfig($key = null)
     {
-        if (empty(static::$config)) {
-            throw new \InvalidArgumentException('Configuration is not available!');
+        if (empty($this->config)) {
+            throw new \InvalidArgumentException('App config must not be empty!');
         }
 
         // simply return all if empty key provided
         if (empty($key)) {
-            return static::$config;
+            return $this->config;
         }
 
         // return particular config
-        if (!array_key_exists($key, static::$config)) {
-            static::$config[$key] = null;
+        if (!array_key_exists($key, $this->config)) {
+            $this->config[$key] = null;
         }
 
-        return static::$config[$key];
+        return $this->config[$key];
     }
 
     /**
@@ -445,9 +440,16 @@ class App implements AppInterface
 
     /**
      * Retrieving app instance.
+     *
+     * @throws \InvalidArgumentException
+     * @return object
      */
     public static function getInstance()
     {
+        if (!static::$app instanceof AppInterface) {
+            throw new \InvalidArgumentException('Invalid App instance!');
+        }
+
         return static::$app;
     }
 
