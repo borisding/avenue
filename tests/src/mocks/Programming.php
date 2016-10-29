@@ -1,5 +1,5 @@
 <?php
-namespace App\Models\Mocks;
+namespace Avenue\Tests\Src\Mocks;
 
 class Programming
 {

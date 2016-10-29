@@ -4,10 +4,9 @@ namespace Avenue\Tests\Database;
 use Avenue\App;
 use Avenue\Database\Command;
 use Avenue\Tests\Database\AbstractDatabaseTest;
+use Avenue\Tests\Src\Mocks\Programming;
 use Avenue\Tests\Reflection;
 use stdClass;
-
-require_once AVENUE_TESTS_DIR . '/src/mocks/Programming.php';
 
 class CommandTest extends AbstractDatabaseTest
 {
@@ -218,15 +217,13 @@ class CommandTest extends AbstractDatabaseTest
 
     public function testFetchClassAllMethod()
     {
-        $class = '\App\Models\Mocks\Programming';
-        $result = $this->db->cmd($this->selectAllSql())->fetchClassAll($class);
+        $result = $this->db->cmd($this->selectAllSql())->fetchClassAll(Programming::class);
         $this->assertEquals($result[0]->getId(), 1);
     }
 
     public function testFetchClassOneMethod()
     {
-        $class = '\App\Models\Mocks\Programming';
-        $record = $this->db->cmd($this->selectAllSql())->fetchClassOne($class);
+        $record = $this->db->cmd($this->selectAllSql())->fetchClassOne(Programming::class);
         $this->assertEquals($record->getId(), 1);
     }
 
