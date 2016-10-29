@@ -10,6 +10,7 @@ class FooController extends \Avenue\Controller
 
     public function beforeAction()
     {
+        parent::beforeAction();
         return true;
     }
 
@@ -40,6 +41,7 @@ class FooController extends \Avenue\Controller
 
     public function afterAction()
     {
+        parent::afterAction();
         return true;
     }
 }

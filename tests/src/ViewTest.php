@@ -11,8 +11,8 @@ class ViewTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->app = new App();
-        $this->view = $this->app->view;
+        $this->app = new App(['timezone' => 'UTC']);
+        $this->view = $this->app->view();
     }
 
     public function testFetch()

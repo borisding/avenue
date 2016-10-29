@@ -9,7 +9,7 @@ class HelperBundleTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->app = new App();
+        $this->app = new App(['timezone' => 'UTC']);
     }
 
     public function testArrGetIsNull()

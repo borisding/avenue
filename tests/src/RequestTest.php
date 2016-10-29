@@ -2,10 +2,8 @@
 namespace Avenue\Tests;
 
 use Avenue\App;
-use Avenue\Tests\Http;
+use Avenue\Tests\Src\Mocks\Http;
 use Avenue\Tests\Reflection;
-
-require_once 'mocks/Http.php';
 
 class RequestTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,7 +15,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->app = new App();
+        $this->app = new App(['timezone' => 'UTC']);
         $this->http = new Http();
         $this->request = $this->app->request();
     }

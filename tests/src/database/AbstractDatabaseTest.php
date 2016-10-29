@@ -2,15 +2,12 @@
 namespace Avenue\Tests\Database;
 
 use Avenue\App;
-use Avenue\Tests\Reflection;
 
 abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase
 {
     protected $app;
 
     protected $config = [
-        'appVersion' => '1.0',
-        'httpVersion' => '1.1',
         'timezone' => 'UTC',
         'environment' => 'development',
         'database' => [
@@ -31,7 +28,6 @@ abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped("'pdo_sqlite' is required for testing sqlite memory.");
         }
 
-        $this->app = new App();
-        Reflection::setPropertyValue($this->app, 'config', $this->config, true);
+        $this->app = new App($this->config);
     }
 }

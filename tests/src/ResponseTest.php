@@ -2,7 +2,6 @@
 namespace Avenue\Tests;
 
 use Avenue\App;
-use Avenue\Response;
 use Avenue\Tests\Reflection;
 
 class ResponseTest extends \PHPUnit_Framework_TestCase
@@ -13,7 +12,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->app = new App();
+        $this->app = new App(['timezone' => 'UTC']);
         $this->response = $this->app->response();
     }
 

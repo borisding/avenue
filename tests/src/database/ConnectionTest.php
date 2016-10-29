@@ -61,8 +61,7 @@ class ConnectionTest extends AbstractDatabaseTest
     {
         $config = $this->config;
         $config['database']['development']['slave'] = null;
-        $app = new App();
-        Reflection::setPropertyValue($app, 'config', $config, true);
+        $app = new App($config);
 
         $connection = new Connection($app);
         $master = $connection->getMasterPdo();

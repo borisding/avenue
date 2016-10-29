@@ -7,28 +7,50 @@ use Avenue\Response;
 use Avenue\Route;
 use Avenue\View;
 use Avenue\Exception;
-use Avenue\Mcrypt;
+use Avenue\Crypt;
+use Avenue\State\Cookie;
+use Avenue\State\Session;
+use Avenue\Tests\Src\Mocks\FakeApp;
+use Avenue\Tests\Reflection;
 
 class AppTest extends \PHPUnit_Framework_TestCase
 {
     private $app;
 
+    private $config = [
+        'secret' => 'secretfortestonly',
+        'appVersion' => '1.0',
+        'httpVersion' => '1.1',
+        'timezone' => 'UTC',
+        'environment' => 'development',
+        'defaultController' => 'default',
+        'foo' => 'bar',
+        'state' => [
+            'cookie' => [],
+            'session' => []
+        ]
+    ];
+
     public function setUp()
     {
-        @session_start();
-        $this->app = new App([
-            'appVersion' => '1.0',
-            'httpVersion' => '1.1',
-            'timezone' => 'UTC',
-            'environment' => 'development',
-            'defaultController' => 'default',
-            'foo' => 'bar'
-        ]);
+        $this->app = new App($this->config);
     }
 
     public function testGetInstance()
     {
         $this->assertEquals(App::getInstance(), $this->app);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testGetInstanceInvalidArgumentException()
+    {
+        $app = new App($this->config);
+        $fakeapp = new FakeApp();
+
+        Reflection::setPropertyValue($app, 'app', $fakeapp, true);
+        App::getInstance();
     }
 
     /**
@@ -101,9 +123,9 @@ class AppTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException OutOfBoundsException
+     * @expectedException LogicException
      */
-    public function testResolveOutOfBoundException()
+    public function testResolveLogicException()
     {
         $this->app->resolve('serviceDoesNotExist');
     }
@@ -178,12 +200,16 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
     public function testSingletonExceptionClassInstance()
     {
-        $this->app->container('exception', function() {
-            $exc = new \Exception();
-            return new \Avenue\Exception(App::getInstance(), $exc);
+        $mockedExc = $this
+        ->getMockBuilder('\Exception')
+        ->getMock();
+
+        $app = new App($this->config);
+        $app->container('exception', function() use ($app, $mockedExc) {
+            return new Exception($app, $mockedExc);
         });
 
-        $exception = $this->app->exception();
+        $exception = $app->exception();
         $this->assertTrue($exception instanceof Exception);
     }
 
@@ -192,15 +218,59 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->app->exception(), App::exception());
     }
 
-    public function testSingletonMcrytClassInstance()
+    public function testSingletonCryptClassInstance()
     {
-        $mcrypt = $this->app->mcrypt();
-        $this->assertTrue($mcrypt instanceof Mcrypt);
+        $crypt = $this->app->crypt();
+        $this->assertTrue($crypt instanceof Crypt);
     }
 
-    public function testSingletonMcryptClassInstanceViaStaticMethod()
+    public function testSingletonCryptClassInstanceViaStaticMethod()
     {
-        $this->assertEquals($this->app->mcrypt(), App::mcrypt());
+        $this->assertEquals($this->app->crypt(), App::crypt());
+    }
+
+    public function testSingletonCookieClassInstance()
+    {
+        $cookie = $this->app->cookie();
+        $this->assertTrue($cookie instanceof Cookie);
+    }
+
+    public function testSingletonCookieClassInstanceViaStaticMethod()
+    {
+        $this->assertEquals($this->app->cookie(), App::cookie());
+    }
+
+    private function getMockedSessionContainer($static = false)
+    {
+        @session_start();
+
+        $mockedHandler = $this
+        ->getMockBuilder('\Avenue\State\SessionDatabaseHandler')
+        ->disableOriginalConstructor()
+        ->getMock();
+
+        $app = new App($this->config);
+        $app->container('session', function() use ($mockedHandler) {
+            return new Session($mockedHandler);
+        });
+
+        if ($static) {
+            return App::session();
+        }
+
+        return $app->session();
+    }
+
+    public function testSingletonSessionClassInstance()
+    {
+        $session = $this->getMockedSessionContainer();
+        $this->assertTrue($session instanceof Session);
+    }
+
+    public function testSingletonSessionClassInstanceViaStaticMethod()
+    {
+        $session = $this->getMockedSessionContainer(true);
+        $this->assertTrue($session instanceof Session);
     }
 
     /**
@@ -217,6 +287,15 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testCallAppNonExistStaticMethodException()
     {
         App::appNonExistMethod();
+    }
+
+    /**
+     * @expectedException LogicException
+     */
+    public function testGetConfigInvalidArgumentException()
+    {
+        $app = new App();
+        $app->getConfig();
     }
 
     public function testGetConfig()
@@ -254,8 +333,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('default', $this->app->getDefaultController());
     }
 
-    public function testGetDefaultConfig()
+    public function testGetSecret()
     {
-        $this->assertTrue(is_array($this->app->getDefaultConfig()));
+        $this->assertEquals('secretfortestonly', $this->app->getSecret());
     }
 }
