@@ -72,6 +72,12 @@ class Connection implements ConnectionInterface
         $this->masterConfig = $this->app->arrGet('master', $databaseConfig, []);
         $this->slaveConfig = $this->app->arrGet('slave', $databaseConfig, []);
 
+        // can assign directly to master config when `master` option is not applicable
+        // this is to treat it as default single database
+        if (empty($this->masterConfig)) {
+            $this->masterConfig = $databaseConfig;
+        }
+
         unset($databaseConfig);
     }
 

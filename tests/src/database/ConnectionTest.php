@@ -4,7 +4,6 @@ namespace Avenue\Tests\Database;
 use PDO;
 use Avenue\App;
 use Avenue\Database\Connection;
-use Avenue\Tests\Reflection;
 use Avenue\Tests\Database\AbstractDatabaseTest;
 
 class ConnectionTest extends AbstractDatabaseTest
@@ -23,8 +22,7 @@ class ConnectionTest extends AbstractDatabaseTest
         $config = $this->config;
         $config['database'] = [];
 
-        $app = new App();
-        Reflection::setPropertyValue($app, 'config', $config, true);
+        $app = new App($config);
         $connection = new Connection($app);
     }
 
@@ -43,6 +41,18 @@ class ConnectionTest extends AbstractDatabaseTest
     {
         $this->connection->getSlavePdo();
         $this->assertNotNull($this->connection->getSlaveDriver());
+    }
+
+    public function testGetMasterPdoAssignedDirectly()
+    {
+        $config = $this->config;
+        $config['database']['development'] = ['dsn' => 'sqlite::memory:'];
+
+        $app = new App($config);
+        $connection = new Connection($app);
+        $master = $connection->getMasterPdo();
+
+        $this->assertTrue($master instanceof PDO);
     }
 
     public function testGetMasterPdo()
