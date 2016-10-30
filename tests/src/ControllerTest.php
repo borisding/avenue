@@ -18,6 +18,16 @@ class ControllerTest extends \PHPUnit_Framework_TestCase
         $this->app->route->setParam('action', 'test');
     }
 
+    public function testControllerActionLogicException()
+    {
+        $this->app->route->setParam('controller', null);
+        $stub = $this->getMock(Controller::class, ['indexAction', 'controllerAction'], [$this->app]);
+        $stub->method('controllerAction')->willReturn(true);
+
+        $foo = new FooController($this->app);
+        $this->assertEquals($stub->controllerAction(), $foo->testAction());
+    }
+
     public function testControllerActionInvoked()
     {
         $stub = $this->getMock(Controller::class, ['indexAction', 'controllerAction'], [$this->app]);
