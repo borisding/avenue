@@ -8,9 +8,9 @@ interface CommandInterface
      * Allowed to decide for master or slave.
      *
      * @param mixed $sql
-     * @param mixed $master
+     * @param mixed $slave
      */
-    public function cmd($sql, $master);
+    public function cmd($sql, $slave);
 
     /**
      * Prepare statement for master database.

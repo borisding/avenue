@@ -11,7 +11,6 @@
 ## TODO
 
 - Documentation.
-- Fixing broken + adding more tests.
 
 ## License
 - [MIT](https://github.com/borisding/avenue/blob/master/LICENSE)
