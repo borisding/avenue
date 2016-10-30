@@ -256,6 +256,46 @@ trait CommandWrapperTrait
     }
 
     /**
+     * Perform update/insert based on the existence of record and types of database.
+     *
+     * @param mixed $id
+     * @param array $columns
+     */
+    public function upsert($id, array $columns)
+    {
+        // mysql/maria
+        if ($this->getMasterDriver() == 'mysql') {
+
+            $values = array_values($columns);
+            $sql = sprintf(
+                'replace into %s (%s) values (%s)',
+                $this->table,
+                implode(', ', array_keys($columns)),
+                $this->getPlaceholders($values)
+            );
+
+            return $this
+            ->cmd($sql)
+            ->batch($values)
+            ->run();
+
+        // others
+        } else {
+
+            $total = $this
+            ->cmd(sprintf('select count(*) as total from %s where id = :id', $this->table))
+            ->bind(':id', $id)
+            ->fetchColumn();
+
+            if ($total > 0) {
+                return $this->update($columns, 'id = ?', $id);
+            } else {
+                return $this->insert($columns);
+            }
+        }
+    }
+
+    /**
      * Return the filled placeholders based on the values.
      *
      * @param array $values

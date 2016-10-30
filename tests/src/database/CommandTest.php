@@ -506,4 +506,26 @@ class CommandTest extends AbstractDatabaseTest
         $placeholders = $this->db->getPlaceholders([1, 2, 3]);
         $this->assertEquals('?, ?, ?', $placeholders);
     }
+
+    public function testNewRecordThroughUpsert()
+    {
+        $this->db->upsert(6, [
+            'id' => 6,
+            'name' => 'Elixir'
+        ]);
+
+        $result = $this->db->select(['name']);
+        $this->assertEquals(6, count($result));
+    }
+
+    public function testUpdateRecordThroughUpsert()
+    {
+        $this->db->upsert(5, [
+            'id' => 5,
+            'name' => 'Elixir'
+        ]);
+
+        $result = $this->db->select(['name'], 'id = ?', 5);
+        $this->assertEquals('Elixir', $result[0]['name']);
+    }
 }

@@ -205,4 +205,19 @@ interface CommandInterface
      * @param mixed $params
      */
     public function update(array $columns, $clause, $params);
+
+    /**
+     * Implement update/insert based on the existense of the record.
+     *
+     * @param mixed $id
+     * @param array $columns
+     */
+    public function upsert($id, array $columns);
+
+    /**
+     * Filling placeholders based on the values.
+     *
+     * @param array $values
+     */
+    public function getPlaceholders(array $values);
 }
