@@ -18,13 +18,18 @@ class ControllerTest extends \PHPUnit_Framework_TestCase
         $this->app->route->setParam('action', 'test');
     }
 
+    /**
+     * @expectedException LogicException
+     */
     public function testControllerActionLogicException()
     {
-        $this->app->route->setParam('controller', null);
-        $stub = $this->getMock(Controller::class, ['indexAction', 'controllerAction'], [$this->app]);
+        $app = new App(['timezone' => 'UTC']);
+        $app->route->setParam('controller', 'foo');
+        $app->route->setParam('action', '');
+        $stub = $this->getMock(Controller::class, ['indexAction', 'controllerAction'], [$app]);
         $stub->method('controllerAction')->willReturn(true);
 
-        $foo = new FooController($this->app);
+        $foo = new FooController($app);
         $this->assertEquals($stub->controllerAction(), $foo->testAction());
     }
 
@@ -35,5 +40,23 @@ class ControllerTest extends \PHPUnit_Framework_TestCase
 
         $foo = new FooController($this->app);
         $this->assertEquals($stub->controllerAction(), $foo->testAction());
+    }
+
+    public function testControllerBeforeActionInvoked()
+    {
+        $stub = $this->getMock(Controller::class, ['indexAction', 'controllerAction'], [$this->app]);
+        $stub->method('beforeAction')->willReturn(true);
+
+        $foo = new FooController($this->app);
+        $this->assertEquals($stub->beforeAction(), $foo->beforeAction());
+    }
+
+    public function testControllerAfterActionInvoked()
+    {
+        $stub = $this->getMock(Controller::class, ['indexAction', 'controllerAction'], [$this->app]);
+        $stub->method('afterAction')->willReturn(true);
+
+        $foo = new FooController($this->app);
+        $this->assertEquals($stub->afterAction(), $foo->afterAction());
     }
 }
