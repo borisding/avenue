@@ -35,27 +35,19 @@ class CommandTest extends AbstractDatabaseTest
 
     private function prepareMasterData()
     {
-        $this->db
-        ->cmd($this->createTableSql())
-        ->run();
+        $this->db->cmd($this->createTableSql())->run();
 
         foreach ($this->data as $id => $name) {
-            $this->db
-            ->cmd($this->insertSql())
-            ->runWith([$id, $name]);
+            $this->db->cmd($this->insertSql())->runWith([$id, $name]);
         }
     }
 
     private function prepareSlaveData()
     {
-        $this->db
-        ->cmd($this->createTableSql(), false)
-        ->run();
+        $this->db->cmd($this->createTableSql(), true)->run();
 
         foreach ($this->data as $id => $name) {
-            $this->db
-            ->cmd($this->insertSql(), false)
-            ->runWith([$id, $name]);
+            $this->db->cmd($this->insertSql(), true)->runWith([$id, $name]);
         }
     }
 
@@ -92,7 +84,7 @@ class CommandTest extends AbstractDatabaseTest
     public function testDefaultFetchMasterConnection()
     {
         $record1 = $this->db->cmd($this->selectAllSql())->fetchOne();
-        $record2 = $this->db->cmd($this->selectAllSql(), true)->fetchOne();
+        $record2 = $this->db->cmd($this->selectAllSql(), false)->fetchOne();
 
         $this->assertEquals($record1, $record2);
     }
@@ -100,7 +92,7 @@ class CommandTest extends AbstractDatabaseTest
     public function testCmdMasterMethod()
     {
         $record1 = $this->db->cmdMaster($this->selectAllSql())->fetchOne();
-        $record2 = $this->db->cmd($this->selectAllSql(), true)->fetchOne();
+        $record2 = $this->db->cmd($this->selectAllSql(), false)->fetchOne();
         $this->assertEquals($record1, $record2);
     }
 
@@ -108,7 +100,7 @@ class CommandTest extends AbstractDatabaseTest
     {
         $this->prepareSlaveData();
         $record1 = $this->db->cmdSlave($this->selectAllSql())->fetchOne();
-        $record2 = $this->db->cmd($this->selectAllSql(), false)->fetchOne();
+        $record2 = $this->db->cmd($this->selectAllSql(), true)->fetchOne();
         $this->assertEquals($record1, $record2);
     }
 
