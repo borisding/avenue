@@ -2,6 +2,7 @@
 namespace Avenue;
 
 use Avenue\App;
+use Avenue\Controller;
 use Avenue\Interfaces\RouteInterface;
 
 class Route implements RouteInterface
@@ -74,13 +75,6 @@ class Route implements RouteInterface
      * @var string
      */
     const NAMESPACE_PREFIX = 'App\Controllers';
-
-    /**
-     * Base controller namespace.
-     *
-     * @var string
-     */
-    const BASE_CONTROLLER = 'Avenue\Controller';
 
     /**
      * Suffix of controller.
@@ -266,14 +260,11 @@ class Route implements RouteInterface
 
         // throw exception if no controller class found
         if (!class_exists($controllerNamespace)) {
-            throw new \LogicException(
-                sprintf('Controller [%s] not found.', $controllerNamespace),
-                404
-            );
+            throw new \LogicException(sprintf('Controller [%s] not found.', $controllerNamespace), 404);
         }
 
         // check if controller class has parent controller
-        if (!isset(class_parents($controllerNamespace)[static::BASE_CONTROLLER])) {
+        if (!isset(class_parents($controllerNamespace)[Controller::class])) {
             throw new \LogicException('Controller must be extending the base controller!', 400);
         }
 
