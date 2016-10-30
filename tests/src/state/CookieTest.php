@@ -8,17 +8,30 @@ class CookieTest extends \PHPUnit_Framework_TestCase
 {
     private $app;
 
+    private $cookie;
+
     public function setUp()
     {
-        $this->app = new App();
+        $app = new App([
+            'secret' => 'secretfortestingcookie',
+            'timezone' => 'UTC',
+            'state' => ['cookie' => []]
+        ]);
+
+        $this->cookie = new Cookie($app);
     }
 
     /**
+     * @runInSeparateProcess
      * @expectedException InvalidArgumentException
      */
     public function testEmptyCookieSecretException()
     {
-        $cookie = new Cookie($this->app, []);
+        $app = new App([
+            'timezone' => 'UTC',
+            'state' => ['cookie' => []]
+        ]);
+        $cookie = new Cookie($app);
         $cookie->set('test', 'dummp');
     }
 
@@ -27,8 +40,7 @@ class CookieTest extends \PHPUnit_Framework_TestCase
      */
     public function testEmptyCookieKeyException()
     {
-        $cookie = new Cookie($this->app, ['secret' => 'thisissecretkey']);
-        $cookie->set('', 'test');
+        $this->cookie->set('', 'test');
     }
 
     /**
@@ -36,10 +48,8 @@ class CookieTest extends \PHPUnit_Framework_TestCase
      */
     public function testCookieValue()
     {
-        $config = ['secret' => 'mysecret', 'encrypt' => false];
-        $cookie = new Cookie($this->app, $config);
-        $cookie->set('test', 123);
-        $this->assertEquals(123, $cookie->get('test'));
+        $this->cookie->set('test', 123);
+        $this->assertEquals(123, $this->cookie->get('test'));
     }
 
     /**
@@ -47,10 +57,8 @@ class CookieTest extends \PHPUnit_Framework_TestCase
      */
     public function testRemoveCookieValue()
     {
-        $config = ['secret' => 'mysecret', 'encrypt' => false];
-        $cookie = new Cookie($this->app, $config);
-        $cookie->set('foo', 'bar');
-        $cookie->remove('foo');
-        $this->assertEmpty($cookie->get('foo'));
+        $this->cookie->set('foo', 'bar');
+        $this->cookie->remove('foo');
+        $this->assertEmpty($this->cookie->get('foo'));
     }
 }

@@ -12,25 +12,20 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->handler = $this->getMockedHandler();
-
         $this->handler->expects($this->any())
-        ->method('getConfig')
-        ->will($this->returnCallback(function($key) {
-            if ($key === 'secret') {
+        ->method('getAppSecret')
+        ->will($this->returnCallback(function() {
                 return 'testingsessionhandler';
-            }
         }));
 
         $this->session = new Session($this->handler);
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testEmptySessionSecretException()
+    private function getMockedHandler()
     {
-        $handler = $this->getMockedHandler();
-        $session = new Session($handler);
+        return $this->getMockBuilder('\Avenue\State\SessionDatabaseHandler')
+        ->disableOriginalConstructor()
+        ->getMock();
     }
 
     public function testSetSessionValue()
@@ -93,12 +88,5 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     {
         $sessionId = $this->session->getId();
         $this->assertEquals($sessionId, session_id());
-    }
-
-    private function getMockedHandler()
-    {
-        return $this->getMockBuilder('\Avenue\State\SessionDatabaseHandler')
-        ->disableOriginalConstructor()
-        ->getMock();
     }
 }
