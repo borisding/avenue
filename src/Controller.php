@@ -68,24 +68,32 @@ abstract class Controller implements ControllerInterface
 
     /**
      * Controller's before action method.
-     * Invoked before the controller action is called.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ControllerInterface::beforeAction()
      */
     public function beforeAction()
     {
-        // do nothing
+        return true;
     }
 
     /**
      * Controller's after action method.
      * Invoke after the controller action is called.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ControllerInterface::afterAction()
      */
     public function afterAction()
     {
-        // do nothing
+        return true;
     }
 
     /**
      * Invoke targeted controller's action.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ControllerInterface::controllerAction()
      */
     public function controllerAction()
     {
@@ -93,10 +101,7 @@ abstract class Controller implements ControllerInterface
 
         // check if controller action does exit before invoking action
         if (!method_exists($this, $action)) {
-            throw new \BadMethodCallException(
-                sprintf('Controller action method [%s] not found.', $action),
-                404
-            );
+            throw new \LogicException(sprintf('Controller action method [%s] not found.', $action), 404);
         }
 
         return call_user_func_array([$this, $action], []);
