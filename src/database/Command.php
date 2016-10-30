@@ -12,11 +12,18 @@ class Command extends Connection implements CommandInterface
     use CommandWrapperTrait;
 
     /**
-     * Table name of targeted model.
+     * Table name of model.
      *
      * @var mixed
      */
     protected $table;
+
+    /**
+     * Default table primary key of model.
+     *
+     * @var string
+     */
+    protected $pk = 'id';
 
     /**
      * Prepared statement.

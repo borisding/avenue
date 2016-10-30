@@ -257,6 +257,7 @@ trait CommandWrapperTrait
 
     /**
      * Perform update/insert based on the existence of record and types of database.
+     * Default primary key column refers to `id`
      *
      * @param mixed $id
      * @param array $columns
@@ -283,12 +284,12 @@ trait CommandWrapperTrait
         } else {
 
             $total = $this
-            ->cmd(sprintf('select count(*) as total from %s where id = :id', $this->table))
+            ->cmd(sprintf('select count(*) as total from %s where %s = :id', $this->table, $this->pk))
             ->bind(':id', $id)
             ->fetchColumn();
 
             if ($total > 0) {
-                return $this->update($columns, 'id = ?', $id);
+                return $this->update($columns, sprintf('%s = ?', $this->pk), $id);
             } else {
                 return $this->insert($columns);
             }
