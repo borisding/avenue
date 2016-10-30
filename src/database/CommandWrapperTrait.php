@@ -17,7 +17,7 @@ trait CommandWrapperTrait
             $clause,
             $params,
             $type,
-            true
+            false
         );
     }
 
@@ -35,7 +35,7 @@ trait CommandWrapperTrait
             $clause,
             $params,
             $type,
-            false
+            true
         );
     }
 
@@ -54,7 +54,7 @@ trait CommandWrapperTrait
             $clause,
             $params,
             $type,
-            true
+            false
         );
     }
 
@@ -73,7 +73,7 @@ trait CommandWrapperTrait
             $clause,
             $params,
             $type,
-            false
+            true
         );
     }
 
@@ -105,9 +105,9 @@ trait CommandWrapperTrait
      * @param mixed $values
      * @param array $clause
      * @param mixed $type
-     * @param mixed $master
+     * @param mixed $slave
      */
-    private function getSelectWhereClause($sql, $clause, $params, $type, $master)
+    private function getSelectWhereClause($sql, $clause, $params, $type, $slave)
     {
         if (!empty($clause)) {
             $clause = trim(preg_replace('/[\s]+/', ' ', $clause));
@@ -116,8 +116,8 @@ trait CommandWrapperTrait
             $orderByPosition = stripos($clause, 'order by');
 
             if (($orderByPosition === false && $limitPosition === false) ||
-                ($orderByPosition !== false && $orderByPosition > 0) ||
-                ($orderByPosition === false && $limitPosition > 0)) {
+                ($orderByPosition === false && $limitPosition > 0) ||
+                ($orderByPosition !== false && $orderByPosition > 0)) {
                 $sql .= sprintf(' where %s', $clause);
             } elseif ($orderByPosition !== false || $limitPosition !== false) {
                 $sql .= sprintf(' %s', $clause);
@@ -128,7 +128,7 @@ trait CommandWrapperTrait
             $params = (array)$params;
         }
 
-        $query = $this->cmd($sql, $master === true);
+        $query = $this->cmd($sql, $slave === true);
 
         if (is_array($params)) {
             $query = $query->batch($params);

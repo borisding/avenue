@@ -77,9 +77,9 @@ class Command extends Connection implements CommandInterface
      * {@inheritDoc}
      * @see \Avenue\Interfaces\Database\CommandInterface::cmd()
      */
-    public function cmd($sql, $master = true)
+    public function cmd($sql, $slave = false)
     {
-        $conn = ($master !== true) ? $this->getSlavePdo() : $this->getMasterPdo();
+        $conn = ($slave === true) ? $this->getSlavePdo() : $this->getMasterPdo();
         $this->statement = $conn->prepare($sql);
 
         unset($conn);
@@ -94,7 +94,7 @@ class Command extends Connection implements CommandInterface
      */
     public function cmdMaster($sql)
     {
-        return $this->cmd($sql, true);
+        return $this->cmd($sql, false);
     }
 
     /**
@@ -105,7 +105,7 @@ class Command extends Connection implements CommandInterface
      */
     public function cmdSlave($sql)
     {
-        return $this->cmd($sql, false);
+        return $this->cmd($sql, true);
     }
 
     /**

@@ -30,8 +30,8 @@ return [
         // session lifetime in seconds for garbage collector
         'lifetime' => 3600,
 
-        // reading from master
-        'readMaster' => true,
+        // reading from slave
+        'readSlave' => false,
 
         // whether to encrypt session value
         'encrypt' => false

@@ -29,7 +29,7 @@ class SessionHandler implements SessionHandlerInterface
     protected $config = [
         'table' => 'session',
         'lifetime' => 0,
-        'readMaster' => true,
+        'readSlave' => false,
         'encrypt' => false
     ];
 

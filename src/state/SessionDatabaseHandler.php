@@ -23,11 +23,11 @@ class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInt
     protected $table;
 
     /**
-     * Reading from master flag.
+     * Reading from slave flag.
      *
      * @var boolean
      */
-    protected $readMaster;
+    protected $readSlave;
 
     /**
      * Weight of frequency to trigger garbage collection.
@@ -47,7 +47,7 @@ class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInt
         parent::__construct($app, $config);
 
         $this->table = $this->getConfig('table');
-        $this->readMaster = $this->getConfig('readMaster') === true;
+        $this->readSlave = $this->getConfig('readSlave') === true;
 
         // instantiate db instance
         if (!$this->db instanceof Command) {
@@ -91,7 +91,7 @@ class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInt
     public function read($id)
     {
         $sql = sprintf('select value from %s where id = :id', $this->table);
-        $value = $this->db->cmd($sql, $this->readMaster)->bind(':id', $id)->fetchColumn();
+        $value = $this->db->cmd($sql, $this->readSlave)->bind(':id', $id)->fetchColumn();
 
         if ($value) {
             return $this->decrypt($value);
