@@ -111,25 +111,25 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     public function testWithJsonHeader()
     {
         $this->response->withJsonHeader();
-        $this->assertEquals('application/json;charset=utf-8', $this->response->getHeader('Content-Type'));
+        $this->assertEquals('application/json; charset=utf-8', $this->response->getHeader('Content-Type'));
     }
 
     public function testWithTextHeader()
     {
         $this->response->withTextHeader();
-        $this->assertEquals('text/plain', $this->response->getHeader('Content-Type'));
+        $this->assertEquals('text/plain; charset=utf-8', $this->response->getHeader('Content-Type'));
     }
 
     public function testWithCsvHeader()
     {
         $this->response->withCsvHeader();
-        $this->assertEquals('text/csv', $this->response->getHeader('Content-Type'));
+        $this->assertEquals('text/csv; charset=utf-8', $this->response->getHeader('Content-Type'));
     }
 
     public function testWithXmlHeader()
     {
         $this->response->withXmlHeader();
-        $this->assertEquals('text/xml', $this->response->getHeader('Content-Type'));
+        $this->assertEquals('text/xml; charset=utf-8', $this->response->getHeader('Content-Type'));
     }
 
     /**

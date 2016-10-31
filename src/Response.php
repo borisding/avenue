@@ -204,7 +204,7 @@ class Response implements ResponseInterface
      */
     public function getBody()
     {
-        return (string)$this->body;
+        return (string) $this->body;
     }
 
     /**
@@ -274,7 +274,7 @@ class Response implements ResponseInterface
      */
     public function withJsonHeader()
     {
-        return $this->withHeader(['Content-Type' => 'application/json;charset=utf-8']);
+        return $this->withHeader(['Content-Type' => 'application/json; charset=utf-8']);
     }
 
     /**
@@ -285,7 +285,7 @@ class Response implements ResponseInterface
      */
     public function withTextHeader()
     {
-        return $this->withHeader(['Content-Type' => 'text/plain']);
+        return $this->withHeader(['Content-Type' => 'text/plain; charset=utf-8']);
     }
 
     /**
@@ -296,7 +296,7 @@ class Response implements ResponseInterface
      */
     public function withCsvHeader()
     {
-        return $this->withHeader(['Content-Type' => 'text/csv']);
+        return $this->withHeader(['Content-Type' => 'text/csv; charset=utf-8']);
     }
 
     /**
@@ -307,7 +307,7 @@ class Response implements ResponseInterface
      */
     public function withXmlHeader()
     {
-        return $this->withHeader(['Content-Type' => 'text/xml']);
+        return $this->withHeader(['Content-Type' => 'text/xml; charset=utf-8']);
     }
 
     /**
