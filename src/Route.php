@@ -234,7 +234,7 @@ class Route implements RouteInterface
      */
     public function initController()
     {
-        $controllerNamespace = $this->getControllerNamespace();
+        $controllerNamespace = $this->buildControllerNamespace();
         $this->setParam('namespace', $controllerNamespace);
 
         // throw exception if no controller class found
@@ -254,7 +254,7 @@ class Route implements RouteInterface
      * Build the controller namespace for the matched route.
      * If no controller is specified, the default controller will always be used.
      */
-    public function getControllerNamespace()
+    public function buildControllerNamespace()
     {
         $fs = '/';
         $bs = '\\';

@@ -126,7 +126,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
         $this->http->set('HTTP_X_HTTP_METHOD_OVERRIDE', 'GET');
         $this->http->setGet();
         $this->route->dispatch([$this->rule, $this->routeParam]);
-        $this->assertEquals('App\Controllers\FooController', $this->route->getControllerNamespace());
+        $this->assertEquals('App\Controllers\FooController', $this->route->buildControllerNamespace());
     }
 
     /**

@@ -16,9 +16,9 @@ interface RouteInterface
     public function initController();
 
     /**
-     * Get controller class namespace.
+     * Build controller class namespace.
      */
-    public function getControllerNamespace();
+    public function buildControllerNamespace();
 
     /**
      * Match the route URI with regular expression.
