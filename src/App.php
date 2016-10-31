@@ -135,10 +135,10 @@ class App implements AppInterface
      */
     public function __construct(array $config = [])
     {
-        static::$app = $this;
         $this->config = $config;
 
         $this
+        ->registerAppInstance()
         ->registerServices()
         ->registerTimezone()
         ->registerExceptionHandler()
@@ -239,6 +239,16 @@ class App implements AppInterface
             $this->response->render();
             exit(0);
         }
+    }
+
+    /**
+     * Register by assigning current App class object to static variable.
+     *
+     * @return \Avenue\App
+     */
+    protected function registerAppInstance()
+    {
+        return static::$app = $this;
     }
 
     /**

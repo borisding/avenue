@@ -70,27 +70,6 @@ class Route implements RouteInterface
     ];
 
     /**
-     * Prefix of controller namespace.
-     *
-     * @var string
-     */
-    const NAMESPACE_PREFIX = 'App\Controllers';
-
-    /**
-     * Suffix of controller.
-     *
-     * @var string
-     */
-    const CONTROLLER_SUFFIX = 'Controller';
-
-    /**
-     * Default action method.
-     *
-     * @var string
-     */
-    const DEFAULT_ACTION = 'index';
-
-    /**
      * Route class constructor.
      *
      * @param App $app
@@ -193,7 +172,7 @@ class Route implements RouteInterface
 
         // set default action if empty
         if (empty($this->getParams('action'))) {
-            $this->setParam('action', static::DEFAULT_ACTION);
+            $this->setParam('action', Controller::DEFAULT_ACTION);
         }
 
         // proceed to resource mapping if token exist
@@ -282,7 +261,7 @@ class Route implements RouteInterface
         $namespace = '';
         $prefix = $this->getParams('prefix');
         $controller = $this->getParams('controller');
-        $controller = ucfirst($controller . static::CONTROLLER_SUFFIX);
+        $controller = ucfirst($controller . Controller::CONTROLLER_SUFFIX);
 
         // check prefix
         if (!empty($prefix)) {
@@ -294,7 +273,7 @@ class Route implements RouteInterface
         }
 
         $namespace .= $controller;
-        return static::NAMESPACE_PREFIX . $bs . $namespace;
+        return Controller::NAMESPACE_PREFIX . $bs . $namespace;
     }
 
     /**

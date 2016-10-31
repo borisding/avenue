@@ -49,11 +49,32 @@ abstract class Controller implements ControllerInterface
     protected $params = [];
 
     /**
+     * Prefix of controller namespace.
+     *
+     * @var string
+     */
+    const NAMESPACE_PREFIX = 'App\Controllers';
+
+    /**
+     * Suffix of controller.
+     *
+     * @var string
+     */
+    const CONTROLLER_SUFFIX = 'Controller';
+
+    /**
      * Suffix of controller action.
      *
      * @var string
      */
     const ACTION_SUFFIX = 'Action';
+
+    /**
+     * Default action method.
+     *
+     * @var string
+     */
+    const DEFAULT_ACTION = 'index';
 
     /**
      * Controller class constructor.
