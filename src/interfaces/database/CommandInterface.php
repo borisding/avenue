@@ -4,6 +4,25 @@ namespace Avenue\Interfaces\Database;
 interface CommandInterface
 {
     /**
+     * Get the connection instance.
+     */
+    public function getConnectionInstance();
+
+    /**
+     * Set table with provided name.
+     *
+     * @param mixed $name
+     */
+    public function setTable($name);
+
+    /**
+     * Set primary key with provided name.
+     *
+     * @param mixed $name
+     */
+    public function setPk($name);
+
+    /**
      * Method for prepared statement.
      * Allowed to decide for master or slave.
      *
@@ -121,11 +140,6 @@ interface CommandInterface
      * Get inserted ID.
      */
     public function getInsertedId();
-
-    /**
-     * Define table for targeted model class.
-     */
-    public function getTableName();
 
     /**
      * Debug and dump params for prepared statement.

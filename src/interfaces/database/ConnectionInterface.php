@@ -29,11 +29,16 @@ interface ConnectionInterface
     public function getSlavePdo();
 
     /**
-     * Connect PDO with provided configuration.
+     * Get PDO connection.
+     */
+    public function getPdo();
+
+    /**
+     * Create PDO class instance with provided configuration.
      *
      * @param array $config
      */
-    public function connectPdo(array $config);
+    public function createPdo(array $config);
 
     /**
      * Disconnect PDO connection.

@@ -152,10 +152,7 @@ trait CommandWrapperTrait
             $this->getPlaceholders($values)
         );
 
-        return $this
-        ->cmd($sql)
-        ->batch($values)
-        ->run();
+        return $this->cmd($sql)->batch($values)->run();
     }
 
     /**
@@ -163,9 +160,8 @@ trait CommandWrapperTrait
      */
     public function deleteAll()
     {
-        return $this
-        ->cmd(sprintf('delete from %s', $this->table))
-        ->run();
+        $sql = sprintf('delete from %s', $this->table);
+        return $this->cmd($sql)->run();
     }
 
     /**
@@ -205,10 +201,7 @@ trait CommandWrapperTrait
             implode(' = ?, ', array_keys($columns)) . ' = ?'
         );
 
-        return $this
-        ->cmd($sql)
-        ->batch($values)
-        ->run();
+        return $this->cmd($sql)->batch($values)->run();
     }
 
     /**
@@ -249,10 +242,7 @@ trait CommandWrapperTrait
             }
         }
 
-        return $this
-        ->cmd($sql)
-        ->batch($values)
-        ->run();
+        return $this->cmd($sql)->batch($values)->run();
     }
 
     /**
@@ -265,7 +255,7 @@ trait CommandWrapperTrait
     public function upsert($id, array $columns)
     {
         // mysql/maria
-        if ($this->getMasterDriver() == 'mysql') {
+        if ($this->getConnectionInstance()->getMasterDriver() == 'mysql') {
 
             $values = array_values($columns);
             $sql = sprintf(
@@ -275,18 +265,13 @@ trait CommandWrapperTrait
                 $this->getPlaceholders($values)
             );
 
-            return $this
-            ->cmd($sql)
-            ->batch($values)
-            ->run();
+            return $this->cmd($sql)->batch($values)->run();
 
         // others
         } else {
 
-            $total = $this
-            ->cmd(sprintf('select count(*) as total from %s where %s = :id', $this->table, $this->pk))
-            ->bind(':id', $id)
-            ->fetchColumn();
+            $sql = sprintf('select count(*) as total from %s where %s = :id', $this->table, $this->pk);
+            $total = $this->cmd($sql)->bind(':id', $id)->fetchColumn();
 
             if ($total > 0) {
                 return $this->update($columns, sprintf('%s = ?', $this->pk), $id);

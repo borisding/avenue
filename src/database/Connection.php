@@ -10,43 +10,44 @@ class Connection implements ConnectionInterface
     /**
      * App class instance.
      *
-     * @var object
+     * @var \Avenue\App
      */
     protected $app;
 
     /**
      * Master connection.
      *
-     * @var mixed
+     * @var \PDO
      */
-    private $master;
+    protected $master;
 
     /**
      * Slave connection.
-     * @var mixed
+     *
+     * @var \PDO
      */
-    private $slave;
+    protected $slave;
 
     /**
      * Master config.
      *
      * @var array
      */
-    private $masterConfig = [];
+    protected $masterConfig = [];
 
     /**
      * Slave config.
      *
      * @var array
      */
-    private $slaveConfig = [];
+    protected $slaveConfig = [];
 
     /**
      * Default config for master/slave.
      *
      * @var array
      */
-    private $config = [
+    protected $config = [
         'dsn' => '',
         'username' => '',
         'password' => '',
@@ -87,17 +88,16 @@ class Connection implements ConnectionInterface
      * @throws \InvalidArgumentException
      * @return mixed
      */
-    private function getDatabaseConfig()
+    protected function getDatabaseConfig()
     {
         $environment = $this->app->getEnvironment();
         $config = $this->app->getConfig('database');
         $config = $this->app->arrGet($environment, $config, []);
 
         if (empty($config)) {
-            throw new \InvalidArgumentException(sprintf(
-                'Database is not configured for [%s] environment!',
-                $environment
-            ));
+            throw new \InvalidArgumentException(
+                sprintf('Database is not configured for [%s] environment!', $environment)
+            );
         }
 
         return $config;
@@ -145,6 +145,16 @@ class Connection implements ConnectionInterface
     }
 
     /**
+     * Return either master/slave PDO connection.
+     *
+     * @param string $slave
+     */
+    public function getPdo($slave = false)
+    {
+        return ($slave === true) ? $this->getSlavePdo() : $this->getMasterPdo();
+    }
+
+    /**
      * Connect master database via PDO connection.
      *
      * {@inheritDoc}
@@ -157,8 +167,7 @@ class Connection implements ConnectionInterface
             return $this->master;
         }
 
-        $this->master = $this->connectPdo($this->masterConfig);
-        return $this->master;
+        return $this->master = $this->createPdo($this->masterConfig);
     }
 
     /**
@@ -174,22 +183,22 @@ class Connection implements ConnectionInterface
             $this->slave = $this->getMasterPdo();
         // for multiple slaves, pick random slave
         } elseif ($this->app->arrIsIndex($this->slaveConfig)) {
-            $this->slave = $this->connectPdo($this->slaveConfig[array_rand($this->slaveConfig)]);
+            $this->slave = $this->createPdo($this->slaveConfig[array_rand($this->slaveConfig)]);
         // for single slave, only reconnect if not established previously
         } elseif (!$this->slave instanceof PDO) {
-            $this->slave = $this->connectPdo($this->slaveConfig);
+            $this->slave = $this->createPdo($this->slaveConfig);
         }
 
         return $this->slave;
     }
 
     /**
-     * Establish database connection via PDO with config.
+     * Establish database connection via PDO instance with config.
      *
      * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\ConnectionInterface::connectPdo()
+     * @see \Avenue\Interfaces\Database\ConnectionInterface::createPdo()
      */
-    public function connectPdo(array $config)
+    public function createPdo(array $config)
     {
         try {
             extract(array_merge($this->config, $config));

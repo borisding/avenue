@@ -11,7 +11,7 @@ class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInt
     /**
      * Database class instance.
      *
-     * @var mixed
+     * @var \Avenue\Database\Command
      */
     protected $db;
 
@@ -51,7 +51,7 @@ class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInt
 
         // instantiate db instance
         if (!$this->db instanceof Command) {
-            $this->db = new Command($app);
+            $this->db = new Command();
         }
     }
 
@@ -115,7 +115,7 @@ class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInt
         ];
 
         // mysql/maria
-        if ($this->db->getMasterDriver() == 'mysql') {
+        if ($this->db->getConnectionInstance()->getMasterDriver() == 'mysql') {
             $sql = sprintf('replace into %s values (:id, :value, :timestamp)', $this->table);
         // others
         } else {

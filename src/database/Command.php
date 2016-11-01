@@ -7,9 +7,23 @@ use Avenue\Database\Connection;
 use Avenue\Database\CommandWrapperTrait;
 use Avenue\Interfaces\Database\CommandInterface;
 
-class Command extends Connection implements CommandInterface
+class Command implements CommandInterface
 {
     use CommandWrapperTrait;
+
+    /**
+     * App class instance.
+     *
+     * @var \Avenue\App
+     */
+    protected $app;
+
+    /**
+     * Connection class instance.
+     *
+     * @var \Avenue\Database\Connection
+     */
+    protected $connection;
 
     /**
      * Table name of model.
@@ -63,18 +77,61 @@ class Command extends Connection implements CommandInterface
 
     /**
      * Command class constructor.
-     * Define table name if not specified.
-     *
-     * @param App $app
+     * Instantiate connection class and define table name if not specified.
      */
-    public function __construct(App $app)
+    public function __construct()
     {
-        parent::__construct($app);
+        $this->app = App::getInstance();
+
+        // create connection class instance if does not exist
+        if (!$this->connection instanceof Connection) {
+            $this->connection = new Connection($this->app);
+        }
 
         // assign table based on the class model if table is not specified
         if (empty($this->table)) {
-            $this->table = $this->getTableName();
+            $namespace = get_class($this);
+            return $this->table = strtolower(substr($namespace, strrpos($namespace, '\\') + 1));
         }
+    }
+
+    /**
+     * Return the current connection class instance.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\Database\CommandInterface::getConnectionInstance()
+     */
+    public function getConnectionInstance()
+    {
+        if (!$this->connection instanceof Connection) {
+            throw new \InvalidArgumentException('Failed to get connection class instance.');
+        }
+
+        return $this->connection;
+    }
+
+    /**
+     * Update the mapped model's table name.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\Database\CommandInterface::setTable()
+     */
+    public function setTable($name)
+    {
+        $this->table = $name;
+        return $this;
+    }
+
+    /**
+     * Update the default model's PK name.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\Database\CommandInterface::setPk()
+     */
+    public function setPk($name)
+    {
+        $this->pk = $name;
+        return $this;
     }
 
     /**
@@ -86,10 +143,7 @@ class Command extends Connection implements CommandInterface
      */
     public function cmd($sql, $slave = false)
     {
-        $conn = ($slave === true) ? $this->getSlavePdo() : $this->getMasterPdo();
-        $this->statement = $conn->prepare($sql);
-
-        unset($conn);
+        $this->statement = $this->connection->getPdo($slave)->prepare($sql);
         return $this;
     }
 
@@ -266,7 +320,7 @@ class Command extends Connection implements CommandInterface
      */
     public function begin()
     {
-        return $this->getMasterPdo()->beginTransaction();
+        return $this->connection->getPdo()->beginTransaction();
     }
 
     /**
@@ -277,7 +331,7 @@ class Command extends Connection implements CommandInterface
      */
     public function end()
     {
-        return $this->getMasterPdo()->commit();
+        return $this->connection->getPdo()->commit();
     }
 
     /**
@@ -288,7 +342,7 @@ class Command extends Connection implements CommandInterface
      */
     public function cancel()
     {
-        return $this->getMasterPdo()->rollBack();
+        return $this->connection->getPdo()->rollBack();
     }
 
     /**
@@ -299,7 +353,7 @@ class Command extends Connection implements CommandInterface
      */
     public function getInsertedId()
     {
-        return $this->getMasterPdo()->lastInsertId();
+        return $this->connection->getPdo()->lastInsertId();
     }
 
     /**
@@ -311,18 +365,6 @@ class Command extends Connection implements CommandInterface
     public function getAffectedRows()
     {
         return $this->statement->rowCount();
-    }
-
-    /**
-     * Define table name for targeted model class if table name is not specified.
-     *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::getTableName()
-     */
-    public function getTableName()
-    {
-        $namespace = get_class($this);
-        return strtolower(substr($namespace, strrpos($namespace, '\\') + 1));
     }
 
     /**

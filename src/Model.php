@@ -1,7 +1,6 @@
 <?php
 namespace Avenue;
 
-use Avenue\App;
 use Avenue\Database\Command as BaseModel;
 
 abstract class Model extends BaseModel
@@ -11,6 +10,6 @@ abstract class Model extends BaseModel
      */
     public function __construct()
     {
-        parent::__construct(App::getInstance());
+        parent::__construct();
     }
 }
