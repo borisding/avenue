@@ -123,7 +123,18 @@ class Command implements CommandInterface
     }
 
     /**
-     * Update the default model's PK name.
+     * Return the mapped model's table name.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\Database\CommandInterface::getTable()
+     */
+    public function getTable()
+    {
+        return $this->table;
+    }
+
+    /**
+     * Update the default model's PK column name.
      *
      * {@inheritDoc}
      * @see \Avenue\Interfaces\Database\CommandInterface::setPk()
@@ -132,6 +143,17 @@ class Command implements CommandInterface
     {
         $this->pk = $name;
         return $this;
+    }
+
+    /**
+     * Return the model's PK column name.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\Database\CommandInterface::getPk()
+     */
+    public function getPk()
+    {
+        return $this->pk;
     }
 
     /**

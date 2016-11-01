@@ -30,7 +30,7 @@ class CommandTest extends AbstractDatabaseTest
         $this->db = new Command();
         $this->db->setTable('programming');
 
-        $this->table = Reflection::getPropertyValue($this->db, 'table');
+        $this->table = $this->db->getTable();
         $this->prepareMasterData();
     }
 
@@ -89,6 +89,12 @@ class CommandTest extends AbstractDatabaseTest
         $this->db->setPk('pk_col');
         $pk = Reflection::getPropertyValue($this->db, 'pk');
         $this->assertEquals('pk_col', $pk);
+    }
+
+    public function testGetPk()
+    {
+        $this->db->setPk('pk_col');
+        $this->assertEquals('pk_col', $this->db->getPk());
     }
 
     public function testFetchAllMethod()

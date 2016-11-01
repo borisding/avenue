@@ -16,11 +16,21 @@ interface CommandInterface
     public function setTable($name);
 
     /**
-     * Set primary key with provided name.
+     * Get the table name.
+     */
+    public function getTable();
+
+    /**
+     * Set primary key with provided column name.
      *
      * @param mixed $name
      */
     public function setPk($name);
+
+    /**
+     * Get the primary key column name.
+     */
+    public function getPk();
 
     /**
      * Method for prepared statement.
