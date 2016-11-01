@@ -3,6 +3,7 @@ namespace Avenue\Tests\Database;
 
 use Avenue\App;
 use Avenue\Database\Command;
+use Avenue\Database\Connection;
 use Avenue\Tests\Database\AbstractDatabaseTest;
 use Avenue\Tests\Src\Mocks\Programming;
 use Avenue\Tests\Reflection;
@@ -26,8 +27,8 @@ class CommandTest extends AbstractDatabaseTest
     {
         parent::setUp();
 
-        $this->db = new Command($this->app);
-        Reflection::setPropertyValue($this->db, 'table', 'programming');
+        $this->db = new Command();
+        $this->db->setTable('programming');
 
         $this->table = Reflection::getPropertyValue($this->db, 'table');
         $this->prepareMasterData();
@@ -67,6 +68,27 @@ class CommandTest extends AbstractDatabaseTest
     private function selectAllSql()
     {
         return sprintf('select * from %s', $this->table);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testGetConnectionInstanceInvalidArgumentException()
+    {
+        Reflection::setPropertyValue($this->db, 'connection', null);
+        $this->assertTrue($this->db->getConnectionInstance() instanceof Connection);
+    }
+
+    public function testGetConnectionInstance()
+    {
+        $this->assertTrue($this->db->getConnectionInstance() instanceof Connection);
+    }
+
+    public function testSetPk()
+    {
+        $this->db->setPk('pk_col');
+        $pk = Reflection::getPropertyValue($this->db, 'pk');
+        $this->assertEquals('pk_col', $pk);
     }
 
     public function testFetchAllMethod()

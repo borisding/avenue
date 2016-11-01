@@ -55,6 +55,18 @@ class ConnectionTest extends AbstractDatabaseTest
         $this->assertTrue($master instanceof PDO);
     }
 
+    public function testGetMasterViaGetPdo()
+    {
+        $master = $this->connection->getPdo();
+        $this->assertTrue($master === $this->connection->getMasterPdo());
+    }
+
+    public function testGetSlaveViaGetPdo()
+    {
+        $slave = $this->connection->getPdo(true);
+        $this->assertTrue($slave === $this->connection->getSlavePdo());
+    }
+
     public function testGetMasterPdo()
     {
         $master = $this->connection->getMasterPdo();
@@ -83,7 +95,7 @@ class ConnectionTest extends AbstractDatabaseTest
     public function testConnectPdo()
     {
         $config = $this->config['database']['development']['master'];
-        $pdo = $this->connection->connectPdo($config);
+        $pdo = $this->connection->createPdo($config);
         $this->assertTrue($pdo instanceof PDO);
     }
 
@@ -93,7 +105,7 @@ class ConnectionTest extends AbstractDatabaseTest
     public function testConnectPdoRuntimeException()
     {
         $config = $this->config['database']['development']['master'] = [];
-        $pdo = $this->connection->connectPdo($config);
+        $pdo = $this->connection->createPdo($config);
     }
 
     public function testDisconnect()
