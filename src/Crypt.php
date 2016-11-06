@@ -42,13 +42,14 @@ class Crypt implements CryptInterface
      */
     public function encrypt($data)
     {
-        $salt = openssl_random_pseudo_bytes(16);
-        $key = $this->generateKey($salt);
+        $salt01 = openssl_random_pseudo_bytes(16);
+        $salt02 = openssl_random_pseudo_bytes(16);
 
-        $iv = $this->generateVector($salt);
+        $key = $this->generateKey($salt01 . $salt02);
+        $iv = $this->generateVector($salt01 . $salt02);
         $cipher = $this->getCipher();
 
-        return base64_encode($salt . openssl_encrypt($data, $cipher, $key, 1, $iv));
+        return base64_encode($salt01 . openssl_encrypt($data, $cipher, $key, 1, $iv) . $salt02);
     }
 
     /**
@@ -60,11 +61,12 @@ class Crypt implements CryptInterface
     public function decrypt($data)
     {
         $decoded = base64_decode($data);
-        $salt = substr($decoded, 0, 16);
-        $encrypted = substr($decoded, 16);
+        $salt01 = substr($decoded, 0, 16);
+        $salt02 = substr($decoded, -16);
+        $encrypted = substr($decoded, 16, -16);
 
-        $key = $this->generateKey($salt);
-        $iv = $this->generateVector($salt);
+        $key = $this->generateKey($salt01 . $salt02);
+        $iv = $this->generateVector($salt01 . $salt02);
         $cipher = $this->getCipher();
 
         return openssl_decrypt($encrypted, $cipher, $key, 1, $iv);
@@ -81,24 +83,24 @@ class Crypt implements CryptInterface
     }
 
     /**
-     * Generate 16-bytes vector with pseudo-random salt bytes in raw output.
+     * Generate 16-byte vector with pseudo-random salt bytes in raw output.
      *
-     * @param string $salt
+     * @param mixed $concatedSalt
      * @return string
      */
-    protected function generateVector($salt)
+    protected function generateVector($concatedSalt)
     {
-        return md5($salt, true);
+        return md5($concatedSalt, true);
     }
 
     /**
-     * Generate 32-bytes key with secret key and pseudo-random salt bytes in raw output.
+     * Generate 32-byte key with secret key and pseudo-random salt bytes in raw output.
      *
-     * @param string $salt
+     * @param mixed $concatedSalt
      * @return string
      */
-    protected function generateKey($salt)
+    protected function generateKey($concatedSalt)
     {
-        return hash_hmac('sha256', $this->secret . '~~~' . $salt, $salt, true);
+        return hash_hmac('sha256', $this->secret . $concatedSalt, $concatedSalt, true);
     }
 }
