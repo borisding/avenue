@@ -28,6 +28,6 @@ abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('[pdo_sqlite] is required for testing sqlite memory.');
         }
 
-        $this->app = new App($this->config);
+        $this->app = new App($this->config, uniqid(rand()));
     }
 }

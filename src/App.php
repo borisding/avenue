@@ -108,11 +108,18 @@ class App implements AppInterface
     protected $config = [];
 
     /**
-     * App instance.
+     * App ID.
+     *
+     * @var mixed
+     */
+    protected static $id;
+
+    /**
+     * App instances.
      *
      * @var object
      */
-    protected static $app;
+    protected static $apps = [];
 
     /**
      * List of respective services.
@@ -129,16 +136,22 @@ class App implements AppInterface
     protected static $instances = [];
 
     /**
+     * App default timezone.
+     *
+     * @var string
+     */
+    const DEFAULT_TIMEZONE = 'UTC';
+
+    /**
      * App class constructor.
      *
      * @param array $config
+     * @param string $id
      */
-    public function __construct(array $config = [])
+    public function __construct(array $config = [], $id = 'default-app')
     {
-        $this->config = $config;
-
         $this
-        ->registerAppInstance()
+        ->registerApp($config, $id)
         ->registerServices()
         ->registerTimezone()
         ->registerExceptionHandler()
@@ -168,11 +181,17 @@ class App implements AppInterface
      */
     public function container($name, \Closure $callback)
     {
+        $services = &$this->getServices();
+
+        if (array_key_exists($name, $services)) {
+            throw new \LogicException(sprintf('Duplicate service name [%s]. It is already taken!', $name));
+        }
+
         if (!$this->isValidMethodName($name)) {
             throw new \InvalidArgumentException('Invalid registered name for container!');
         }
 
-        static::$services[$name] = $callback;
+        return $services[$name] = $callback;
     }
 
     /**
@@ -183,12 +202,13 @@ class App implements AppInterface
      */
     public function resolve($name)
     {
-        if (!array_key_exists($name, static::$services)) {
+        $services = $this->getServices();
+
+        if (!array_key_exists($name, $services)) {
             throw new \LogicException(sprintf('Service [%s] is not registered!', $name));
         }
 
-        $callback = static::$services[$name];
-        return $callback(static::$app);
+        return $services[$name](static::getInstance());
     }
 
     /**
@@ -200,15 +220,23 @@ class App implements AppInterface
      */
     public function singleton($name)
     {
-        if (!array_key_exists($name, static::$instances)) {
-            static::$instances[$name] = $this->resolve($name);
+        $id = static::getId();
+
+        if (!isset(static::$instances[$id])) {
+            throw new \InvalidArgumentException('Failed to retrieve singleton instances.');
         }
 
-        if (!is_object(static::$instances[$name])) {
+        $instances = &static::$instances[$id];
+
+        if (!array_key_exists($name, $instances)) {
+            $instances[$name] = $this->resolve($name);
+        }
+
+        if (!is_object($instances[$name])) {
             throw new \InvalidArgumentException(sprintf('Non-object returned for [%s] singleton.', $name));
         }
 
-        return static::$instances[$name];
+        return $instances[$name];
     }
 
     /**
@@ -242,24 +270,174 @@ class App implements AppInterface
     }
 
     /**
-     * Register by assigning current App class object to static variable.
+     * Retrieving config value based on the key.
+     * Return all configurations instead if key is empty.
      *
-     * @return \Avenue\App
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::getConfig()
      */
-    protected function registerAppInstance()
+    public function getConfig($key = null)
     {
-        return static::$app = $this;
+        if (empty($this->config)) {
+            throw new \InvalidArgumentException('App config must not be empty!');
+        }
+
+        // simply return all if empty key provided
+        if (empty($key)) {
+            return $this->config;
+        }
+
+        // return particular config
+        if (!array_key_exists($key, $this->config)) {
+            $this->config[$key] = null;
+        }
+
+        return $this->config[$key];
+    }
+
+    /**
+     * Retrieving avenue application version config.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::getAppVersion()
+     */
+    public function getAppVersion()
+    {
+        return $this->getConfig('appVersion');
+    }
+
+    /**
+     * Retrieving http version config.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::getHttpVersion()
+     */
+    public function getHttpVersion()
+    {
+        return $this->getConfig('httpVersion');
+    }
+
+    /**
+     * Retrieving timezone config.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::getTimezone()
+     */
+    public function getTimezone()
+    {
+        return $this->getConfig('timezone');
+    }
+
+    /**
+     * Retrieving application environment config.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::getEnvironment()
+     */
+    public function getEnvironment()
+    {
+        return $this->getConfig('environment');
+    }
+
+    /**
+     * Retrieving default controller config.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::getDefaultController()
+     */
+    public function getDefaultController()
+    {
+        return $this->getConfig('defaultController');
+    }
+
+    /**
+     * Retrieving secret key config.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\AppInterface::getSecret()
+     */
+    public function getSecret()
+    {
+        return $this->getConfig('secret');
+    }
+
+    /**
+     * Retrieving app ID.
+     *
+     * @return mixed
+     */
+    public static function getId()
+    {
+        return static::$id;
+    }
+
+    /**
+     * Retrieving app instance.
+     *
+     * @return NULL|object
+     */
+    public static function getInstance()
+    {
+        $id = static::getId();
+        return isset(static::$apps[$id]) ? static::$apps[$id] : null;
+    }
+
+    /**
+     * Return the list of registered services.
+     *
+     * @throws \InvalidArgumentException
+     * @return mixed
+     */
+    protected function &getServices()
+    {
+        $id = static::getId();
+
+        if (!isset(static::$services[$id])) {
+            throw new \InvalidArgumentException('Failed to retrieve services.');
+        }
+
+        return static::$services[$id];
+    }
+
+    /**
+     * Register app configurations that bound with current app ID.
+     *
+     * @param mixed $config
+     * @param mixed $id
+     * @return object
+     */
+    protected function registerApp($config, $id)
+    {
+        $this->config = $config;
+        static::$id = $id;
+
+        if (!isset(static::$services[$id])) {
+            static::$services[$id] = [];
+        }
+
+        if (!isset(static::$instances[$id])) {
+            static::$instances[$id] = [];
+        }
+
+        if (!isset(static::$apps[$id])) {
+            static::$apps[$id] = $this;
+        }
+
+        return static::$apps[$id];
     }
 
     /**
      * Register application default timezone based on the config.
+     * If not present, use the default timezone setting.
+     *
+     * @return \Avenue\App
      */
     protected function registerTimezone()
     {
         $timezone = $this->getTimezone();
 
         if (empty($timezone)) {
-            throw new \InvalidArgumentException('Timezone is not specified!');
+            $timezone = static::DEFAULT_TIMEZONE;
         }
 
         date_default_timezone_set($timezone);
@@ -357,113 +535,6 @@ class App implements AppInterface
     }
 
     /**
-     * Retrieving config value based on the key.
-     * Return all configurations instead if key is empty.
-     *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::getConfig()
-     */
-    public function getConfig($key = null)
-    {
-        if (empty($this->config)) {
-            throw new \InvalidArgumentException('App config must not be empty!');
-        }
-
-        // simply return all if empty key provided
-        if (empty($key)) {
-            return $this->config;
-        }
-
-        // return particular config
-        if (!array_key_exists($key, $this->config)) {
-            $this->config[$key] = null;
-        }
-
-        return $this->config[$key];
-    }
-
-    /**
-     * Retrieving avenue application version config.
-     *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::getAppVersion()
-     */
-    public function getAppVersion()
-    {
-        return $this->getConfig('appVersion');
-    }
-
-    /**
-     * Retrieving http version config.
-     *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::getHttpVersion()
-     */
-    public function getHttpVersion()
-    {
-        return $this->getConfig('httpVersion');
-    }
-
-    /**
-     * Retrieving timezone config.
-     *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::getTimezone()
-     */
-    public function getTimezone()
-    {
-        return $this->getConfig('timezone');
-    }
-
-    /**
-     * Retrieving application environment config.
-     *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::getEnvironment()
-     */
-    public function getEnvironment()
-    {
-        return $this->getConfig('environment');
-    }
-
-    /**
-     * Retrieving default controller config.
-     *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::getDefaultController()
-     */
-    public function getDefaultController()
-    {
-        return $this->getConfig('defaultController');
-    }
-
-    /**
-     * Retrieving secret key config.
-     *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::getSecret()
-     */
-    public function getSecret()
-    {
-        return $this->getConfig('secret');
-    }
-
-    /**
-     * Retrieving app instance.
-     *
-     * @throws \InvalidArgumentException
-     * @return object
-     */
-    public static function getInstance()
-    {
-        if (!static::$app instanceof AppInterface) {
-            throw new \InvalidArgumentException('Invalid App instance!');
-        }
-
-        return static::$app;
-    }
-
-    /**
      * App call magic method.
      * Shortcut of creating instance via singleton.
      *
@@ -474,7 +545,7 @@ class App implements AppInterface
      */
     public function __call($name, array $params = [])
     {
-        if (array_key_exists($name, static::$services)) {
+        if (array_key_exists($name, $this->getServices())) {
             return $this->singleton($name);
         }
 
@@ -494,7 +565,7 @@ class App implements AppInterface
      */
     public static function __callStatic($name, array $params = [])
     {
-        if (array_key_exists($name, static::$services)) {
+        if (array_key_exists($name, static::getInstance()->getServices())) {
             return static::getInstance()->singleton($name);
         }
 

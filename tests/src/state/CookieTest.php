@@ -16,7 +16,7 @@ class CookieTest extends \PHPUnit_Framework_TestCase
             'secret' => 'secretfortestingcookie',
             'timezone' => 'UTC',
             'state' => ['cookie' => []]
-        ]);
+        ], uniqid(rand()));
 
         $this->cookie = new Cookie($app);
     }
@@ -30,7 +30,7 @@ class CookieTest extends \PHPUnit_Framework_TestCase
         $app = new App([
             'timezone' => 'UTC',
             'state' => ['cookie' => []]
-        ]);
+        ], uniqid(rand()));
         $cookie = new Cookie($app);
         $cookie->set('test', 'dummp');
     }

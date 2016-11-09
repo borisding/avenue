@@ -28,7 +28,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
         $this->app = new App([
             'timezone' => 'UTC',
             'defaultController' => 'default'
-        ]);
+        ], uniqid(rand()));
 
         $this->http = new Http();
         $this->route = $this->app->route();

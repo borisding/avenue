@@ -15,7 +15,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->app = new App(['timezone' => 'UTC']);
+        $this->app = new App(['timezone' => 'UTC'], uniqid(rand()));
         $this->http = new Http();
         $this->request = $this->app->request();
     }

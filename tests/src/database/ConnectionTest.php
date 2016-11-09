@@ -22,7 +22,7 @@ class ConnectionTest extends AbstractDatabaseTest
         $config = $this->config;
         $config['database'] = [];
 
-        $app = new App($config);
+        $app = new App($config, uniqid(rand()));
         $connection = new Connection($app);
     }
 
@@ -48,7 +48,7 @@ class ConnectionTest extends AbstractDatabaseTest
         $config = $this->config;
         $config['database']['development'] = ['dsn' => 'sqlite::memory:'];
 
-        $app = new App($config);
+        $app = new App($config, uniqid(rand()));
         $connection = new Connection($app);
         $master = $connection->getMasterPdo();
 
@@ -83,7 +83,7 @@ class ConnectionTest extends AbstractDatabaseTest
     {
         $config = $this->config;
         $config['database']['development']['slave'] = null;
-        $app = new App($config);
+        $app = new App($config, uniqid(rand()));
 
         $connection = new Connection($app);
         $master = $connection->getMasterPdo();

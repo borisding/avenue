@@ -33,7 +33,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->app = new App($this->config);
+        $this->app = new App($this->config, uniqid(rand()));
     }
 
     public function testGetInstance()
@@ -41,16 +41,20 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(App::getInstance(), $this->app);
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testGetInstanceInvalidArgumentException()
+    public function testGetAppId()
     {
-        $app = new App($this->config);
-        $fakeapp = new FakeApp();
+        $id = 'test-id';
+        $app = new App($this->config, $id);
+        $this->assertEquals($id, App::getId());
+    }
 
-        Reflection::setPropertyValue($app, 'app', $fakeapp, true);
-        App::getInstance();
+    /**
+     * @expectedException LogicException
+     */
+    public function testDuplicateServiceName()
+    {
+        $app = new App($this->config, 'test-duplicate');
+        $app->container('request', function() {});
     }
 
     /**
@@ -204,18 +208,27 @@ class AppTest extends \PHPUnit_Framework_TestCase
         ->getMockBuilder('\Exception')
         ->getMock();
 
-        $app = new App($this->config);
-        $app->container('exception', function() use ($app, $mockedExc) {
+        $app = new App($this->config, uniqid(rand()));
+        $app->container('fakeException', function() use ($app, $mockedExc) {
             return new Exception($app, $mockedExc);
         });
 
-        $exception = $app->exception();
+        $exception = $app->fakeException();
         $this->assertTrue($exception instanceof Exception);
     }
 
     public function testSingletonExceptionClassInstanceViaStaticMethod()
     {
-        $this->assertEquals($this->app->exception(), App::exception());
+        $mockedExc = $this
+        ->getMockBuilder('\Exception')
+        ->getMock();
+
+        $app = new App($this->config, uniqid(rand()));
+        $app->container('fakeException', function() use ($app, $mockedExc) {
+            return new Exception($app, $mockedExc);
+        });
+
+        $this->assertEquals($app->fakeException(), App::fakeException());
     }
 
     public function testSingletonCryptClassInstance()
@@ -249,16 +262,16 @@ class AppTest extends \PHPUnit_Framework_TestCase
         ->disableOriginalConstructor()
         ->getMock();
 
-        $app = new App($this->config);
-        $app->container('session', function() use ($mockedHandler) {
+        $app = new App($this->config, uniqid(rand()));
+        $app->container('fakeSession', function() use ($mockedHandler) {
             return new Session($mockedHandler);
         });
 
         if ($static) {
-            return App::session();
+            return App::fakeSession();
         }
 
-        return $app->session();
+        return $app->fakeSession();
     }
 
     public function testSingletonSessionClassInstance()

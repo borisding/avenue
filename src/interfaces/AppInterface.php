@@ -73,6 +73,11 @@ interface AppInterface
     public function getSecret();
 
     /**
+     * Get the ID.
+     */
+    public static function getId();
+
+    /**
      * Get the app instance.
      */
     public static function getInstance();

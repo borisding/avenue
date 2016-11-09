@@ -12,7 +12,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->app = new App(['timezone' => 'UTC']);
+        $this->app = new App(['timezone' => 'UTC'], uniqid(rand()));
         $this->response = $this->app->response();
     }
 

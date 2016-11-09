@@ -15,7 +15,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $this->handler->expects($this->any())
         ->method('getAppSecret')
         ->will($this->returnCallback(function() {
-                return 'testingsessionhandler';
+            return 'testingsessionhandler';
         }));
 
         $this->session = new Session($this->handler);
@@ -28,18 +28,27 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         ->getMock();
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testSetSessionValue()
     {
         $this->session->set('foo', 'bar');
         $this->assertTrue(isset($_SESSION['foo']));
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testGetSessionValue()
     {
         $this->session->set('foo', 'bar');
         $this->assertEquals('bar', $this->session->get('foo'));
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testRemoveSessionValue()
     {
         $this->session->set('foo', 'bar');
@@ -47,6 +56,9 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('', $this->session->get('foo'));
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testRemoveAllSessionValues()
     {
         $this->session->set('foo', 'bar');
