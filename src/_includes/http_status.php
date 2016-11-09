@@ -1,12 +1,14 @@
 <?php
-// list of respective http status code/descriptions.
-// reference: http://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+/**
+ * List of http status codes and descriptions.
+ */
+
 return [
     // 1xx, Informational
     100     => 'Continue',
     101     => 'Switching Protocols',
     102     => 'Processing',
-    
+
     // 2xx, Success
     200     => 'OK',
     201     => 'Created',
@@ -17,7 +19,8 @@ return [
     206     => 'Partial Content',
     207     => 'Multi-Status',
     208     => 'Already Reported',
-    
+    226     => 'IM Used',
+
     // 3xx, Redirection
     300     => 'Multiple Choices',
     301     => 'Moved Permanently',
@@ -28,7 +31,7 @@ return [
     306     => 'Switch Proxy',
     307     => 'Temporary Redirect',
     308     => 'Permanent Redirect',
-    
+
     // 4xx, Client Error
     400     => 'Bad Request',
     401     => 'Unauthorized',
@@ -48,10 +51,15 @@ return [
     415     => 'Unsupported Media Type',
     416     => 'Requested Range Not Satisfiable',
     417     => 'Expectation Failed',
+    418     => 'I\m a teapot',
     422     => 'Unprocessable Entity',
     423     => 'Locked',
+    424     => 'Failed Dependency',
+    431     => 'Request Header Fields Too Large',
     440     => 'Login Timeout',
-    
+    444     => 'No Response',
+    499     => 'Client Closed Request',
+
     // 5xx, Server Error
     500     => 'Internal Server Error',
     501     => 'Not Implemented',
@@ -59,6 +67,12 @@ return [
     503     => 'Service Unavailable',
     504     => 'Gateway Timeout',
     505     => 'HTTP Version Not Supported',
-    522     => 'Connection timed out',
-    524     => 'A timeout occurred'
+    506     => 'Variant Also Negotiates',
+    507     => 'Insufficient Storage',
+    508     => 'Loop Detected',
+    509     => 'Bandwidth Limit Exceeded',
+    510     => 'Not Extended',
+    511     => 'Network Authentication Required',
+    598     => 'Network read timeout error',
+    599     => 'Network connect timeout error'
 ];
