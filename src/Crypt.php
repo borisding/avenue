@@ -85,22 +85,22 @@ class Crypt implements CryptInterface
     /**
      * Generate 16-byte vector with pseudo-random salt bytes in raw output.
      *
-     * @param mixed $concatedSalt
+     * @param mixed $concatSalt
      * @return string
      */
-    protected function generateVector($concatedSalt)
+    protected function generateVector($concatSalt)
     {
-        return md5($concatedSalt, true);
+        return md5($concatSalt, true);
     }
 
     /**
      * Generate 32-byte key with secret key and pseudo-random salt bytes in raw output.
      *
-     * @param mixed $concatedSalt
+     * @param mixed $concatSalt
      * @return string
      */
-    protected function generateKey($concatedSalt)
+    protected function generateKey($concatSalt)
     {
-        return hash_hmac('sha256', $this->secret . $concatedSalt, $concatedSalt, true);
+        return hash_hmac('sha256', $this->secret . $concatSalt, $concatSalt, true);
     }
 }
