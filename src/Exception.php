@@ -138,10 +138,10 @@ class Exception implements ExceptionInterface
     }
 
     /**
-     * Get the matched rule regular expression.
+     * Return current app ID.
      */
-    public function getRouteMatchedRuleRegexp()
+    public function getAppId()
     {
-       return $this->app->route->getMatchedRuleRegexp();
+       return App::getId();
     }
 }

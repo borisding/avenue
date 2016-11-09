@@ -50,50 +50,49 @@
             <h1>Oops! Something went wrong in application.</h1>
             <p>The application doesn't work as expected due to the following error:</p>
             <h3>Error Details</h3>
-            <?php
+            <?
+                $appId = $this->getAppId();
                 $exceptionClass = $this->getExceptionClass();
                 $codeInfo = $this->getCode();
                 $messageInfo = $this->getMessage();
                 $fileInfo = $this->getFile();
                 $lineInfo = $this->getLine();
-                $ruleRegex = $this->getRouteMatchedRuleRegexp();
             ?>
             <table>
                 <tbody>
-                    <?php if ($codeInfo) { ?>
+                    <tr>
+                        <td><label>App ID:</label></td>
+                        <td><?= $appId; ?></td>
+                    </tr>
+                    <? if ($codeInfo): ?>
                     <tr>
                         <td><label>Code:</label></td>
-                        <td><?php echo $this->app->e($codeInfo); ?></td>
+                        <td><?= $this->app->e($codeInfo); ?></td>
                     </tr>
-                    <?php } ?>
+                    <? endif; ?>
                     <tr>
                         <td><label>Type:</label></td>
-                        <td><?php echo $this->app->e($exceptionClass); ?></td>
+                        <td><?= $this->app->e($exceptionClass); ?></td>
                     </tr>
                     <tr>
                         <td><label>Message:</label></td>
-                        <td><?php echo $this->app->e($messageInfo); ?></td>
+                        <td><?= $this->app->e($messageInfo); ?></td>
                     </tr>
                     <tr>
                         <td><label>File:</label></td>
-                        <td><?php echo $this->app->e($fileInfo); ?></td>
+                        <td><?= $this->app->e($fileInfo); ?></td>
                     </tr>
                     <tr>
                         <td><label>Line:</label></td>
-                        <td><?php echo $this->app->e($lineInfo); ?></td>
+                        <td><?= $this->app->e($lineInfo); ?></td>
                     </tr>
                 </tbody>
             </table>
             <h3>Stack Trace</h3>
-            <pre><?php echo $this->app->e($this->getTraceAsString()); ?></pre>
-
-            <?php if ($ruleRegex) { ?>
-            <h3>Route's Regular Expression</h3>
-            <pre><?php echo $this->app->e($ruleRegex); ?></pre>
-            <?php } ?>
+            <pre><?= $this->app->e($this->getTraceAsString()); ?></pre>
         </section>
         <footer>
-            <?php echo date('Y'); ?> &copy; Powered by, Avenue Framework - v<?php echo AVENUE_FRAMEWORK_VERSION; ?>
+            <?= date('Y'); ?> &copy; Powered by, Avenue Framework - v<?= AVENUE_FRAMEWORK_VERSION; ?>
         </footer>
     </body>
 </html>

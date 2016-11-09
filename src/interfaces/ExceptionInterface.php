@@ -39,7 +39,7 @@ interface ExceptionInterface
     public function __toString();
 
     /**
-     * Get the matched rule regular expression.
+     * Get current app ID.
      */
-    public function getRouteMatchedRuleRegexp();
+    public function getAppId();
 }
