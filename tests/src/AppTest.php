@@ -286,6 +286,24 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($session instanceof Session);
     }
 
+    public function testResolverViaCallMagicMethod()
+    {
+        $text = 'hello world';
+        $this->app->container('greeting', function($app) use ($text) {
+            return $text;
+        });
+        $this->assertEquals($text, $this->app->greeting(false));
+    }
+
+    public function testResolverViaCallStaticMagicMethod()
+    {
+        $text = 'hello world';
+        $this->app->container('greeting', function($app) use ($text) {
+            return $text;
+        });
+        $this->assertEquals($text, App::greeting(false));
+    }
+
     /**
      * @expectedException LogicException
      */

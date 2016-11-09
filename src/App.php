@@ -202,7 +202,7 @@ class App implements AppInterface
      */
     public function resolve($name)
     {
-        $services = $this->getServices();
+        $services = &$this->getServices();
 
         if (!array_key_exists($name, $services)) {
             throw new \LogicException(sprintf('Service [%s] is not registered!', $name));
@@ -536,7 +536,7 @@ class App implements AppInterface
 
     /**
      * App call magic method.
-     * Shortcut of creating instance via singleton.
+     * Shortcut of either via resolver via singleton (default).
      *
      * @param mixed $name
      * @param array $params
@@ -546,6 +546,11 @@ class App implements AppInterface
     public function __call($name, array $params = [])
     {
         if (array_key_exists($name, $this->getServices())) {
+
+            if (count($params) === 1 && $params[0] === false) {
+                return $this->resolve($name);
+            }
+
             return $this->singleton($name);
         }
 
@@ -554,7 +559,7 @@ class App implements AppInterface
 
     /**
      * App static call magic method.
-     * Provide alternative to singleton method call via static behavior.
+     * Provide alternative to resolver or singleton method call via static behavior.
      *
      * Eg:
      * App::request() will be the same with $this->request() (in App class itself) or,
@@ -566,6 +571,11 @@ class App implements AppInterface
     public static function __callStatic($name, array $params = [])
     {
         if (array_key_exists($name, static::getInstance()->getServices())) {
+
+            if (count($params) === 1 && $params[0] === false) {
+                return static::getInstance()->resolve($name);
+            }
+
             return static::getInstance()->singleton($name);
         }
 
