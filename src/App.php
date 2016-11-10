@@ -66,39 +66,46 @@ class App implements AppInterface
     use HelperBundleTrait;
 
     /**
+     * App default timezone.
+     *
+     * @var string
+     */
+    const DEFAULT_TIMEZONE = 'UTC';
+
+    /**
      * Request instance.
      *
-     * @var object
+     * @var \Avenue\Request
      */
     public $request;
 
     /**
      * Response instance.
      *
-     * @var object
+     * @var \Avenue\Response
      */
     public $response;
 
     /**
      * View instsance.
      *
-     * @var object
+     * @var \Avenue\View
      */
     public $view;
 
     /**
      * Route instance;
      *
-     * @var object
+     * @var \Avenue\Route
      */
     public $route;
 
     /**
      * Exception instance.
      *
-     * @var object
+     * @var \Avenue\Exception
      */
-    public $exception;
+    protected $exception;
 
     /**
      * List of respective configurations.
@@ -136,11 +143,11 @@ class App implements AppInterface
     protected static $instances = [];
 
     /**
-     * App default timezone.
+     * Base class instances to guard.
      *
-     * @var string
+     * @var array
      */
-    const DEFAULT_TIMEZONE = 'UTC';
+    protected $guards = ['request', 'response', 'route'];
 
     /**
      * App class constructor.
@@ -208,35 +215,34 @@ class App implements AppInterface
             throw new \LogicException(sprintf('Service [%s] is not registered!', $name));
         }
 
+        // guard the base class instances to assure created once
+        if (in_array($name, $this->guards) && array_key_exists($name, $this->getSingletons())) {
+            return $this->getSingletons()[$name];
+        }
+
         return $services[$name](static::getInstance());
     }
 
     /**
      * Making sure only one class instance created at one time.
-     * Class instance returned by resolving the registered service.
+     * This allows specific class instance can be reached globally.
      *
      * {@inheritDoc}
      * @see \Avenue\Interfaces\AppInterface::singleton()
      */
     public function singleton($name)
     {
-        $id = static::getId();
+        $singletons = &$this->getSingletons();
 
-        if (!isset(static::$instances[$id])) {
-            throw new \InvalidArgumentException('Failed to retrieve singleton instances.');
+        if (!array_key_exists($name, $singletons)) {
+            $singletons[$name] = $this->resolve($name);
         }
 
-        $instances = &static::$instances[$id];
-
-        if (!array_key_exists($name, $instances)) {
-            $instances[$name] = $this->resolve($name);
-        }
-
-        if (!is_object($instances[$name])) {
+        if (!is_object($singletons[$name])) {
             throw new \InvalidArgumentException(sprintf('Non-object returned for [%s] singleton.', $name));
         }
 
-        return $instances[$name];
+        return $singletons[$name];
     }
 
     /**
@@ -264,8 +270,7 @@ class App implements AppInterface
 
         // print out the response body for normal request if auto rendering is true
         if ($this->getConfig('autoRender') === true) {
-            $this->response->render();
-            exit(0);
+            return $this->response->render();
         }
     }
 
@@ -378,8 +383,7 @@ class App implements AppInterface
      */
     public static function getInstance()
     {
-        $id = static::getId();
-        return isset(static::$apps[$id]) ? static::$apps[$id] : null;
+        return isset(static::$apps[static::getId()]) ? static::$apps[static::getId()] : null;
     }
 
     /**
@@ -390,13 +394,26 @@ class App implements AppInterface
      */
     protected function &getServices()
     {
-        $id = static::getId();
-
-        if (!isset(static::$services[$id])) {
+        if (!isset(static::$services[static::getId()])) {
             throw new \InvalidArgumentException('Failed to retrieve services.');
         }
 
-        return static::$services[$id];
+        return static::$services[static::getId()];
+    }
+
+    /**
+     * Return the list of singleton.
+     *
+     * @throws \InvalidArgumentException
+     * @return mixed
+     */
+    protected function &getSingletons()
+    {
+        if (!isset(static::$instances[static::getId()])) {
+            throw new \InvalidArgumentException('Failed to retrieve instances for singleton.');
+        }
+
+        return static::$instances[static::getId()];
     }
 
     /**
@@ -535,8 +552,7 @@ class App implements AppInterface
     }
 
     /**
-     * App call magic method.
-     * Shortcut of either via resolver via singleton (default).
+     * App call magic method. Shortcut of singleton.
      *
      * @param mixed $name
      * @param array $params
@@ -546,11 +562,6 @@ class App implements AppInterface
     public function __call($name, array $params = [])
     {
         if (array_key_exists($name, $this->getServices())) {
-
-            if (count($params) === 1 && $params[0] === false) {
-                return $this->resolve($name);
-            }
-
             return $this->singleton($name);
         }
 
@@ -559,7 +570,7 @@ class App implements AppInterface
 
     /**
      * App static call magic method.
-     * Provide alternative to resolver or singleton method call via static behavior.
+     * Provide singleton method call via static behavior.
      *
      * Eg:
      * App::request() will be the same with $this->request() (in App class itself) or,
@@ -571,11 +582,6 @@ class App implements AppInterface
     public static function __callStatic($name, array $params = [])
     {
         if (array_key_exists($name, static::getInstance()->getServices())) {
-
-            if (count($params) === 1 && $params[0] === false) {
-                return static::getInstance()->resolve($name);
-            }
-
             return static::getInstance()->singleton($name);
         }
 
