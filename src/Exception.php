@@ -10,14 +10,14 @@ class Exception implements ExceptionInterface
     /**
      * Avenue class app instance.
      *
-     * @var mixed
+     * @var \Avenue\App
      */
     protected $app;
 
     /**
      * Exception class instance.
      *
-     * @var mixed
+     * @var \Exception
      */
     protected $exception;
 
@@ -34,20 +34,14 @@ class Exception implements ExceptionInterface
     }
 
     /**
-     * Decide response status code based on the exception code.
      * Triggering string magic method by printing out the object.
+     *
+     * {@inheritDoc}
+     * @see \Avenue\Interfaces\ExceptionInterface::render()
      */
     public function render()
     {
         error_reporting(0);
-
-        $code = $this->getCode();
-
-        if (!is_int($code) || $code < 400 || $code > 599) {
-            $code = 500;
-        }
-
-        $this->app->response->withStatus($code);
         echo $this;
     }
 
@@ -57,18 +51,19 @@ class Exception implements ExceptionInterface
      */
     public function __toString()
     {
-        $PATH_TO_EXCEPTION_FILE = __DIR__ . '/_includes/exception_error.php';
+        ob_start();
+        $response = $this->app->response();
+        $exceptionErrorFile = __DIR__ . '/_includes/exception_error.php';
 
-        if (!file_exists($PATH_TO_EXCEPTION_FILE)) {
-            die(sprintf('Exception view [%s] not found!', $PATH_TO_EXCEPTION_FILE));
+        if (!file_exists($exceptionErrorFile)) {
+            die(sprintf('Exception view [%s] not found!', $exceptionErrorFile));
         }
 
-        ob_start();
-        require_once $PATH_TO_EXCEPTION_FILE;
+        require_once $exceptionErrorFile;
 
-        $this->app->response->write('');
-        $this->app->response->write(ob_get_clean());
-        $this->app->response->render();
+        $response->write('');
+        $response->write(ob_get_clean());
+        $response->render();
 
         exit(0);
     }

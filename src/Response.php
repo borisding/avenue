@@ -9,7 +9,7 @@ class Response implements ResponseInterface
     /**
      * Avenue class instance.
      *
-     * @var mixed
+     * @var \Avenue\App
      */
     protected $app;
 
@@ -93,18 +93,12 @@ class Response implements ResponseInterface
     {
         $statusCode = $this->getStatusCode();
         $statusDescription = $this->getStatusDescription($statusCode);
-
         $httpVersion = $this->app->getHttpVersion();
         $httpProtocol = 'HTTP/' . (!empty($httpVersion) ? $httpVersion : '1.1');
-
         $body = $this->getBody();
 
         if (is_int($statusCode)) {
-            header(
-                sprintf('%s %d %s', $httpProtocol, $statusCode, $statusDescription),
-                true,
-                $statusCode
-            );
+            header(sprintf('%s %d %s', $httpProtocol, $statusCode, $statusDescription), true, $statusCode);
         }
 
         if (!$this->hasCache() && !empty($body)) {
@@ -204,7 +198,7 @@ class Response implements ResponseInterface
      */
     public function getBody()
     {
-        return (string) $this->body;
+        return (string)$this->body;
     }
 
     /**
@@ -330,9 +324,9 @@ class Response implements ResponseInterface
         }
 
         $this->withHeader(['ETag' => $uniqueId]);
-        $HTTP_IF_NONE_MATCH = $this->app->request->getHeader('If-None-Match');
+        $httpIfNoneMatch = $this->app->request()->getHeader('If-None-Match');
 
-        if ($HTTP_IF_NONE_MATCH && $HTTP_IF_NONE_MATCH === $uniqueId) {
+        if ($httpIfNoneMatch && $httpIfNoneMatch === $uniqueId) {
             $this->setCacheStatus();
         }
 
@@ -348,9 +342,9 @@ class Response implements ResponseInterface
     public function withLastModified($timestamp)
     {
         $this->withHeader(['Last-Modified' => $this->getGmtDateTime($timestamp)]);
-        $HTTP_IF_MODIFIED_SINCE = $this->app->request->getHeader('If-Modified-Since');
+        $httpIfModifiedSince = $this->app->request()->getHeader('If-Modified-Since');
 
-        if (strtotime($HTTP_IF_MODIFIED_SINCE) === $timestamp) {
+        if (strtotime($httpIfModifiedSince) === $timestamp) {
             $this->setCacheStatus();
         }
 

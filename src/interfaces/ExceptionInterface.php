@@ -39,6 +39,11 @@ interface ExceptionInterface
     public function __toString();
 
     /**
+     * Render outpout.
+     */
+    public function render();
+
+    /**
      * Get current app ID.
      */
     public function getAppId();

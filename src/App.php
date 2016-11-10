@@ -66,39 +66,25 @@ class App implements AppInterface
     use HelperBundleTrait;
 
     /**
-     * App default timezone.
-     *
-     * @var string
-     */
-    const DEFAULT_TIMEZONE = 'UTC';
-
-    /**
      * Request instance.
      *
      * @var \Avenue\Request
      */
-    public $request;
+    protected $request;
 
     /**
      * Response instance.
      *
      * @var \Avenue\Response
      */
-    public $response;
-
-    /**
-     * View instsance.
-     *
-     * @var \Avenue\View
-     */
-    public $view;
+    protected $response;
 
     /**
      * Route instance;
      *
      * @var \Avenue\Route
      */
-    public $route;
+    protected $route;
 
     /**
      * Exception instance.
@@ -143,11 +129,11 @@ class App implements AppInterface
     protected static $instances = [];
 
     /**
-     * Base class instances to guard.
+     * App default timezone.
      *
-     * @var array
+     * @var string
      */
-    protected $guards = ['request', 'response', 'route'];
+    const DEFAULT_TIMEZONE = 'UTC';
 
     /**
      * App class constructor.
@@ -213,11 +199,6 @@ class App implements AppInterface
 
         if (!array_key_exists($name, $services)) {
             throw new \LogicException(sprintf('Service [%s] is not registered!', $name));
-        }
-
-        // guard the base class instances to assure created once
-        if (in_array($name, $this->guards) && array_key_exists($name, $this->getSingletons())) {
-            return $this->getSingletons()[$name];
         }
 
         return $services[$name](static::getInstance());
@@ -471,7 +452,14 @@ class App implements AppInterface
     {
         set_exception_handler(function(\Exception $exception) {
             $this->exception = $exception;
-            return $this->resolve('errorHandler');
+            $code = $exception->getCode();
+
+            if (!is_int($code) || $code < 400 || $code > 599) {
+                $code = 500;
+            }
+
+            $this->response->withStatus($code);
+            $this->resolve('errorHandler');
         });
 
         return $this;
@@ -546,7 +534,6 @@ class App implements AppInterface
         $this->request = $this->request();
         $this->response = $this->response();
         $this->route = $this->route();
-        $this->view = $this->view();
 
         return $this;
     }

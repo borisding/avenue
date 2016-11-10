@@ -5,11 +5,11 @@
  */
 
 // base url helper
-$app->view->register('baseUrl', function() use ($app) {
-    return $app->request->getBaseUrl();
+$app->view()->register('baseUrl', function() use ($app) {
+    return $app->request()->getBaseUrl();
 });
 
 // get app version
-$app->view->register('version', function() use ($app) {
+$app->view()->register('version', function() use ($app) {
     return $app->getAppVersion();
 });

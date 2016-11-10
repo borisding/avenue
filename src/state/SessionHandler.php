@@ -10,14 +10,14 @@ class SessionHandler implements SessionHandlerInterface
     /**
      * App class instance.
      *
-     * @var mixed
+     * @var \Avenue\App
      */
     protected $app;
 
     /**
      * Crypt class instance.
      *
-     * @var mixed
+     * @var \Avenue\Crypt
      */
     protected $crypt;
 

@@ -14,8 +14,8 @@ class ControllerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->app = new App(['timezone' => 'UTC'], uniqid(rand()));
-        $this->app->route->setParam('controller', 'foo');
-        $this->app->route->setParam('action', 'test');
+        $this->app->route()->setParam('controller', 'foo');
+        $this->app->route()->setParam('action', 'test');
     }
 
     /**
@@ -24,8 +24,8 @@ class ControllerTest extends \PHPUnit_Framework_TestCase
     public function testControllerActionLogicException()
     {
         $app = new App(['timezone' => 'UTC'], 'test-action');
-        $app->route->setParam('controller', 'foo');
-        $app->route->setParam('action', '');
+        $app->route()->setParam('controller', 'foo');
+        $app->route()->setParam('action', '');
         $stub = $this->getMock(Controller::class, ['indexAction', 'controllerAction'], [$app]);
         $stub->method('controllerAction')->willReturn(true);
 

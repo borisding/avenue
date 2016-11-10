@@ -202,12 +202,8 @@ class Connection implements ConnectionInterface
     {
         try {
             extract(array_merge($this->config, $config));
-
             // replace with user's driver option, if any
-            $options = array_replace(
-                $this->config['options'],
-                $this->app->arrGet('options', $config, [])
-            );
+            $options = array_replace($this->config['options'], $this->app->arrGet('options', $config, []));
 
             return new PDO($dsn, $username, $password, $options);
         } catch (\PDOException $e) {

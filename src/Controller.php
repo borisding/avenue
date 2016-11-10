@@ -9,7 +9,7 @@ abstract class Controller implements ControllerInterface
     /**
      * Avenue class instance.
      *
-     * @var mixed
+     * @var \Avenue\App
      */
     protected $app;
 

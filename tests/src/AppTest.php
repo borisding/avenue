@@ -80,7 +80,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
         ]);
 
         // if route has passed, expects fullfiled is boolean
-        $fulfilled = $this->app->route->isFulfilled();
+        $fulfilled = $this->app->route()->isFulfilled();
         $this->assertEquals(false, $fulfilled);
     }
 

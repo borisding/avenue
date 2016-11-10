@@ -10,9 +10,16 @@ class Cookie implements CookieInterface
     /**
      * App class instance.
      *
-     * @var mixed
+     * @var \Avenue\App
      */
     protected $app;
+
+    /**
+     * Crypt class instance.
+     *
+     * @var \Avenue\Crypt
+     */
+    protected $crypt;
 
     /**
      * App's secret.
@@ -20,13 +27,6 @@ class Cookie implements CookieInterface
      * @var mixed
      */
     protected $secret;
-
-    /**
-     * Crypt class instance.
-     *
-     * @var mixed
-     */
-    protected $crypt;
 
     /**
      * Default cookie configuration.

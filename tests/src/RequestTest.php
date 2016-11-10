@@ -251,25 +251,25 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     public function testGetDirectory()
     {
-        Reflection::setPropertyValue($this->app->route, 'params', ['prefix' => 'admin']);
+        Reflection::setPropertyValue($this->app->route(), 'params', ['prefix' => 'admin']);
         $this->assertEquals('admin', $this->request->getPrefix());
     }
 
     public function testGetController()
     {
-        Reflection::setPropertyValue($this->app->route, 'params', ['controller' => 'default']);
+        Reflection::setPropertyValue($this->app->route(), 'params', ['controller' => 'default']);
         $this->assertEquals('default', $this->request->getController());
     }
 
     public function testGetNamespace()
     {
-        Reflection::setPropertyValue($this->app->route, 'params', ['namespace' => 'App\Controllers\Foo\BarController']);
+        Reflection::setPropertyValue($this->app->route(), 'params', ['namespace' => 'App\Controllers\Foo\BarController']);
         $this->assertEquals('App\Controllers\Foo\BarController', $this->request->getNamespace());
     }
 
     public function testGetAction()
     {
-        Reflection::setPropertyValue($this->app->route, 'params', ['action' => 'index']);
+        Reflection::setPropertyValue($this->app->route(), 'params', ['action' => 'index']);
         $this->assertEquals('index', $this->request->getAction());
     }
 

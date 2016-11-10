@@ -16,7 +16,7 @@ class Session implements SessionInterface
     /**
      * Session database handler class instance.
      *
-     * @var mixed
+     * @var \Avenue\State\SessionHandler
      */
     protected $handler;
 

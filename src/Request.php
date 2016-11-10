@@ -9,7 +9,7 @@ class Request implements RequestInterface
     /**
      * Avenue class instance.
      *
-     * @var mixed
+     * @var \Avenue\App
      */
     protected $app;
 
@@ -251,37 +251,29 @@ class Request implements RequestInterface
     {
         $headers = [];
 
-        if (!is_array($_SERVER)) {
-            return $headers;
-        }
+        $getHeaderName = function($key) {
+            $key = str_replace('_', ' ', $key);
+            $key = ucwords(strtolower($key));
+            $key = str_replace(' ', '-', $key);
 
-        foreach ($_SERVER as $key => $value) {
+            return $key;
+        };
 
-            if (substr($key, 0, 5) == 'HTTP_') {
-                $key = $this->processHeaderName(substr($key, 5));
-                $headers[$key] = $value;
-            } elseif (substr($key, 0, 8) == 'CONTENT_') {
-                $key = $this->processHeaderName($key);
-                $headers[$key] = $value;
+        if (is_array($_SERVER)) {
+
+            foreach ($_SERVER as $key => $value) {
+
+                if (substr($key, 0, 5) == 'HTTP_') {
+                    $key = $getHeaderName(substr($key, 5));
+                    $headers[$key] = $value;
+                } elseif (substr($key, 0, 8) == 'CONTENT_') {
+                    $key = $getHeaderName($key);
+                    $headers[$key] = $value;
+                }
             }
         }
 
         return $headers;
-    }
-
-    /**
-     * Process the header's key name of the global server variable.
-     *
-     * @param mixed $key
-     * @return mixed
-     */
-    private function processHeaderName($key)
-    {
-        $key = str_replace('_', ' ', $key);
-        $key = ucwords(strtolower($key));
-        $key = str_replace(' ', '-', $key);
-
-        return $key;
     }
 
     /**
@@ -389,7 +381,7 @@ class Request implements RequestInterface
             $path = $this->getBaseUrl() . $path;
         }
 
-        $this->app->response->withStatus(302);
+        $this->app->response()->withStatus(302);
         header('Location:' . $path);
 
         die();
@@ -432,7 +424,7 @@ class Request implements RequestInterface
      */
     public function getPrefix()
     {
-        return $this->app->route->getParams('prefix');
+        return $this->app->route()->getParams('prefix');
     }
 
     /**
@@ -440,7 +432,7 @@ class Request implements RequestInterface
      */
     public function getController()
     {
-        return $this->app->route->getParams('controller');
+        return $this->app->route()->getParams('controller');
     }
 
     /**
@@ -448,7 +440,7 @@ class Request implements RequestInterface
      */
     public function getNamespace()
     {
-        return $this->app->route->getParams('namespace');
+        return $this->app->route()->getParams('namespace');
     }
 
     /**
@@ -456,6 +448,6 @@ class Request implements RequestInterface
      */
     public function getAction()
     {
-        return $this->app->route->getParams('action');
+        return $this->app->route()->getParams('action');
     }
 }

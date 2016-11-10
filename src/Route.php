@@ -10,7 +10,7 @@ class Route implements RouteInterface
     /**
      * App instance.
      *
-     * @var object
+     * @var \Avenue\App
      */
     protected $app;
 
@@ -111,7 +111,7 @@ class Route implements RouteInterface
         // replace with the regexp patterns
         $this->ruleRegex = strtr(strtr($this->rule, $this->filters), $this->regex);
         $this->ruleRegex = '#^/?' . str_replace(')', ')?', $this->ruleRegex) . '/?$#';
-        $this->pathInfo = $this->app->request->getPathInfo();
+        $this->pathInfo = $this->app->request()->getPathInfo();
 
         return preg_match($this->ruleRegex, $this->pathInfo);
     }
@@ -140,7 +140,7 @@ class Route implements RouteInterface
                 if (in_array($token, $arrRule)) {
                     $index = array_search($token, $arrRule);
 
-                    (isset($arrPathInfo[$index]))
+                    isset($arrPathInfo[$index])
                     ? $this->setParam($key, $arrPathInfo[$index])
                     : $this->setParam($key, null);
                 } else {
@@ -201,7 +201,7 @@ class Route implements RouteInterface
     {
         $delimiter = '|';
         $controller = $this->getParams('controller');
-        $requestMethod = $this->app->request->getRequestMethod(true);
+        $requestMethod = $this->app->request()->getRequestMethod(true);
 
         $resource = $this->filters['@resource'];
         $this->setParam('resource', $resource);

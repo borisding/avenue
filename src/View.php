@@ -12,7 +12,7 @@ class View implements ViewInterface
     /**
      * Avenue class instance.
      *
-     * @var mixed
+     * @var \Avenue\App
      */
     protected $app;
 
@@ -63,16 +63,15 @@ class View implements ViewInterface
      */
     public function fetch($filename, array $params = [])
     {
-        // store file name to temp variable and later usage
-        $AVENUE_FILENAME = $filename;
-        unset($filename);
-
         ob_start();
+
+        // store file name to temp variable and later usage
+        $target = $filename; unset($filename);
 
         // merge with direct variables assignment to object
         // the latter will overwrite the first
         extract(array_merge($this->params, $params));
-        require $this->getViewFile($AVENUE_FILENAME);
+        require $this->getViewFile($target);
 
         return ob_get_clean();
     }
@@ -116,13 +115,13 @@ class View implements ViewInterface
             $filename = $filename . '.php';
         }
 
-        $PATH_TO_VIEW_FILE = AVENUE_APP_DIR . '/views/' . $filename;
+        $viewFile = AVENUE_APP_DIR . '/views/' . $filename;
 
-        if (!file_exists($PATH_TO_VIEW_FILE)) {
-            throw new \Exception(sprintf('View [%s] not found!', $PATH_TO_VIEW_FILE));
+        if (!file_exists($viewFile)) {
+            throw new \Exception(sprintf('View [%s] not found!', $viewFile));
         }
 
-        return $PATH_TO_VIEW_FILE;
+        return $viewFile;
     }
 
     /**
