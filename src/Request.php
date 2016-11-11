@@ -14,67 +14,21 @@ class Request implements RequestInterface
     protected $app;
 
     /**
-     * Http get method.
+     * List of request methods.
      *
-     * @var mixed
+     * @var array
      */
-    const GET_METHOD = 'GET';
-
-    /**
-     * Http post method.
-     *
-     * @var mixed
-     */
-    const POST_METHOD = 'POST';
-
-    /**
-     * Http put method.
-     *
-     * @var mixed
-     */
-    const PUT_METHOD = 'PUT';
-
-    /**
-     * Http delete method.
-     *
-     * @var mixed
-     */
-    const DELETE_METHOD = 'DELETE';
-
-    /**
-     * Http options method.
-     *
-     * @var mixed
-     */
-    const OPTIONS_METHOD = 'OPTIONS';
-
-    /**
-     * Http patch method.
-     *
-     * @var mixed
-     */
-    const PATCH_METHOD = 'PATCH';
-
-    /**
-     * Http head method.
-     *
-     * @var mixed
-     */
-    const HEAD_METHOD = 'HEAD';
-
-    /**
-     * Http trace method.
-     *
-     * @var mixed
-     */
-    const TRACE_METHOD = 'TRACE';
-
-    /**
-     * Http connect method.
-     *
-     * @var mixed
-     */
-    const CONNECT_METHOD = 'CONNECT';
+    protected $methods = [
+        'connect'   => 'CONNECT',
+        'delete'    => 'DELETE',
+        'get'       => 'GET',
+        'head'      => 'HEAD',
+        'options'   => 'OPTIONS',
+        'patch'     => 'PATCH',
+        'post'      => 'POST',
+        'put'       => 'PUT',
+        'trace'     => 'TRACE'
+    ];
 
     /**
      * Request class constructor.
@@ -93,7 +47,7 @@ class Request implements RequestInterface
      */
     public function isGet()
     {
-        return $this->getRequestMethod() === static::GET_METHOD;
+        return $this->getRequestMethod() === $this->methods['get'];
     }
 
     /**
@@ -103,7 +57,7 @@ class Request implements RequestInterface
      */
     public function isPost()
     {
-        return $this->getRequestMethod() === static::POST_METHOD;
+        return $this->getRequestMethod() === $this->methods['post'];
     }
 
     /**
@@ -113,7 +67,7 @@ class Request implements RequestInterface
      */
     public function isPut()
     {
-        return $this->getRequestMethod() === static::PUT_METHOD;
+        return $this->getRequestMethod() === $this->methods['put'];
     }
 
     /**
@@ -123,7 +77,7 @@ class Request implements RequestInterface
      */
     public function isDelete()
     {
-        return $this->getRequestMethod() === static::DELETE_METHOD;
+        return $this->getRequestMethod() === $this->methods['delete'];
     }
 
     /**
@@ -133,7 +87,7 @@ class Request implements RequestInterface
      */
     public function isOptions()
     {
-        return $this->getRequestMethod() === static::OPTIONS_METHOD;
+        return $this->getRequestMethod() === $this->methods['options'];
     }
 
     /**
@@ -143,7 +97,7 @@ class Request implements RequestInterface
      */
     public function isPatch()
     {
-        return $this->getRequestMethod() === static::PATCH_METHOD;
+        return $this->getRequestMethod() === $this->methods['patch'];
     }
 
     /**
@@ -153,7 +107,7 @@ class Request implements RequestInterface
      */
     public function isHead()
     {
-        return $this->getRequestMethod() === static::HEAD_METHOD;
+        return $this->getRequestMethod() === $this->methods['head'];
     }
 
     /**
@@ -163,7 +117,7 @@ class Request implements RequestInterface
      */
     public function isTrace()
     {
-        return $this->getRequestMethod() === static::TRACE_METHOD;
+        return $this->getRequestMethod() === $this->methods['trace'];
     }
 
     /**
@@ -173,7 +127,7 @@ class Request implements RequestInterface
      */
     public function isConnect()
     {
-        return $this->getRequestMethod() === static::CONNECT_METHOD;
+        return $this->getRequestMethod() === $this->methods['connect'];
     }
 
     /**
@@ -187,7 +141,7 @@ class Request implements RequestInterface
      */
     public function getRequestMethod($lowerCase = false)
     {
-        $requestMethod = $this->app->arrGet('REQUEST_METHOD', $_SERVER, static::GET_METHOD);
+        $requestMethod = $this->app->arrGet('REQUEST_METHOD', $_SERVER, $this->methods['get']);
 
         if (!empty($this->getHeader('X-Http-Method-Override'))) {
             $requestMethod = $this->getHeader('X-Http-Method-Override');
