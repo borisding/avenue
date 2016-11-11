@@ -4,7 +4,7 @@
  */
 
 // register monolog dependency for logging
-$app->container('log', function($app) {
+$app->container('logger', function($app) {
     extract($app->getConfig('logging'));
 
     $logger = new \Monolog\Logger($channel);

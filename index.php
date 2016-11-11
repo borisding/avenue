@@ -20,8 +20,8 @@ defined('AVENUE_CONFIG_DIR') or
 define('AVENUE_CONFIG_DIR', AVENUE_ROOT_DIR . '/config');
 
 // path to avenue log directory
-defined('AVENUE_LOG_DIR') or
-define('AVENUE_LOG_DIR', AVENUE_ROOT_DIR . '/log');
+defined('AVENUE_LOGS_DIR') or
+define('AVENUE_LOGS_DIR', AVENUE_ROOT_DIR . '/logs');
 
 // path to avenue public directory
 defined('AVENUE_PUBLIC_DIR') or

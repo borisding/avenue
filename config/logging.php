@@ -9,7 +9,7 @@ return [
 
     // add log handlers here
     'handlers' => [
-        new \Monolog\Handler\StreamHandler(AVENUE_LOG_DIR . '/' . date('Y-m-d'). '.log')
+        new \Monolog\Handler\StreamHandler(AVENUE_LOGS_DIR . '/' . date('Y-m-d'). '.log')
     ],
 
     // add processors here for handling extra data
