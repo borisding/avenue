@@ -75,7 +75,7 @@ interface AppInterface
     /**
      * Get the ID.
      */
-    public static function getId();
+    public function getId();
 
     /**
      * Get the app instance.

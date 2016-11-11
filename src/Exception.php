@@ -63,9 +63,8 @@ class Exception implements ExceptionInterface
 
         $response->write('');
         $response->write(ob_get_clean());
-        $response->render();
 
-        exit(0);
+        return $response->render();
     }
 
     /**
@@ -137,6 +136,6 @@ class Exception implements ExceptionInterface
      */
     public function getAppId()
     {
-       return App::getId();
+       return $this->app->getId();
     }
 }

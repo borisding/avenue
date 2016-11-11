@@ -45,7 +45,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     {
         $id = 'test-id';
         $app = new App($this->config, $id);
-        $this->assertEquals($id, App::getId());
+        $this->assertEquals($id, $app->getId());
     }
 
     /**

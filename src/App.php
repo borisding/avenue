@@ -352,7 +352,7 @@ class App implements AppInterface
      *
      * @return mixed
      */
-    public static function getId()
+    public function getId()
     {
         return static::$id;
     }
@@ -364,7 +364,7 @@ class App implements AppInterface
      */
     public static function getInstance()
     {
-        return isset(static::$apps[static::getId()]) ? static::$apps[static::getId()] : null;
+        return isset(static::$apps[static::$id]) ? static::$apps[static::$id] : null;
     }
 
     /**
@@ -375,11 +375,11 @@ class App implements AppInterface
      */
     protected function &getServices()
     {
-        if (!isset(static::$services[static::getId()])) {
+        if (!isset(static::$services[$this->getId()])) {
             throw new \InvalidArgumentException('Failed to retrieve services.');
         }
 
-        return static::$services[static::getId()];
+        return static::$services[$this->getId()];
     }
 
     /**
@@ -390,11 +390,11 @@ class App implements AppInterface
      */
     protected function &getSingletons()
     {
-        if (!isset(static::$instances[static::getId()])) {
+        if (!isset(static::$instances[$this->getId()])) {
             throw new \InvalidArgumentException('Failed to retrieve instances for singleton.');
         }
 
-        return static::$instances[static::getId()];
+        return static::$instances[$this->getId()];
     }
 
     /**
