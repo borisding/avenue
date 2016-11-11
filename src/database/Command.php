@@ -318,11 +318,13 @@ class Command implements CommandInterface
     {
         // for ':param' binding
         if ($this->app->arrIsAssoc($params)) {
+
             foreach ($params as $key => $value) {
                 $this->bind($key, $value, $reference);
             }
         // for '?' binding
         } else {
+
             $column = 1;
 
             foreach ($params as $value) {
@@ -450,7 +452,7 @@ class Command implements CommandInterface
             throw new \InvalidArgumentException('Failed to bind parameter. Invalid scalar type.');
         }
 
-        switch($value) {
+        switch ($value) {
             case is_int($value):
                 $type = PDO::PARAM_INT;
                 break;

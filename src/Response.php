@@ -46,7 +46,7 @@ class Response implements ResponseInterface
      *
      * @var array
      */
-    protected static $statusDescriptions = [];
+    protected $statusDescriptions = [];
 
     /**
      * Response class constructor.
@@ -56,8 +56,8 @@ class Response implements ResponseInterface
         $this->app = $app;
 
         // store the status descriptions if empty
-        if (empty(static::$statusDescriptions)) {
-            static::$statusDescriptions = require __DIR__ . '/_includes/http_status.php';
+        if (empty($this->statusDescriptions)) {
+            $this->statusDescriptions = require __DIR__ . '/_includes/http_status.php';
         }
     }
 
@@ -93,8 +93,10 @@ class Response implements ResponseInterface
     {
         $statusCode = $this->getStatusCode();
         $statusDescription = $this->getStatusDescription($statusCode);
+
         $httpVersion = $this->app->getHttpVersion();
-        $httpProtocol = 'HTTP/' . (!empty($httpVersion) ? $httpVersion : '1.1');
+        $httpProtocol = sprintf('HTTP/%s', (!empty($httpVersion) ? $httpVersion : '1.1'));
+
         $body = $this->getBody();
 
         if (is_int($statusCode)) {
@@ -153,7 +155,7 @@ class Response implements ResponseInterface
      */
     public function write($input)
     {
-        // just "cast" array or object via serialize if accidentally written
+        // just 'cast' array or object via serialize if accidentally written
         if (is_array($input) || is_object($input)) {
             $input = serialize($input);
         }
@@ -231,7 +233,7 @@ class Response implements ResponseInterface
      */
     public function getStatusDescription($code)
     {
-        return $this->app->arrGet($code, static::$statusDescriptions, 'Unknown http status!');
+        return $this->app->arrGet($code, $this->statusDescriptions, 'Unknown http status!');
     }
 
     /**
