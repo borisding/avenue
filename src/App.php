@@ -443,7 +443,7 @@ class App implements AppInterface
     }
 
     /**
-     * Register core exception handler.
+     * Register core exception handler and http status code hanlding.
      * Exception instance can be accessed in errorHandler service.
      *
      * @return \Avenue\App
@@ -452,10 +452,16 @@ class App implements AppInterface
     {
         set_exception_handler(function(\Exception $exception) {
             $this->exception = $exception;
-            $code = $exception->getCode();
+            $code = $this->exception->getCode();
+            $statusCode = $this->response->getStatusCode();
 
             if (!is_int($code) || $code < 400 || $code > 599) {
                 $code = 500;
+            }
+
+            // overwrite with user defined
+            if ((int)$statusCode >= 400) {
+                $code = $statusCode;
             }
 
             $this->response->withStatus($code);
