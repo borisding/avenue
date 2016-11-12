@@ -1,7 +1,7 @@
 <?php
 /**********************************************************
  * Application routes registration.                       *
- * Routes must be registered with `routers` service name. *
+ * Routes must be registered with `routes` service name.  *
  **********************************************************/
 
 $app->container('routes', function($app) {

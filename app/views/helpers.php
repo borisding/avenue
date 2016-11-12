@@ -1,15 +1,18 @@
 <?php
-/**
- * Registering your view helpers here.
- * Helper(s) can be called in view template directly via view object.
- */
+/***********************************************************************
+ * View helpers registration.                                          *
+ * Helper(s) can be invoked in view template directly via view object. *
+ ***********************************************************************/
+
+// get view instance
+$view = $app->view();
 
 // base url helper
-$app->view()->register('baseUrl', function() use ($app) {
+$view->register('baseUrl', function() use ($app) {
     return $app->request()->getBaseUrl();
 });
 
 // get app version
-$app->view()->register('version', function() use ($app) {
+$view->register('version', function() use ($app) {
     return $app->getAppVersion();
 });
