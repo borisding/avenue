@@ -60,7 +60,6 @@ class Connection implements ConnectionInterface
      *
      * @param App $app
      * @param array $databaseConfig
-     * @throws \InvalidArgumentException
      */
     public function __construct(App $app)
     {
@@ -85,7 +84,6 @@ class Connection implements ConnectionInterface
     /**
      * Get the database configuration based on the environment's setting.
      *
-     * @throws \InvalidArgumentException
      * @return mixed
      */
     protected function getDatabaseConfig()
@@ -106,8 +104,7 @@ class Connection implements ConnectionInterface
     /**
      * Get all PDO available database drivers.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\ConnectionInterface::getDrivers()
+     * @return mixed
      */
     public function getAllDrivers()
     {
@@ -117,8 +114,7 @@ class Connection implements ConnectionInterface
     /**
      * Get master PDO connection driver.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\ConnectionInterface::getMasterDriver()
+     * @return mixed
      */
     public function getMasterDriver()
     {
@@ -132,8 +128,7 @@ class Connection implements ConnectionInterface
     /**
      * Get slave PDO connection driver.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\ConnectionInterface::getSlaveDriver()
+     * @return mixed
      */
     public function getSlaveDriver()
     {
@@ -145,9 +140,10 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * Return either master/slave PDO connection.
+     * Return either master/slave PDO connection object.
      *
-     * @param string $slave
+     * @param  boolean $slave
+     * @return object
      */
     public function getPdo($slave = false)
     {
@@ -155,10 +151,9 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * Connect master database via PDO connection.
+     * Connect master database via PDO connection object.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\ConnectionInterface::getMasterPdo()
+     * @return object
      */
     public function getMasterPdo()
     {
@@ -173,8 +168,7 @@ class Connection implements ConnectionInterface
     /**
      * Connect with slave database via PDO connection.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\ConnectionInterface::getSlavePdo()
+     * @return object
      */
     public function getSlavePdo()
     {
@@ -195,8 +189,8 @@ class Connection implements ConnectionInterface
     /**
      * Establish database connection via PDO instance with config.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\ConnectionInterface::createPdo()
+     * @param  array  $config
+     * @return object
      */
     public function createPdo(array $config)
     {
@@ -214,34 +208,35 @@ class Connection implements ConnectionInterface
     /**
      * Disconnect both master and slave connections.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\ConnectionInterface::disconnect()
+     * @return boolean
      */
     public function disconnect()
     {
         $this->disconnectMaster();
         $this->disconnectSlave();
+
+        return true;
     }
 
     /**
      * Disconnect master PDO connection.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\ConnectionInterface::disconnectMaster()
+     * @return boolean
      */
     public function disconnectMaster()
     {
-        return $this->master = null;
+        $this->master = null;
+        return true;
     }
-
+    
     /**
      * Disconnect slave PDO connection.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\ConnectionInterface::disconnectSlave()
+     * @return boolean
      */
     public function disconnectSlave()
     {
-        return $this->slave = null;
+        $this->slave = null;
+        return true;
     }
 }

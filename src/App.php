@@ -66,21 +66,21 @@ class App implements AppInterface
     use HelperBundleTrait;
 
     /**
-     * Request instance.
+     * Request class instance.
      *
      * @var \Avenue\Request
      */
     protected $request;
 
     /**
-     * Response instance.
+     * Response class instance.
      *
      * @var \Avenue\Response
      */
     protected $response;
 
     /**
-     * Route instance;
+     * Route class instance.
      *
      * @var \Avenue\Route
      */
@@ -94,7 +94,7 @@ class App implements AppInterface
     protected $exception;
 
     /**
-     * List of respective configurations.
+     * Application's configurations.
      *
      * @var array
      */
@@ -108,28 +108,28 @@ class App implements AppInterface
     protected static $id;
 
     /**
-     * App instances.
+     * List of App class instances.
      *
-     * @var object
+     * @var array
      */
     protected static $apps = [];
 
     /**
-     * List of respective services.
+     * List of registered services.
      *
      * @var array
      */
     protected static $services = [];
 
     /**
-     * List of respective class instances.
+     * List of singleton class instances.
      *
      * @var array
      */
     protected static $instances = [];
 
     /**
-     * App default timezone.
+     * Application's default timezone.
      *
      * @var string
      */
@@ -153,9 +153,7 @@ class App implements AppInterface
 
     /**
      * Adding route's rule for particular request.
-     *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::addRoute()
+     * Stop to proceed once rule is matched.
      */
     public function addRoute()
     {
@@ -167,10 +165,11 @@ class App implements AppInterface
     }
 
     /**
-     * Container that registers specific service for later usage.
+     * Container to register specific service for application's usage.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::container()
+     * @param  string  $name
+     * @param  Closure $callback
+     * @return Closure
      */
     public function container($name, \Closure $callback)
     {
@@ -188,10 +187,10 @@ class App implements AppInterface
     }
 
     /**
-     * Resolving registered service via callback.
+     * Resolve registered service via callback by providing its name.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::resolve()
+     * @param  string $name
+     * @return mixed
      */
     public function resolve($name)
     {
@@ -206,10 +205,10 @@ class App implements AppInterface
 
     /**
      * Making sure only one class instance created at one time.
-     * This allows specific class instance can be reached globally.
+     * This allows specific class instance to be reached globally.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::singleton()
+     * @param  string $name
+     * @return object
      */
     public function singleton($name)
     {
@@ -227,10 +226,9 @@ class App implements AppInterface
     }
 
     /**
-     * Running by rendering the response body output.
+     * Running application by rendering the output.
      *
-     * {@inheritDoc}
-     * @see \Avenue\AppInterface::run()
+     * @return mixed
      */
     public function run()
     {
@@ -243,13 +241,12 @@ class App implements AppInterface
 
         // exit if request is via ajax
         // this is to avoid entire view to be re-rendered
-        // ajax output can be printed out using standard echo
-        // or write into response and rendered immediately via response render method
+        // ajax output can be printed out using standard echo or response
         if ($this->request->isAjax()) {
             return;
         }
 
-        // print out the response body for normal request if auto rendering is true
+        // print out by rendering the output without manually invoking `render` method
         if ($this->getConfig('autoRender') === true) {
             return $this->response->render();
         }
@@ -259,8 +256,8 @@ class App implements AppInterface
      * Retrieving config value based on the key.
      * Return all configurations instead if key is empty.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::getConfig()
+     * @param  mixed $key
+     * @return mixed
      */
     public function getConfig($key = null)
     {
@@ -282,10 +279,9 @@ class App implements AppInterface
     }
 
     /**
-     * Retrieving avenue application version config.
+     * Retrieving application version as configured.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::getAppVersion()
+     * @return mixed
      */
     public function getAppVersion()
     {
@@ -293,10 +289,9 @@ class App implements AppInterface
     }
 
     /**
-     * Retrieving http version config.
+     * Retrieving http version as configured.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::getHttpVersion()
+     * @return mixed
      */
     public function getHttpVersion()
     {
@@ -304,10 +299,9 @@ class App implements AppInterface
     }
 
     /**
-     * Retrieving timezone config.
+     * Retrieving application's default timezone as configured.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::getTimezone()
+     * @return mixed
      */
     public function getTimezone()
     {
@@ -315,10 +309,9 @@ class App implements AppInterface
     }
 
     /**
-     * Retrieving application environment config.
+     * Retrieving application's environment mode as configured.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::getEnvironment()
+     * @return mixed
      */
     public function getEnvironment()
     {
@@ -326,10 +319,9 @@ class App implements AppInterface
     }
 
     /**
-     * Retrieving default controller config.
+     * Retrieving application's default controller name as configured.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::getDefaultController()
+     * @return mixed
      */
     public function getDefaultController()
     {
@@ -337,10 +329,9 @@ class App implements AppInterface
     }
 
     /**
-     * Retrieving secret key config.
+     * Retrieving application's secret value as configured.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\AppInterface::getSecret()
+     * @return mixed
      */
     public function getSecret()
     {
@@ -348,7 +339,7 @@ class App implements AppInterface
     }
 
     /**
-     * Retrieving app ID.
+     * Retrieving application ID.
      *
      * @return mixed
      */
@@ -358,9 +349,9 @@ class App implements AppInterface
     }
 
     /**
-     * Retrieving app instance.
+     * Retrieving registered app instance based on ID.
      *
-     * @return NULL|object
+     * @return mixed
      */
     public static function getInstance()
     {
@@ -370,8 +361,7 @@ class App implements AppInterface
     /**
      * Return the list of registered services.
      *
-     * @throws \InvalidArgumentException
-     * @return mixed
+     * @return array
      */
     protected function &getServices()
     {
@@ -383,10 +373,9 @@ class App implements AppInterface
     }
 
     /**
-     * Return the list of singleton.
+     * Return the list of singleton instances.
      *
-     * @throws \InvalidArgumentException
-     * @return mixed
+     * @return array
      */
     protected function &getSingletons()
     {
@@ -398,11 +387,11 @@ class App implements AppInterface
     }
 
     /**
-     * Register app configurations that bound with current app ID.
+     * Register app config and services that bound with current app ID.
      *
-     * @param mixed $config
-     * @param mixed $id
-     * @return object
+     * @param  mixed $config
+     * @param  mixed $id
+     * @return mixed
      */
     protected function registerApp($config, $id)
     {
@@ -425,7 +414,7 @@ class App implements AppInterface
     }
 
     /**
-     * Register application default timezone based on the config.
+     * Set application's default timezone based on the config.
      * If not present, use the default timezone setting.
      *
      * @return \Avenue\App
@@ -474,7 +463,6 @@ class App implements AppInterface
     /**
      * Register core error handler.
      *
-     * @throws \ErrorException
      * @return \Avenue\App
      */
     protected function registerErrorHandler()
@@ -545,12 +533,11 @@ class App implements AppInterface
     }
 
     /**
-     * App call magic method. Shortcut of singleton.
+     * App call magic method and also shortcut of singleton.
      *
-     * @param mixed $name
-     * @param array $params
-     * @throws \LogicException
-     * @return NULL|mixed
+     * @param  mixed $name
+     * @param  array $params
+     * @return mixed
      */
     public function __call($name, array $params = [])
     {
@@ -562,15 +549,15 @@ class App implements AppInterface
     }
 
     /**
-     * App static call magic method.
-     * Provide singleton method call via static behavior.
+     * App static call magic method. Provide singleton method call via static behavior.
      *
      * Eg:
      * App::request() will be the same with $this->request() (in App class itself) or,
      * $this->app->request() where invoked from other class that has $app property.
      *
-     * @param mixed $name
-     * @param array $params
+     * @param  mixed $name
+     * @param  array $params
+     * @return mixed
      */
     public static function __callStatic($name, array $params = [])
     {

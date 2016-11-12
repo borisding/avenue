@@ -1,4 +1,8 @@
 <?php
+/**********************************************
+ * Defined constants used across application. *
+ **********************************************/
+
 // application start time
 defined('AVENUE_START_TIME') or
 define('AVENUE_START_TIME', microtime(true));
@@ -35,6 +39,10 @@ define('AVENUE_VENDOR_DIR', AVENUE_ROOT_DIR . '/vendor');
 defined('AVENUE_TESTS_DIR') or
 define('AVENUE_TESTS_DIR', AVENUE_ROOT_DIR . '/tests');
 
+/*************************************
+ * Check on required PHP extensions. *
+ *************************************/
+
 // check if `pdo` extension is available
 if (!extension_loaded('pdo')) {
     exit('PDO PHP extension is required!');
@@ -49,6 +57,10 @@ if (!extension_loaded('mbstring')) {
 if (!extension_loaded('openssl')) {
     exit('OpenSSL PHP extension is required!');
 }
+
+/***************************************
+ * Vendor autoloader for testing suit. *
+ ***************************************/
 
 // path to vendor's autoload file
 $autoload = AVENUE_VENDOR_DIR. '/autoload.php';

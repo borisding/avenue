@@ -63,10 +63,9 @@ class Response implements ResponseInterface
 
     /**
      * Print out the content and cleanup if no cache.
-     * Else, just clean and exit.
+     * Otherwise, just cleanup and exit.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ResponseInterface::render()
+     * @return mixed
      */
     public function render()
     {
@@ -84,10 +83,9 @@ class Response implements ResponseInterface
     }
 
     /**
-     * Sending http header.
+     * Sending http header with defined http attributes.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ResponseInterface::sendHttpHeaders()
+     * @return \Avenue\Response
      */
     public function sendHttpHeaders()
     {
@@ -113,9 +111,9 @@ class Response implements ResponseInterface
 
     /**
      * Sending the the defined headers, if any.
+     * Allow multiple headers with same type.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ResponseInterface::sendDefinedHeaders()
+     * @return \Avenue\Response
      */
     public function sendDefinedHeaders()
     {
@@ -139,8 +137,7 @@ class Response implements ResponseInterface
     /**
      * Return true if has cache.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ResponseInterface::isCached()
+     * @return boolean
      */
     public function hasCache()
     {
@@ -150,8 +147,8 @@ class Response implements ResponseInterface
     /**
      * Writing string input to response body.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ResponseInterface::write()
+     * @param  mixed $input
+     * @return \Avenue\Response
      */
     public function write($input)
     {
@@ -167,8 +164,7 @@ class Response implements ResponseInterface
     /**
      * Set the content length and print the body output.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ResponseInterface::output()
+     * @return \Avenue\Response
      */
     public function output()
     {
@@ -177,10 +173,9 @@ class Response implements ResponseInterface
     }
 
     /**
-     * Reset properties.
+     * Reset response properties to default.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ResponseInterface::cleanup()
+     * @return \Avenue\Response
      */
     public function cleanup()
     {
@@ -193,10 +188,9 @@ class Response implements ResponseInterface
     }
 
     /**
-     * Get the body content.
+     * Get the response body.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ResponseInterface::getBody()
+     * @return string
      */
     public function getBody()
     {
@@ -206,8 +200,8 @@ class Response implements ResponseInterface
     /**
      * Set the http status code.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ResponseInterface::withStatus()
+     * @param  mixed $code
+     * @return mixed
      */
     public function withStatus($code)
     {
@@ -217,8 +211,7 @@ class Response implements ResponseInterface
     /**
      * Get the http status code.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ResponseInterface::getStatusCode()
+     * @return mixed
      */
     public function getStatusCode()
     {
@@ -228,8 +221,8 @@ class Response implements ResponseInterface
     /**
      * Get the status description based on the status code.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ResponseInterface::getStatusDescription()
+     * @param  mixed $code
+     * @return mixed
      */
     public function getStatusDescription($code)
     {
@@ -239,8 +232,8 @@ class Response implements ResponseInterface
     /**
      * Set the respective http headers, if any.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ResponseInterface::withHeader()
+     * @param  array $headers
+     * @return \Avenue\Response
      */
     public function withHeader(array $headers = [])
     {
@@ -254,8 +247,8 @@ class Response implements ResponseInterface
     /**
      * Get the header description based on the key.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ResponseInterface::getHeader()
+     * @param  mixed $key
+     * @return mixed
      */
     public function getHeader($key)
     {
@@ -265,8 +258,7 @@ class Response implements ResponseInterface
     /**
      * Shortcut for response with JSON header.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ResponseInterface::withJsonHeader()
+     * @return mixed
      */
     public function withJsonHeader()
     {
@@ -276,8 +268,7 @@ class Response implements ResponseInterface
     /**
      * Shortcut for response with text header.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ResponseInterface::withTextHeader()
+     * @return mixed
      */
     public function withTextHeader()
     {
@@ -287,8 +278,7 @@ class Response implements ResponseInterface
     /**
      * Shortcut for response with CSV header.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ResponseInterface::withCsvHeader()
+     * @return mixed
      */
     public function withCsvHeader()
     {
@@ -298,8 +288,7 @@ class Response implements ResponseInterface
     /**
      * Shortcut for response with XML header.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ResponseInterface::withXmlHeader()
+     * @return mixed
      */
     public function withXmlHeader()
     {
@@ -309,8 +298,9 @@ class Response implements ResponseInterface
     /**
      * HTTP caching with ETag method.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ResponseInterface::withEtag()
+     * @param  mixed $uniqueId
+     * @param  string $type
+     * @return \Avenue\Response
      */
     public function withEtag($uniqueId, $type = 'strong')
     {
@@ -336,10 +326,10 @@ class Response implements ResponseInterface
     }
 
     /**
-     * Http cache with last modified by providing UNIX timestamp.
+     * Http caching with last modified by providing UNIX timestamp.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ResponseInterface::withLastModified()
+     * @param  mixed $timestamp
+     * @return \Avenue\Response
      */
     public function withLastModified($timestamp)
     {
@@ -354,10 +344,11 @@ class Response implements ResponseInterface
     }
 
     /**
-     * Http cache for expire time as provided.
+     * Http caching for expire time as provided.
      * Can be chained either with withEtag or withLastModified method.
      *
-     * @param mixed $expireTime
+     * @param  mixed $expireTime
+     * @return \Avenue\Response
      */
     public function cache($expireTime)
     {
@@ -378,8 +369,8 @@ class Response implements ResponseInterface
     /**
      * Get the GMT date/time based on the timestamp.
      *
-     * @param integer $timestamp
-     * @throws \InvalidArgumentException
+     * @param  mixed $timestamp
+     * @return string
      */
     protected function getGmtDateTime($timestamp)
     {

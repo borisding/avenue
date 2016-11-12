@@ -1,8 +1,8 @@
 <?php
-/**
- * Configuration of both cookie and session.
- *
- */
+/*****************************************************
+ * State configurations for both cookie and session. *
+ *****************************************************/
+
 return [
     'cookie' => [
         // cookie's expiration

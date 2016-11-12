@@ -1,7 +1,7 @@
 <?php
-/**
- * Database settings based on the environment.
- */
+/***********************************************
+ * Database settings based on the environment. *
+ ***********************************************/
 
 return [
     'development' => [

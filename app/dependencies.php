@@ -1,7 +1,7 @@
 <?php
-/**
- * File to place other service providers of 3rd party dependencies.
- */
+/********************************************************************
+ * File to place other service providers of 3rd party dependencies. *
+ ********************************************************************/
 
 // register monolog dependency for logging
 $app->container('logger', function($app) {

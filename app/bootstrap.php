@@ -1,8 +1,8 @@
 <?php
-/**
- * Create app instance by injecting the app's configuration.
- * Establish handler and core service registries.
- */
+/*********************************************************************
+ * Create app instance by providing configuration and ID (optional). *
+ * Establish handler and core service registries.                    *
+ *********************************************************************/
 
 // retrieve app config
 $config = require_once AVENUE_CONFIG_DIR . '/app.php';
@@ -11,10 +11,10 @@ $config = require_once AVENUE_CONFIG_DIR . '/app.php';
 $app = new \Avenue\App($config);
 
 
-/**
- * Respective registered services for application.
- * 3rd party dependencies, app handlers, routes, and view helpers.
- */
+/*******************************************************************
+ * Respective registered services for application.                 *
+ * 3rd party dependencies, app handlers, routes, and view helpers. *
+ *******************************************************************/
 
 // include app handlers.
 require_once 'handlers.php';
@@ -28,8 +28,5 @@ require_once 'routes.php';
 // include app view helpers.
 require_once 'views/helpers.php';
 
-/**
- * Boot to run application.
- */
-
+// start running application
 $app->run();

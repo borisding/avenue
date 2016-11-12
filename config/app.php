@@ -1,7 +1,7 @@
 <?php
-/**
- * Configuration of the application.
- */
+/***************************************
+ * Application general configurations. *
+ ***************************************/
 
 return [
     // secret used for application, etc encryption

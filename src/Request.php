@@ -134,7 +134,7 @@ class Request implements RequestInterface
      * Return http request method.
      * Check against 'X-Http-Method-Override' and '_method' as well.
      * If none was found, then using GET as default.
-     * If lower case is true, returned as lower case instead.
+     * If lower case is `true`, returned as lower case instead.
      *
      * @param string $lowerCase
      * @return mixed
@@ -276,7 +276,7 @@ class Request implements RequestInterface
     }
 
     /**
-     * Get current URL's scheme.
+     * Get current URL scheme.
      *
      * @return string
      */
@@ -344,8 +344,7 @@ class Request implements RequestInterface
     /**
      * Get IP address.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\RequestInterface::getIpAddress()
+     * @return mixed
      */
     public function getIpAddress()
     {
@@ -364,6 +363,7 @@ class Request implements RequestInterface
 
     /**
      * Return the raw data via request body.
+     * Note applicable for enctype="multipart/form-data".
      *
      * @return string
      */

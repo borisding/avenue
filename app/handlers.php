@@ -1,7 +1,8 @@
 <?php
-/**
- * Application's handlers.
- */
+/***********************************************************************
+ * Application handlers registration.                                  *
+ * Error handling must be registered with `errorHandler` service name. *
+ ***********************************************************************/
 
 // error handling via registered error handler
 $app->container('errorHandler', function($app) {

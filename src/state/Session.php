@@ -35,8 +35,8 @@ class Session implements SessionInterface
     /**
      * Set session value.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\State\SessionInterface::set()
+     * @param mixed $key
+     * @param mixed $value
      */
     public function set($key, $value)
     {
@@ -48,10 +48,10 @@ class Session implements SessionInterface
     }
 
     /**
-     * Get session value.
+     * Get session value based on the provided key.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\State\SessionInterface::get()
+     * @param  mixed $key
+     * @return mixed
      */
     public function get($key)
     {
@@ -63,10 +63,9 @@ class Session implements SessionInterface
     }
 
     /**
-     * Remove particular session value.
+     * Remove particular session value based on the provided key.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\State\SessionInterface::remove()
+     * @param  mixed $key
      */
     public function remove($key)
     {
@@ -77,9 +76,6 @@ class Session implements SessionInterface
 
     /**
      * Remove all sessions.
-     *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\State\SessionInterface::removeAll()
      */
     public function removeAll()
     {
@@ -92,8 +88,7 @@ class Session implements SessionInterface
     /**
      * Regenerate new session ID.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\State\SessionInterface::regenerateId()
+     * @return boolean
      */
     public function regenerateId()
     {
@@ -105,10 +100,9 @@ class Session implements SessionInterface
     }
 
     /**
-     * Get session ID.
+     * Get current session ID.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\State\SessionInterface::getId()
+     * @return mixed
      */
     public function getId()
     {
@@ -116,10 +110,7 @@ class Session implements SessionInterface
     }
 
     /**
-     * Start session.
-     *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\State\SessionInterface::start()
+     * Start new session.
      */
     public function start()
     {
@@ -131,8 +122,7 @@ class Session implements SessionInterface
     /**
      * Generate unique random hashed string for CSRF token.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\State\SessionInterface::setCsrfToken()
+     * @return mixed
      */
     public function setCsrfToken()
     {
@@ -145,8 +135,7 @@ class Session implements SessionInterface
     /**
      * Get the persisted CSRF token value.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\State\SessionInterface::getCsrfToken()
+     * @return mixed
      */
     public function getCsrfToken()
     {
@@ -156,15 +145,17 @@ class Session implements SessionInterface
     /**
      * Return the CSRF token's name.
      *
-     * @return string
+     * @return mixed
      */
     protected function getCsrfTokenName()
     {
         return static::CSRF_TOKEN_NAME;
     }
-
+    
     /**
      * Runtime and handlers settings before starting the session.
+     *
+     * @return \Avenue\State\Session
      */
     protected function setup()
     {

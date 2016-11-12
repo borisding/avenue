@@ -1,7 +1,8 @@
 <?php
-/**
- * Register respective application routes.
- */
+/**********************************************************
+ * Application routes registration.                       *
+ * Routes must be registered with `routers` service name. *
+ **********************************************************/
 
 $app->container('routes', function($app) {
     // admin dynamic controller route mapping

@@ -90,8 +90,7 @@ abstract class Controller implements ControllerInterface
     /**
      * Controller's before action method.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ControllerInterface::beforeAction()
+     * @return boolean
      */
     public function beforeAction()
     {
@@ -102,8 +101,7 @@ abstract class Controller implements ControllerInterface
      * Controller's after action method.
      * Invoke after the controller action is called.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ControllerInterface::afterAction()
+     * @return boolean
      */
     public function afterAction()
     {
@@ -113,8 +111,7 @@ abstract class Controller implements ControllerInterface
     /**
      * Invoke targeted controller's action.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ControllerInterface::controllerAction()
+     * @return function
      */
     public function controllerAction()
     {

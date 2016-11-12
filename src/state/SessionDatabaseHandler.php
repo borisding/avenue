@@ -57,10 +57,11 @@ class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInt
 
     /**
      * Invoked when session is being opened.
-     * Occasionally trigger the garbage collection.
+     * Occasionally, trigger the garbage collection.
      *
-     * {@inheritDoc}
-     * @see SessionHandlerInterface::open()
+     * @param  mixed $path
+     * @param  mixed $name
+     * @return boolean
      */
     public function open($path, $name)
     {
@@ -74,8 +75,7 @@ class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInt
     /**
      * Invoked once session is written.
      *
-     * {@inheritDoc}
-     * @see SessionHandlerInterface::close()
+     * @return boolean
      */
     public function close()
     {
@@ -85,8 +85,8 @@ class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInt
     /**
      * Retrieving the session data inserted previously.
      *
-     * {@inheritDoc}
-     * @see SessionHandlerInterface::read()
+     * @param  mixed $id
+     * @return mixed
      */
     public function read($id)
     {
@@ -103,8 +103,9 @@ class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInt
     /**
      * Writing session into table.
      *
-     * {@inheritDoc}
-     * @see SessionHandlerInterface::write()
+     * @param  mixed $id
+     * @param  mixed $value
+     * @return mixed
      */
     public function write($id, $value)
     {
@@ -135,7 +136,8 @@ class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInt
     /**
      * Invoked once session is destroyed.
      *
-     * @see SessionHandlerInterface::destroy()
+     * @param  mixed $id
+     * @return mixed
      */
     public function destroy($id)
     {
@@ -146,7 +148,8 @@ class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInt
     /**
      * Garbage collection to clean up old data by removing it.
      *
-     * @see SessionHandlerInterface::gc()
+     * @param  integer $lifetime
+     * @return mixed
      */
     public function gc($lifetime)
     {

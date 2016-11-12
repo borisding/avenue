@@ -23,7 +23,6 @@ class Crypt implements CryptInterface
      * Crypt class constructor.
      *
      * @param mixed $secret
-     * @throws \InvalidArgumentException
      */
     public function __construct($secret)
     {
@@ -35,10 +34,10 @@ class Crypt implements CryptInterface
     }
 
     /**
-     * Encrypt plain data.
+     * Encrypt plain data as provided.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\CryptInterface::encrypt()
+     * @param  mixed $data
+     * @return mixed
      */
     public function encrypt($data)
     {
@@ -53,10 +52,10 @@ class Crypt implements CryptInterface
     }
 
     /**
-     * Decrypt ciphered data.
+     * Decrypt ciphered data as provided.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\CryptInterface::decrypt()
+     * @param  mixed $data
+     * @return mixed
      */
     public function decrypt($data)
     {

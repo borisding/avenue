@@ -1,9 +1,9 @@
 <?php
 namespace Avenue;
 
+use Exception as CoreException;
 use Avenue\App;
 use Avenue\Interfaces\ExceptionInterface;
-use Exception as CoreException;
 
 class Exception implements ExceptionInterface
 {
@@ -36,8 +36,7 @@ class Exception implements ExceptionInterface
     /**
      * Triggering string magic method by printing out the object.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ExceptionInterface::render()
+     * @return \Avenue\Exception
      */
     public function render()
     {
@@ -46,13 +45,13 @@ class Exception implements ExceptionInterface
     }
 
     /**
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ExceptionInterface::__toString()
+     * Rendering the caught exception output.
+     *
+     * @return string
      */
     public function __toString()
     {
         ob_start();
-        $response = $this->app->response();
         $exceptionErrorFile = __DIR__ . '/_includes/exception_error.php';
 
         if (!file_exists($exceptionErrorFile)) {
@@ -61,6 +60,7 @@ class Exception implements ExceptionInterface
 
         require_once $exceptionErrorFile;
 
+        $response = $this->app->response();
         $response->write('');
         $response->write(ob_get_clean());
 
@@ -68,8 +68,9 @@ class Exception implements ExceptionInterface
     }
 
     /**
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ExceptionInterface::getMessage()
+     * Get exception message.
+     *
+     * @return mixed
      */
     public function getMessage()
     {
@@ -77,8 +78,9 @@ class Exception implements ExceptionInterface
     }
 
     /**
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ExceptionInterface::getCode()
+     * Get exception code.
+     *
+     * @return integer
      */
     public function getCode()
     {
@@ -86,8 +88,9 @@ class Exception implements ExceptionInterface
     }
 
     /**
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ExceptionInterface::getFile()
+     * Get the source filename of exception.
+     *
+     * @return string
      */
     public function getFile()
     {
@@ -95,8 +98,9 @@ class Exception implements ExceptionInterface
     }
 
     /**
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ExceptionInterface::getLine()
+     * Get the source line of exception.
+     *
+     * @return integer
      */
     public function getLine()
     {
@@ -104,17 +108,19 @@ class Exception implements ExceptionInterface
     }
 
     /**
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ExceptionInterface::getTrace()
+     * Get array of the backtrace.
+     *
+     * @return array
      */
     public function getTrace()
     {
         return $this->exception->getTrace();
     }
-
+    
     /**
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ExceptionInterface::getTraceAsString()
+     * Get formatted string of trace.
+     *
+     * @return string
      */
     public function getTraceAsString()
     {

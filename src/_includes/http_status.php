@@ -1,7 +1,7 @@
 <?php
-/**
- * List of http status codes and descriptions.
- */
+/***********************************************
+ * List of http status codes and descriptions. *
+ ***********************************************/
 
 return [
     // 1xx, Informational

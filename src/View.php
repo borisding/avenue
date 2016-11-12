@@ -79,8 +79,9 @@ class View implements ViewInterface
     /**
      * Alias method. Fetching layout view file by omitting directory name.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ViewInterface::layout()
+     * @param  mixed $filename
+     * @param  array $params
+     * @return mixed
      */
     public function layout($filename, array $params = [])
     {
@@ -91,8 +92,9 @@ class View implements ViewInterface
     /**
      * Alias method. Fetching partial view file by omitting directory name.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ViewInterface::partial()
+     * @param  mixed $filename
+     * @param  array $params
+     * @return mixed
      */
     public function partial($filename, array $params = [])
     {
@@ -103,9 +105,8 @@ class View implements ViewInterface
     /**
      * Retrieve the view file.
      *
-     * @param mixed $name
-     * @throws \Exception
-     * @return string
+     * @param  mixed $filename
+     * @return mixed
      */
     protected function getViewFile($filename)
     {
@@ -127,8 +128,9 @@ class View implements ViewInterface
     /**
      * Register the helper for view template engine.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\ViewInterface::register()
+     * @param  mixed  $name
+     * @param  Closure $callback
+     * @return Closure
      */
     public function register($name, \Closure $callback)
     {
@@ -148,7 +150,6 @@ class View implements ViewInterface
      *
      * @param mixed $name
      * @param array $params
-     * @throws \LogicException
      * @return mixed
      */
     public function __call($name, array $params = [])

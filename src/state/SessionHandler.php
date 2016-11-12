@@ -52,8 +52,7 @@ class SessionHandler implements SessionHandlerInterface
 
     /**
      * Return the app's secret as configured.
-     *
-     * @throws \InvalidArgumentException
+     * 
      * @return mixed
      */
     public function getAppSecret()

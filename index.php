@@ -1,4 +1,8 @@
 <?php
+/**********************************************
+ * Defined constants used across application. *
+ **********************************************/
+
 // application start time
 defined('AVENUE_START_TIME') or
 define('AVENUE_START_TIME', microtime(true));
@@ -31,8 +35,10 @@ define('AVENUE_PUBLIC_DIR', AVENUE_ROOT_DIR . '/public');
 defined('AVENUE_VENDOR_DIR') or
 define('AVENUE_VENDOR_DIR', AVENUE_ROOT_DIR . '/vendor');
 
-// built-in PHP server request URI handling
-// let static file(s) can be recognized and output as is
+/****************************************
+ * Built in PHP server for development. *
+ ****************************************/
+
 if (php_sapi_name() === 'cli-server') {
     $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
@@ -40,6 +46,10 @@ if (php_sapi_name() === 'cli-server') {
         return false;
     }
 }
+
+/*************************************
+ * Check on required PHP extensions. *
+ *************************************/
 
 // check if `pdo` extension is available
 if (!extension_loaded('pdo')) {
@@ -55,6 +65,10 @@ if (!extension_loaded('mbstring')) {
 if (!extension_loaded('openssl')) {
     exit('OpenSSL PHP extension is required!');
 }
+
+/************************************************
+ * Vendor autoloader and application bootstrap. *
+ ************************************************/
 
 // path to vendor's autoload file
 $autoload = AVENUE_VENDOR_DIR. '/autoload.php';

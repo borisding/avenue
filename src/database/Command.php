@@ -98,8 +98,7 @@ class Command implements CommandInterface
     /**
      * Return the current connection class instance.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::getConnectionInstance()
+     * @return \Avenue\Database\Connection
      */
     public function getConnectionInstance()
     {
@@ -113,8 +112,8 @@ class Command implements CommandInterface
     /**
      * Update the mapped model's table name.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::setTable()
+     * @param mixed $name
+     * @return \Avenue\Database\Command
      */
     public function setTable($name)
     {
@@ -125,8 +124,7 @@ class Command implements CommandInterface
     /**
      * Return the mapped model's table name.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::getTable()
+     * @return mixed
      */
     public function getTable()
     {
@@ -136,8 +134,8 @@ class Command implements CommandInterface
     /**
      * Update the default model's PK column name.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::setPk()
+     * @param mixed $name
+     * @return \Avenue\Database\Command
      */
     public function setPk($name)
     {
@@ -148,8 +146,7 @@ class Command implements CommandInterface
     /**
      * Return the model's PK column name.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::getPk()
+     * @return mixed
      */
     public function getPk()
     {
@@ -160,8 +157,9 @@ class Command implements CommandInterface
      * Command for prepared statement.
      * Default for master database connection.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::cmd()
+     * @param  mixed  $sql
+     * @param  boolean $slave
+     * @return \Avenue\Database\Command
      */
     public function cmd($sql, $slave = false)
     {
@@ -172,8 +170,8 @@ class Command implements CommandInterface
     /**
      * Alias command method for master prepared statement.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::cmdMaster()
+     * @param  mixed $sql
+     * @return object
      */
     public function cmdMaster($sql)
     {
@@ -183,8 +181,8 @@ class Command implements CommandInterface
     /**
      * Alias command method for slave prepared statement.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::cmdSlave()
+     * @param  mixed $sql
+     * @return object
      */
     public function cmdSlave($sql)
     {
@@ -194,8 +192,7 @@ class Command implements CommandInterface
     /**
      * Execute prepared statement.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::run()
+     * @return boolean
      */
     public function run()
     {
@@ -205,8 +202,8 @@ class Command implements CommandInterface
     /**
      * Execute prepared statement with actual param values.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::runWith()
+     * @param  array  $params
+     * @return boolean
      */
     public function runWith(array $params)
     {
@@ -217,8 +214,8 @@ class Command implements CommandInterface
      * Fetch all records method.
      * Associative format is returned by default.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::fetchAll()
+     * @param  string $type
+     * @return mixed
      */
     public function fetchAll($type = 'assoc')
     {
@@ -230,8 +227,8 @@ class Command implements CommandInterface
      * Fetch single record method.
      * Associative format is returned by default.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::fetchOne()
+     * @param  string $type
+     * @return mixed
      */
     public function fetchOne($type = 'assoc')
     {
@@ -242,8 +239,9 @@ class Command implements CommandInterface
     /**
      * Fetch single records with class behavior.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::fetchClassOne()
+     * @param  mixed $name
+     * @param  array $ctorArgs
+     * @return mixed
      */
     public function fetchClassOne($name, array $ctorArgs = [])
     {
@@ -254,20 +252,21 @@ class Command implements CommandInterface
     /**
      * Fetch multiple records with class behavior.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::fetchClassAll()
+     * @param  mixed $name
+     * @param  array $ctorArgs
+     * @return mixed
      */
     public function fetchClassAll($name, array $ctorArgs = [])
     {
         $this->withClassModeRun($name, $ctorArgs);
         return $this->statement->fetchAll();
     }
-
+    
     /**
      * Fetch a column from the next row.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::fetchColumn()
+     * @param  integer $number
+     * @return mixed
      */
     public function fetchColumn($number = 0)
     {
@@ -278,8 +277,7 @@ class Command implements CommandInterface
     /**
      * Fetch and get total number of records.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::fetchTotalRows()
+     * @return integer
      */
     public function fetchTotalRows()
     {
@@ -291,8 +289,10 @@ class Command implements CommandInterface
      * Bind parameter(s) for prepared statement.
      * Default is binding with value.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::bind()
+     * @param  mixed  $key
+     * @param  mixed  $value
+     * @param  boolean $reference
+     * @return \Avenue\Database\Command
      */
     public function bind($key, $value, $reference = false)
     {
@@ -311,8 +311,9 @@ class Command implements CommandInterface
      * Bind parameter(s) for prepared statement in mass.
      * Default is binding with value.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::batch()
+     * @param  array  $params
+     * @param  boolean $reference
+     * @return Avenue\Database\Command
      */
     public function batch(array $params = [], $reference = false)
     {
@@ -324,7 +325,6 @@ class Command implements CommandInterface
             }
         // for '?' binding
         } else {
-
             $column = 1;
 
             foreach ($params as $value) {
@@ -339,8 +339,7 @@ class Command implements CommandInterface
     /**
      * Begin transaction.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::begin()
+     * @return mixed
      */
     public function begin()
     {
@@ -350,8 +349,7 @@ class Command implements CommandInterface
     /**
      * End transaction with commit.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::end()
+     * @return mixed
      */
     public function end()
     {
@@ -361,8 +359,7 @@ class Command implements CommandInterface
     /**
      * Cancel transaction with rollback.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::cancel()
+     * @return mixed
      */
     public function cancel()
     {
@@ -372,8 +369,7 @@ class Command implements CommandInterface
     /**
      * Get inserted ID.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::getInsertedId()
+     * @return mixed
      */
     public function getInsertedId()
     {
@@ -383,8 +379,7 @@ class Command implements CommandInterface
     /**
      * Get the number of affected rows.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::getAffectedRows()
+     * @return integer
      */
     public function getAffectedRows()
     {
@@ -394,8 +389,7 @@ class Command implements CommandInterface
     /**
      * Shortcut for debug and dump params for prepared statement.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\Database\CommandInterface::ddp()
+     * @return mixed
      */
     public function ddp()
     {
@@ -405,9 +399,9 @@ class Command implements CommandInterface
     /**
      * Set class mode and run targeted class.
      *
-     * @param mixed $name
-     * @param array $ctorArgs
-     * @throws \InvalidArgumentException
+     * @param  mixed $name
+     * @param  array $ctorArgs
+     * @return mixed
      */
     private function withClassModeRun($name, array $ctorArgs = [])
     {
@@ -421,9 +415,9 @@ class Command implements CommandInterface
     /**
      * Deciding the fetch mode based on the fetch type.
      *
-     * @param mixed $type
-     * @param mixed $className
-     * @param array $ctorArgs
+     * @param  mixed $type
+     * @param  mixed $className
+     * @param  array $ctorArgs
      * @return \Avenue\Database\Command
      */
     private function withFetchMode($type, $className = null, array $ctorArgs = [])
@@ -442,9 +436,8 @@ class Command implements CommandInterface
     /**
      * Decide and get the scalar type of passed value.
      *
-     * @param mixed $value
-     * @throws \InvalidArgumentException
-     * @return number
+     * @param  mixed $value
+     * @return integer
      */
     private function getParamScalar($value)
     {
@@ -484,6 +477,7 @@ class Command implements CommandInterface
      *
      * @param mixed $method
      * @param array $params
+     * @return mixed
      */
     public function __call($method, array $params = [])
     {

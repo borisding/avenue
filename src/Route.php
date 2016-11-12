@@ -8,7 +8,7 @@ use Avenue\Interfaces\RouteInterface;
 class Route implements RouteInterface
 {
     /**
-     * App instance.
+     * App class instance.
      *
      * @var \Avenue\App
      */
@@ -104,7 +104,9 @@ class Route implements RouteInterface
 
     /**
      * Match the route URI with regular expression.
-     * Return true if the particular route is matched.
+     * Return `true` if the particular route is matched.
+     *
+     * @return boolean
      */
     public function matchRoute()
     {
@@ -118,6 +120,8 @@ class Route implements RouteInterface
 
     /**
      * Set respective route params with actual value.
+     *
+     * @return \Avenue\Route
      */
     public function setRouteParams()
     {
@@ -195,7 +199,6 @@ class Route implements RouteInterface
      * @resource => true (applied to any controllers that fulfilled the route mapping)
      * @resource => 'default' (only applied to 'DefaultController' class)
      * @resource => 'default|dummy' (only applied to 'DefaultController' and 'DummyController' classes)
-     *
      */
     public function mapResourceMethod()
     {
@@ -230,7 +233,7 @@ class Route implements RouteInterface
     /**
      * Get the controller namespace and do the instantiation.
      *
-     * @throws \LogicException
+     * @return object
      */
     public function initController()
     {
@@ -253,6 +256,8 @@ class Route implements RouteInterface
     /**
      * Build the controller namespace for the matched route.
      * If no controller is specified, the default controller will always be used.
+     *
+     * @return string
      */
     public function buildControllerNamespace()
     {

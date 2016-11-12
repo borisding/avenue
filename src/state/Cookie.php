@@ -61,7 +61,6 @@ class Cookie implements CookieInterface
      *
      * @param App $app
      * @param array $config
-     * @throws \InvalidArgumentException
      */
     public function __construct(App $app, array $config = [])
     {
@@ -81,10 +80,10 @@ class Cookie implements CookieInterface
     }
 
     /**
-     * Set cookie value based on the assigned key.
+     * Set signed cookie value based on the assigned key.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\State\CookieInterface::set()
+     * @param mixed $key
+     * @param mixed $value
      */
     public function set($key, $value = null)
     {
@@ -110,10 +109,10 @@ class Cookie implements CookieInterface
     }
 
     /**
-     * Get the plain text of cookie value.
+     * Get the plain text of the signed cookie value.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\State\CookieInterface::get()
+     * @param  mixed $key
+     * @return mixed
      */
     public function get($key)
     {
@@ -128,10 +127,9 @@ class Cookie implements CookieInterface
     }
 
     /**
-     * Remove specific cookie value based on the key.
+     * Remove specific signed cookie value based on the key.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\State\CookieInterface::remove()
+     * @param  mixed $key
      */
     public function remove($key)
     {
@@ -141,9 +139,6 @@ class Cookie implements CookieInterface
 
     /**
      * Remove cookie values, respectively.
-     *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\State\CookieInterface::removeAll()
      */
     public function removeAll()
     {
@@ -154,10 +149,10 @@ class Cookie implements CookieInterface
 
     /**
      * Return cookie specific config based on the name.
-     * Giving all cookie config instead if name is not provided.
+     * Give all cookie config instead if name is not provided.
      *
-     * {@inheritDoc}
-     * @see \Avenue\Interfaces\State\CookieInterface::getConfig()
+     * @param  mixed $name
+     * @return mixed
      */
     public function getConfig($name = null)
     {
@@ -183,8 +178,9 @@ class Cookie implements CookieInterface
     /**
      * Verify cookie signature and return value.
      *
-     * @param mixed $key
-     * @param mixed $value
+     * @param  mixed $key
+     * @param  mixed $value
+     * @return mixed
      */
     protected function verify($key, $value)
     {
@@ -203,7 +199,7 @@ class Cookie implements CookieInterface
     }
 
     /**
-     * Get the encrypted data.
+     * Get the encrypted cookie value.
      *
      * @param mixed $value
      * @return mixed
@@ -218,9 +214,10 @@ class Cookie implements CookieInterface
     }
 
     /**
-     * Decrypt the data.
+     * Decrypt the cookie value.
      *
      * @param mixed $value
+     * @return mixed
      */
     protected function decrypt($value)
     {

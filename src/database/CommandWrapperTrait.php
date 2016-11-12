@@ -6,9 +6,10 @@ trait CommandWrapperTrait
     /**
      * Select all query wrapper with/without clause and parameters from master.
      *
-     * @param mixed $clause
-     * @param mixed $params
-     * @param string $type
+     * @param  mixed $clause
+     * @param  mixed $params
+     * @param  string $type
+     * @return mixed
      */
     public function selectAll($clause = null, $params = null, $type = 'assoc')
     {
@@ -24,9 +25,10 @@ trait CommandWrapperTrait
     /**
      * Select all query wrapper with/without clause and parameters from slave.
      *
-     * @param mixed $clause
-     * @param mixed $params
-     * @param string $type
+     * @param  mixed $clause
+     * @param  mixed $params
+     * @param  string $type
+     * @return mixed
      */
     public function selectAllSlave($clause = null, $params = null, $type = 'assoc')
     {
@@ -42,10 +44,11 @@ trait CommandWrapperTrait
     /**
      * Select column(s) query wrapper with/without clause and parameters from master.
      *
-     * @param array $columns
-     * @param mixed $clause
-     * @param mixed $params
-     * @param string $type
+     * @param  array  $columns
+     * @param  mixed $clause
+     * @param  mixed $params
+     * @param  string $type
+     * @return mixed
      */
     public function select(array $columns, $clause = null, $params = null, $type = 'assoc')
     {
@@ -61,10 +64,11 @@ trait CommandWrapperTrait
     /**
      * Select column(s) query wrapper with/without clause and parameters from slave.
      *
-     * @param array $columns
-     * @param mixed $clause
-     * @param mixed $params
-     * @param string $type
+     * @param  array  $columns
+     * @param  mixed $clause
+     * @param  mixed $params
+     * @param  string $type
+     * @return mixed
      */
     public function selectSlave(array $columns, $clause = null, $params = null, $type = 'assoc')
     {
@@ -101,11 +105,12 @@ trait CommandWrapperTrait
     /**
      * Select statement's with where clause builder.
      *
-     * @param mixed $sql
-     * @param mixed $values
-     * @param array $clause
-     * @param mixed $type
-     * @param mixed $slave
+     * @param  mixed $sql
+     * @param  mixed $clause
+     * @param  mixed $params
+     * @param  mixed $type
+     * @param  mixed $slave
+     * @return mixed
      */
     private function getSelectWhereClause($sql, $clause, $params, $type, $slave)
     {
@@ -140,7 +145,8 @@ trait CommandWrapperTrait
     /**
      * Insert query wrapper with accepted columns key/value pair values.
      *
-     * @param array $columns
+     * @param  array  $columns
+     * @return boolean
      */
     public function insert(array $columns)
     {
@@ -157,6 +163,8 @@ trait CommandWrapperTrait
 
     /**
      * Delete all records query wrapper.
+     *
+     * @return boolean
      */
     public function deleteAll()
     {
@@ -167,8 +175,9 @@ trait CommandWrapperTrait
     /**
      * Delete query wrapper with clause and parameters.
      *
-     * @param mixed $clause
-     * @param mixed $params
+     * @param  mixed $clause
+     * @param  mixed $params
+     * @return boolean
      */
     public function delete($clause, $params = null)
     {
@@ -190,7 +199,8 @@ trait CommandWrapperTrait
     /**
      * Update all records query with accepted columns key/pair values.
      *
-     * @param array $columns
+     * @param  array  $columns
+     * @return boolean
      */
     public function updateAll(array $columns)
     {
@@ -207,9 +217,10 @@ trait CommandWrapperTrait
     /**
      * Update query wrapper with accepted columns key/pair values, clause and params.
      *
-     * @param array $columns
-     * @param mixed $clause
-     * @param mixed $params
+     * @param  array  $columns
+     * @param  mixed $clause
+     * @param  mixed $params
+     * @return boolean
      */
     public function update(array $columns, $clause, $params = null)
     {
@@ -249,14 +260,14 @@ trait CommandWrapperTrait
      * Perform update/insert based on the existence of record and types of database.
      * Default primary key column refers to `id`
      *
-     * @param mixed $id
-     * @param array $columns
+     * @param  mixed $id
+     * @param  array  $columns
+     * @return boolean
      */
     public function upsert($id, array $columns)
     {
         // mysql/maria
         if ($this->getConnectionInstance()->getMasterDriver() == 'mysql') {
-
             $values = array_values($columns);
             $sql = sprintf(
                 'replace into %s (%s) values (%s)',
@@ -266,10 +277,8 @@ trait CommandWrapperTrait
             );
 
             return $this->cmd($sql)->batch($values)->run();
-
         // others
         } else {
-
             $sql = sprintf('select count(*) as total from %s where %s = :id', $this->table, $this->pk);
             $total = $this->cmd($sql)->bind(':id', $id)->fetchColumn();
 
@@ -280,11 +289,12 @@ trait CommandWrapperTrait
             }
         }
     }
-
+    
     /**
      * Return the filled placeholders based on the values.
      *
-     * @param array $values
+     * @param  array  $values
+     * @return string
      */
     public function getPlaceholders(array $values)
     {

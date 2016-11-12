@@ -1,7 +1,7 @@
 <?php
-/**
- * Settings for application logging purposes.
- */
+/******************************************************
+ * Monolog settings for application logging purposes. *
+ ******************************************************/
 
 return [
     // log channel for logging
