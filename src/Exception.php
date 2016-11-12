@@ -1,7 +1,7 @@
 <?php
 namespace Avenue;
 
-use Exception as CoreException;
+use Exception as BaseException;
 use Avenue\App;
 use Avenue\Interfaces\ExceptionInterface;
 
@@ -25,9 +25,9 @@ class Exception implements ExceptionInterface
      * Exception class constructor.
      *
      * @param App $app
-     * @param CoreException $exception
+     * @param BaseException $exception
      */
-    public function __construct(App $app, CoreException $exception)
+    public function __construct(App $app, BaseException $exception)
     {
         $this->app = $app;
         $this->exception = $exception;
@@ -67,6 +67,16 @@ class Exception implements ExceptionInterface
         return $response->render();
     }
 
+    /**
+     * Return the base Exception class instance.
+     *
+     * @return Exception
+     */
+    public function getBaseInstance()
+    {
+        return $this->exception;
+    }
+    
     /**
      * Get exception message.
      *
@@ -116,7 +126,7 @@ class Exception implements ExceptionInterface
     {
         return $this->exception->getTrace();
     }
-    
+
     /**
      * Get formatted string of trace.
      *

@@ -4,6 +4,11 @@ namespace Avenue\Interfaces;
 interface ExceptionInterface
 {
     /**
+     * Get base Exception class instance.
+     */
+    public function getBaseInstance();
+
+    /**
      * Get the exception error message.
      */
     public function getMessage();

@@ -204,30 +204,23 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
     public function testSingletonExceptionClassInstance()
     {
-        $mockedExc = $this
-        ->getMockBuilder('\Exception')
-        ->getMock();
-
         $app = new App($this->config, uniqid(rand()));
-        $app->container('fakeException', function() use ($app, $mockedExc) {
-            return new Exception($app, $mockedExc);
+        $app->container('fakeException', function() use ($app) {
+            return new Exception($app, new \Exception('test exception'));
         });
 
         $exception = $app->fakeException();
         $this->assertTrue($exception instanceof Exception);
+        $this->assertTrue($exception->getBaseInstance() instanceof \Exception);
     }
 
     public function testSingletonExceptionClassInstanceViaStaticMethod()
     {
-        $mockedExc = $this
-        ->getMockBuilder('\Exception')
-        ->getMock();
-
         $app = new App($this->config, uniqid(rand()));
-        $app->container('fakeException', function() use ($app, $mockedExc) {
-            return new Exception($app, $mockedExc);
+        $app->container('fakeException', function() use ($app) {
+            return new Exception($app, new \Exception('test exception'));
         });
-
+        
         $this->assertEquals($app->fakeException(), App::fakeException());
     }
 
