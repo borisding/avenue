@@ -376,8 +376,9 @@ class AppTest extends \PHPUnit_Framework_TestCase
     {
         $this->loadTranslationFile();
         $this->assertEquals('您好', $this->app->t('text.name'));
+        $this->assertEquals('符号 ¥', $this->app->t('测试.符号', ['¥']));
     }
-
+    
     public function testValidTranslationWithPlaceholders()
     {
         $this->loadTranslationFile();
