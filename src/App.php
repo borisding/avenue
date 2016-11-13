@@ -381,7 +381,7 @@ class App implements AppInterface
     {
         return $this->locale;
     }
-    
+
     /**
      * Set locale for internationalization and localization.
      * Language file content must be returning array.
@@ -481,6 +481,7 @@ class App implements AppInterface
 
     /**
      * Register app config and services that bound with current app ID.
+     * Exit application if empty ID provided.
      *
      * @param  mixed $config
      * @param  mixed $id
@@ -489,6 +490,11 @@ class App implements AppInterface
     protected function registerApp($config, $id)
     {
         $this->config = $config;
+
+        if (empty(trim($id))) {
+            exit('App ID must not be empty!');
+        }
+        
         static::$id = $id;
 
         if (!isset(static::$services[$id])) {
