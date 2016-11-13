@@ -363,7 +363,7 @@ class Request implements RequestInterface
 
     /**
      * Return the raw data via request body.
-     * Note applicable for enctype="multipart/form-data".
+     * Not applicable for enctype="multipart/form-data".
      *
      * @return string
      */
