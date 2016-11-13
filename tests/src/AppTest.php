@@ -220,7 +220,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $app->container('fakeException', function() use ($app) {
             return new Exception($app, new \Exception('test exception'));
         });
-        
+
         $this->assertEquals($app->fakeException(), App::fakeException());
     }
 
@@ -342,5 +342,61 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testGetSecret()
     {
         $this->assertEquals('secretfortestonly', $this->app->getSecret());
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testSetLocaleInvalidArgumentExceptionForEmptyValue()
+    {
+        $this->app->setLocale(null);
+    }
+
+    /**
+     * @expectedException RuntimeException
+     */
+    public function testSetLocaleRuntimeExceptionFileNotFound()
+    {
+        $this->app->setLocale('en-US', 'path/to/en-US.php');
+    }
+
+    public function testSetGetLocale()
+    {
+        $locale = 'en-US';
+        $this->app->setLocale($locale);
+        $this->assertEquals($locale, $this->app->getLocale());
+    }
+
+    private function loadTranslationFile()
+    {
+        return $this->app->setLocale('zh-CN', __DIR__ . '/mocks/zh-CN.php');
+    }
+
+    public function testValidTranslation()
+    {
+        $this->loadTranslationFile();
+        $this->assertEquals('您好', $this->app->t('text.name'));
+    }
+
+    public function testValidTranslationWithPlaceholders()
+    {
+        $this->loadTranslationFile();
+        $this->assertEquals('嗨！小明. 你见到小强了吗？', $this->app->t('text.hasPlaceholders', ['小明', '小强']));
+    }
+
+    public function testValidTranslationWithInvalidPlaceholers()
+    {
+        $this->loadTranslationFile();
+        $this->assertEquals('嗨！{ 0 }. 你见到{ 1}了吗？', $this->app->t('text.invalidPlaceholders', ['小明', '小强']));
+    }
+
+    public function testInvalidTranslations()
+    {
+        $this->loadTranslationFile();
+
+        $this->assertEquals('text.name.more', $this->app->t('text.name.more'));
+        $this->assertEquals('text..name', $this->app->t('text..name'));
+        $this->assertEquals('textname', $this->app->t('textname'));
+        $this->assertEquals('', $this->app->t(''));
     }
 }
