@@ -83,6 +83,11 @@ interface AppInterface
     public static function getInstance();
 
     /**
+     * Get current locale of application.
+     */
+    public function getLocale();
+    
+    /**
      * Set locale for application.
      *
      * @param mixed $locale

@@ -94,6 +94,13 @@ class App implements AppInterface
     protected $exception;
 
     /**
+     * Locale of application
+     *
+     * @var mixed
+     */
+    protected $locale;
+
+    /**
      * Language source.
      *
      * @var mixed
@@ -101,7 +108,7 @@ class App implements AppInterface
     protected $language;
 
     /**
-     * Application's configurations.
+     * Configuration of application
      *
      * @var array
      */
@@ -136,7 +143,7 @@ class App implements AppInterface
     protected static $instances = [];
 
     /**
-     * Application's default timezone.
+     * Default timezone of application.
      *
      * @var string
      */
@@ -366,14 +373,27 @@ class App implements AppInterface
     }
 
     /**
+     * Retrieving current locale of application.
+     *
+     * @return mixed
+     */
+    public function getLocale()
+    {
+        return $this->locale;
+    }
+    
+    /**
      * Set locale for internationalization and localization.
      * Language file content must be returning array.
      *
      * @param mixed $locale
      * @param mixed $languageFile
+     * @return \Avenue\App
      */
     public function setLocale($locale, $languageFile = null)
     {
+        $this->locale = $locale;
+
         if (empty($locale)) {
             throw new \InvalidArgumentException('Locale is required for internationalization & localization!');
         }
@@ -387,6 +407,7 @@ class App implements AppInterface
         }
 
         $this->language = require $languageFile;
+        return $this;
     }
 
     /**
@@ -426,7 +447,7 @@ class App implements AppInterface
                 $i++;
             }
         }
-        
+
         return $translated;
     }
 
