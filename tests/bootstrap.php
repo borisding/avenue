@@ -23,6 +23,10 @@ define('AVENUE_APP_DIR', AVENUE_ROOT_DIR . '/app');
 defined('AVENUE_CONFIG_DIR') or
 define('AVENUE_CONFIG_DIR', AVENUE_ROOT_DIR . '/config');
 
+// path to avenue `i18n` directory
+defined('AVENUE_I18N_DIR') or
+define('AVENUE_I18N_DIR', AVENUE_ROOT_DIR . '/i18n');
+
 // path to avenue `logs` directory
 defined('AVENUE_LOGS_DIR') or
 define('AVENUE_LOGS_DIR', AVENUE_ROOT_DIR . '/logs');

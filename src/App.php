@@ -94,6 +94,13 @@ class App implements AppInterface
     protected $exception;
 
     /**
+     * Language source.
+     *
+     * @var mixed
+     */
+    protected $language;
+
+    /**
      * Application's configurations.
      *
      * @var array
@@ -356,6 +363,71 @@ class App implements AppInterface
     public static function getInstance()
     {
         return isset(static::$apps[static::$id]) ? static::$apps[static::$id] : null;
+    }
+
+    /**
+     * Set locale for internationalization and localization.
+     * Language file content must be returning array.
+     *
+     * @param mixed $locale
+     * @param mixed $languageFile
+     */
+    public function setLocale($locale, $languageFile = null)
+    {
+        if (empty($locale)) {
+            throw new \InvalidArgumentException('Locale is required for internationalization & localization!');
+        }
+
+        if (empty($languageFile)) {
+            $languageFile = sprintf('%s/%s.php', AVENUE_I18N_DIR, $locale);
+        }
+
+        if (!file_exists($languageFile)) {
+            throw new \RuntimeException(sprintf('Language file [%s] not found!', $languageFile));
+        }
+
+        $this->language = require $languageFile;
+    }
+
+    /**
+     * Translate source into targeted language.
+     * Values can be passed as indexed array for source that has placeholder(s).
+     * Support one level where indicated by a 'dot' in source label. Deep nesting not supported.
+     *
+     * @param  mixed $source
+     * @param  array $values
+     * @return mixed
+     */
+    public function t($source, array $values = []) {
+        $translated = $source;
+        $arrSource = [];
+
+        if (is_null($this->language) || strpos($source, '.') === false) {
+            return $source;
+        }
+
+        $arrSource = explode('.', $source);
+
+        // simply return as source label if deep nesting intended
+        if (count($arrSource) !== 2) {
+            return $source;
+        }
+
+        // get the source plain text and translate it
+        list($type, $name) = $arrSource;
+        $translated = $this->arrGet($name, $this->arrGet($type, $this->language, []), $source);
+
+        // replace placeholder(s) with values, if any
+        if (!empty($values)) {
+            $i = 0;
+
+            foreach ($values as $value) {
+                $translated = str_replace(sprintf('{%d}', $i), $value, $translated);
+                $i++;
+            }
+        }
+        
+        return $translated;
     }
 
     /**

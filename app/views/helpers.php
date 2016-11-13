@@ -16,3 +16,8 @@ $view->register('baseUrl', function() use ($app) {
 $view->register('version', function() use ($app) {
     return $app->getAppVersion();
 });
+
+// translation helper
+$view->register('t', function($source, array $value = []) use ($app) {
+    return $app->t($source, $value);
+});

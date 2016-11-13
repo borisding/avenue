@@ -81,4 +81,20 @@ interface AppInterface
      * Get the app instance.
      */
     public static function getInstance();
+
+    /**
+     * Set locale for application.
+     *
+     * @param mixed $locale
+     * @param mixed $languageFile
+     */
+    public function setLocale($locale, $languageFile);
+
+    /**
+     * Translate source text.
+     *
+     * @param  mixed $source
+     * @param  array  $values
+     */
+    public function t($source, array $values);
 }

@@ -1,1 +1,1 @@
-<h1>Hello!</h1>
+<h1><?= $this->t('text.hello'); ?></h1>
