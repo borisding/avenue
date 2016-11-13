@@ -1,19 +1,18 @@
-# allow rewriting
-RewriteEngine On
+<IfModule mod_rewrite.c>
+    # prevent access to directory list
+    Options All -Indexes
 
-# targeted directory to install
-RewriteBase /avenue/
+    # allow rewriting
+    RewriteEngine On
 
-# prevent hidden files from being viewed
-<Files .*>
-    Order Deny,Allow
-    Deny From All
-</Files>
+    # targeted directory to install
+    RewriteBase /avenue/
 
-# rewrite url rule for directory
-RewriteRule ^(?:app|config|i18n|src|logs|tests|vendor)\b.* index.php/$0 [L]
+    # rewrite url rule for directory
+    RewriteRule ^(?:app|config|i18n|src|logs|tests|vendor)\b.* index.php/$0 [L]
 
-# front control and url rewriting to index.php
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule .* index.php/$0 [PT]
+    # front control and url rewriting to index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule .* index.php/$0 [PT]
+</IfModule>
