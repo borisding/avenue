@@ -440,11 +440,9 @@ class App implements AppInterface
 
         // replace placeholder(s) with values, if any
         if (!empty($values)) {
-            $i = 0;
-
-            foreach ($values as $value) {
-                $translated = str_replace(sprintf('{%d}', $i), $value, $translated);
-                $i++;
+            
+            foreach ($values as $index => $value) {
+                $translated = str_replace(sprintf('{%d}', $index), $value, $translated);
             }
         }
 
@@ -494,7 +492,7 @@ class App implements AppInterface
         if (empty(trim($id))) {
             exit('App ID must not be empty!');
         }
-        
+
         static::$id = $id;
 
         if (!isset(static::$services[$id])) {

@@ -261,7 +261,7 @@ class Command implements CommandInterface
         $this->withClassModeRun($name, $ctorArgs);
         return $this->statement->fetchAll();
     }
-    
+
     /**
      * Fetch a column from the next row.
      *
@@ -325,11 +325,9 @@ class Command implements CommandInterface
             }
         // for '?' binding
         } else {
-            $column = 1;
 
-            foreach ($params as $value) {
-                $this->bind($column, $value, $reference);
-                $column++;
+            foreach ($params as $column => $value) {
+                $this->bind(++$column, $value, $reference);
             }
         }
 
