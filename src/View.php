@@ -126,7 +126,7 @@ class View implements ViewInterface
         $viewFile = AVENUE_APP_DIR . '/views/' . $filename;
 
         if (!file_exists($viewFile)) {
-            throw new \Exception(sprintf('View [%s] not found!', $viewFile));
+            throw new \RuntimeException(sprintf('View [%s] not found!', $viewFile));
         }
 
         return $viewFile;

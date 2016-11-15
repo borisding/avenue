@@ -130,7 +130,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException LogicException
+     * @expectedException RuntimeException
      */
     public function testThrowLogicExceptionForInitController()
     {
@@ -144,7 +144,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException LogicException
+     * @expectedException RuntimeException
      */
     public function testThrowLogicExceptionForNoBaseController()
     {
