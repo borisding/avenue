@@ -9,7 +9,7 @@ interface AppInterface
     public function addRoute();
 
     /**
-     * Container method that registers the dependencies.
+     * Container method that registers the dependencies or services.
      *
      * @param mixed $name
      * @param \Closure $callback
@@ -17,11 +17,12 @@ interface AppInterface
     public function container($name, \Closure $callback);
 
     /**
-     * Resolve the registered dependencies.
+     * Resolve the registered service.
      *
      * @param mixed $name
+     * @param array $params
      */
-    public function resolve($name);
+    public function resolve($name, array $params = []);
 
     /**
      * Return the singleton via object service.
@@ -86,7 +87,7 @@ interface AppInterface
      * Get current locale of application.
      */
     public function getLocale();
-    
+
     /**
      * Set locale for application.
      *

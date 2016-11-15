@@ -105,8 +105,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
     public function testContainerWithAppInstancePassedToCallback()
     {
-        $this->app->container('getAppInstance', function($app) {
-            return $app;
+        $this->app->container('getAppInstance', function() {
+            return $this->app;
         });
 
         $app = $this->app->resolve('getAppInstance');
@@ -279,6 +279,27 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($session instanceof Session);
     }
 
+    public function testResolveServiceWithParametersInCallback()
+    {
+        $this->app->container('greeting', function($param1, $param2) {
+            return sprintf('%s %s', $param1, $param2);
+        });
+
+        $this->assertEquals('hello world', $this->app->resolve('greeting', ['hello', 'world']));
+    }
+
+    /**
+     * @expectedException RuntimeException
+     */
+    public function testResolveSingletonWithParametersThrowsException()
+    {
+        $this->app->container('testService', function($param1, $param2) {
+            return new \stdClass;
+        });
+
+        $this->app->singleton('testService');
+    }
+
     /**
      * @expectedException LogicException
      */
@@ -378,7 +399,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('您好', $this->app->t('text.name'));
         $this->assertEquals('符号 ¥', $this->app->t('测试.符号', ['¥']));
     }
-    
+
     public function testValidTranslationWithPlaceholders()
     {
         $this->loadTranslationFile();

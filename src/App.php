@@ -204,9 +204,10 @@ class App implements AppInterface
      * Resolve registered service via callback by providing its name.
      *
      * @param  string $name
+     * @param array $params
      * @return mixed
      */
-    public function resolve($name)
+    public function resolve($name, array $params = [])
     {
         $services = &$this->getServices();
 
@@ -214,7 +215,15 @@ class App implements AppInterface
             throw new \LogicException(sprintf('Service [%s] is not registered!', $name));
         }
 
-        return $services[$name](static::getInstance());
+        // simply throw exception when trying to resolve for singleton's callable with parameters
+        // otherwise, resolve aimed service with passed parameters, if any
+        $numberOfParams = (new \ReflectionFunction($services[$name]))->getNumberOfParameters();
+
+        if ($numberOfParams > 0 && debug_backtrace()[1]['function'] === 'singleton') {
+            throw new \RuntimeException(sprintf('Passing arguments to singleton [%s] callable is forbidden.', $name));
+        }
+
+        return call_user_func_array($services[$name], $params);
     }
 
     /**
@@ -440,7 +449,7 @@ class App implements AppInterface
 
         // replace placeholder(s) with values, if any
         if (!empty($values)) {
-            
+
             foreach ($values as $index => $value) {
                 $translated = str_replace(sprintf('{%d}', $index), $value, $translated);
             }
@@ -487,12 +496,11 @@ class App implements AppInterface
      */
     protected function registerApp($config, $id)
     {
-        $this->config = $config;
-
         if (empty(trim($id))) {
             exit('App ID must not be empty!');
         }
 
+        $this->config = $config;
         static::$id = $id;
 
         if (!isset(static::$services[$id])) {
@@ -580,36 +588,36 @@ class App implements AppInterface
      */
     protected function registerServices()
     {
-        $this->container('request', function($app) {
-            return new Request($app);
+        $this->container('request', function() {
+            return new Request($this);
         });
 
-        $this->container('response', function($app) {
-            return new Response($app);
+        $this->container('response', function() {
+            return new Response($this);
         });
 
-        $this->container('route', function($app) {
-            return new Route($app);
+        $this->container('route', function() {
+            return new Route($this);
         });
 
-        $this->container('view', function($app) {
-            return new View($app);
+        $this->container('view', function() {
+            return new View($this);
         });
 
-        $this->container('exception', function($app) {
-            return new Exception($app, $app->exception);
+        $this->container('exception', function() {
+            return new Exception($this, $this->exception);
         });
 
-        $this->container('crypt', function($app) {
-            return new Crypt($app->getSecret());
+        $this->container('crypt', function() {
+            return new Crypt($this->getSecret());
         });
 
-        $this->container('cookie', function($app) {
-            return new Cookie($app, $app->getConfig('state')['cookie']);
+        $this->container('cookie', function() {
+            return new Cookie($this, $this->getConfig('state')['cookie']);
         });
 
-        $this->container('session', function($app) {
-            return new Session(new SessionDatabaseHandler($app, $app->getConfig('state')['session']));
+        $this->container('session', function() {
+            return new Session(new SessionDatabaseHandler($this, $this->getConfig('state')['session']));
         });
 
         return $this->factory();

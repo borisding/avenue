@@ -5,7 +5,7 @@
  ***********************************************************************/
 
 // error handling via registered error handler
-$app->container('errorHandler', function($app) {
+$app->container('errorHandler', function() use ($app) {
     $environment = $app->getEnvironment();
     $response = $app->response();
 
@@ -14,12 +14,11 @@ $app->container('errorHandler', function($app) {
     if ($environment === 'staging' || $environment === 'production') {
         error_reporting(0);
         $message = ($response->getStatusCode() === 404) ? 'Page not found.' : 'Sorry! Something went wrong.';
-        $response->write($message);
-        $response->render();
+        $response->write($message)->render();
     } else {
         error_reporting(-1);
         $app->exception()->render();
     }
-
+    
     return $app;
 });
