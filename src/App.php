@@ -38,27 +38,16 @@ use Avenue\Interfaces\AppInterface;
  * @method \Avenue\State\Session session()
  * @method \Avenue\Exception exception()
  *
- * 3. Method helpers for singletons.
+ * 3. Method helpers for singletons resolvers.
  *
- * @method \Avenue\Request singleton('request')
- * @method \Avenue\Response singleton('response')
- * @method \Avenue\Route singleton('route')
- * @method \Avenue\View singleton('view')
- * @method \Avenue\Crypt singleton('crypt')
- * @method \Avenue\State\Cookie singleton('cookie')
- * @method \Avenue\State\Session singleton('session')
- * @method \Avenue\Exception singleton('exception')
- *
- * 4. Method helpers for resolvers.
- *
- * @method \Avenue\Request resolve('request')
- * @method \Avenue\Response resolve('response')
- * @method \Avenue\Route resolve('route')
- * @method \Avenue\View resolve('view')
- * @method \Avenue\Crypt resolve('crypt')
- * @method \Avenue\State\Cookie resolve('cookie')
- * @method \Avenue\State\Session resolve('session')
- * @method \Avenue\Exception resolve('exception')
+ * @method \Avenue\Request resolveSingleton('request')
+ * @method \Avenue\Response resolveSingleton('response')
+ * @method \Avenue\Route resolveSingleton('route')
+ * @method \Avenue\View resolveSingleton('view')
+ * @method \Avenue\Crypt resolveSingleton('crypt')
+ * @method \Avenue\State\Cookie resolveSingleton('cookie')
+ * @method \Avenue\State\Session resolveSingleton('session')
+ * @method \Avenue\Exception resolveSingleton('exception')
  */
 
 class App implements AppInterface
