@@ -19,7 +19,7 @@ class ControllerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException LogicException
+     * @expectedException RuntimeException
      */
     public function testControllerActionLogicException()
     {

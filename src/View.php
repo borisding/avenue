@@ -162,7 +162,7 @@ class View implements ViewInterface
     public function __call($name, array $params = [])
     {
         if (!array_key_exists($name, $this->helpers)) {
-            throw new \LogicException(sprintf('Calling invalid helper [%s]', $name));
+            throw new \RuntimeException(sprintf('Calling invalid helper [%s]', $name));
         }
 
         return call_user_func_array($this->helpers[$name], $params);

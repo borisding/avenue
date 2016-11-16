@@ -119,7 +119,7 @@ abstract class Controller implements ControllerInterface
 
         // check if controller action does exit before invoking action
         if (!method_exists($this, $action)) {
-            throw new \LogicException(sprintf('Controller action method [%s] not found.', $action), 404);
+            throw new \RuntimeException(sprintf('Controller action method [%s] not found.', $action), 404);
         }
 
         return call_user_func_array([$this, $action], []);

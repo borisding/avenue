@@ -56,6 +56,14 @@ class ViewTest extends \PHPUnit_Framework_TestCase
         $this->view->register('~!@#test', function() {});
     }
 
+    /**
+     * @expectedException RuntimeException
+     */
+    public function testInvokeInvalidHelper()
+    {
+        $this->view->registeredHelper();
+    }
+
     public function testRegisteredHelperReturnsUpperCase()
     {
         $this->view->register('upper', function() {

@@ -650,7 +650,7 @@ class App implements AppInterface
             return $this->singleton($name);
         }
 
-        throw new \LogicException(sprintf('Method [%s] does not exist!', $name));
+        throw new \RuntimeException(sprintf('Method [%s] does not exist!', $name));
     }
 
     /**
@@ -670,6 +670,6 @@ class App implements AppInterface
             return static::getInstance()->singleton($name);
         }
 
-        throw new \LogicException(sprintf('Static method [%s] does not exist!', $name));
+        throw new \RuntimeException(sprintf('Static method [%s] does not exist!', $name));
     }
 }
