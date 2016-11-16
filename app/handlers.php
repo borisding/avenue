@@ -5,7 +5,7 @@
  ***********************************************************************/
 
 // error handling via registered error handler
-$app->container('errorHandler', function() use ($app) {
+$app->container('errorHandler', function($app) {
     $environment = $app->getEnvironment();
     $response = $app->response();
 
@@ -19,6 +19,6 @@ $app->container('errorHandler', function() use ($app) {
         error_reporting(-1);
         $app->exception()->render();
     }
-    
+
     return $app;
 });

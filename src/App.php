@@ -108,18 +108,18 @@ class App implements AppInterface
     protected $language;
 
     /**
-     * Configuration of application
-     *
-     * @var array
-     */
-    protected $config = [];
-
-    /**
      * App ID.
      *
      * @var mixed
      */
     protected static $id;
+
+    /**
+     * Configuration of application
+     *
+     * @var array
+     */
+    protected $config = [];
 
     /**
      * List of App class instances.
@@ -136,7 +136,14 @@ class App implements AppInterface
     protected static $services = [];
 
     /**
-     * List of singleton class instances.
+     * List of registered singletons.
+     *
+     * @var array
+     */
+    protected static $singletons = [];
+
+    /**
+     * List of singleton object instances.
      *
      * @var array
      */
@@ -187,17 +194,49 @@ class App implements AppInterface
      */
     public function container($name, \Closure $callback)
     {
-        $services = &$this->getServices();
+        $id = $this->getId();
 
-        if (array_key_exists($name, $services)) {
+        if (!$this->isValidMethodName($name)) {
+            throw new \InvalidArgumentException('Invalid registered name for service container!');
+        }
+
+        if (!isset(static::$services[$id])) {
+            throw new \InvalidArgumentException('Failed to retrieve registered services.');
+        }
+
+        if (array_key_exists($name, static::$services[$id])) {
             throw new \LogicException(sprintf('Duplicate service name [%s]. It is already taken!', $name));
         }
 
+        return static::$services[$id][$name] = $callback;
+    }
+
+    /**
+     * Container to register singleton.
+     * Always returning one object instance when it is resolved.
+     * This allows specific class instance to be reached globally.
+     *
+     * @param  string $name
+     * @param  Closure $callback
+     * @return Closure
+     */
+    public function singleton($name, \Closure $callback)
+    {
+        $id = $this->getId();
+
         if (!$this->isValidMethodName($name)) {
-            throw new \InvalidArgumentException('Invalid registered name for container!');
+            throw new \InvalidArgumentException('Invalid registered name for singleton container!');
         }
 
-        return $services[$name] = $callback;
+        if (!isset(static::$singletons[$id])) {
+            throw new \InvalidArgumentException('Failed to retrieve registered singletons.');
+        }
+
+        if (array_key_exists($name, static::$singletons[$id])) {
+            throw new \LogicException(sprintf('Duplicate singleton name [%s]. It is already taken!', $name));
+        }
+
+        return static::$singletons[$id][$name] = $callback;
     }
 
     /**
@@ -209,43 +248,37 @@ class App implements AppInterface
      */
     public function resolve($name, array $params = [])
     {
-        $services = &$this->getServices();
+        $id = $this->getId();
 
-        if (!array_key_exists($name, $services)) {
+        if (!array_key_exists($name, static::$services[$id])) {
             throw new \LogicException(sprintf('Service [%s] is not registered!', $name));
         }
 
-        // simply throw exception when trying to resolve for singleton's callable with parameters
-        // otherwise, resolve aimed service with passed parameters, if any
-        $numberOfParams = (new \ReflectionFunction($services[$name]))->getNumberOfParameters();
+        // prepend app class instance to the beginning of params
+        array_unshift($params, static::getInstance());
 
-        if ($numberOfParams > 0 && debug_backtrace()[1]['function'] === 'singleton') {
-            throw new \RuntimeException(sprintf('Passing arguments to singleton [%s] callable is forbidden.', $name));
-        }
-
-        return call_user_func_array($services[$name], $params);
+        return call_user_func_array(static::$services[$id][$name], $params);
     }
 
     /**
-     * Making sure only one class instance created at one time.
-     * This allows specific class instance to be reached globally.
+     * Resolve registered singleton via container.
      *
-     * @param  string $name
+     * @param  mixed $name
      * @return object
      */
-    public function singleton($name)
+    public function resolveSingleton($name)
     {
-        $singletons = &$this->getSingletons();
+        $singletons = static::$singletons[$this->getId()];
 
-        if (!array_key_exists($name, $singletons)) {
-            $singletons[$name] = $this->resolve($name);
+        if (!array_key_exists($name, static::$instances)) {
+            static::$instances[$name] = $singletons[$name](static::getInstance());
         }
 
-        if (!is_object($singletons[$name])) {
+        if (!is_object(static::$instances[$name])) {
             throw new \InvalidArgumentException(sprintf('Non-object returned for [%s] singleton.', $name));
         }
 
-        return $singletons[$name];
+        return static::$instances[$name];
     }
 
     /**
@@ -459,35 +492,7 @@ class App implements AppInterface
     }
 
     /**
-     * Return the list of registered services.
-     *
-     * @return array
-     */
-    protected function &getServices()
-    {
-        if (!isset(static::$services[$this->getId()])) {
-            throw new \InvalidArgumentException('Failed to retrieve services.');
-        }
-
-        return static::$services[$this->getId()];
-    }
-
-    /**
-     * Return the list of singleton instances.
-     *
-     * @return array
-     */
-    protected function &getSingletons()
-    {
-        if (!isset(static::$instances[$this->getId()])) {
-            throw new \InvalidArgumentException('Failed to retrieve instances for singleton.');
-        }
-
-        return static::$instances[$this->getId()];
-    }
-
-    /**
-     * Register app config and services that bound with current app ID.
+     * Register app service and singleton containers that bound with current app ID.
      * Exit application if empty ID provided.
      *
      * @param  mixed $config
@@ -507,8 +512,8 @@ class App implements AppInterface
             static::$services[$id] = [];
         }
 
-        if (!isset(static::$instances[$id])) {
-            static::$instances[$id] = [];
+        if (!isset(static::$singletons[$id])) {
+            static::$singletons[$id] = [];
         }
 
         if (!isset(static::$apps[$id])) {
@@ -588,36 +593,36 @@ class App implements AppInterface
      */
     protected function registerServices()
     {
-        $this->container('request', function() {
-            return new Request($this);
+        $this->singleton('request', function($app) {
+            return new Request($app);
         });
 
-        $this->container('response', function() {
-            return new Response($this);
+        $this->singleton('response', function($app) {
+            return new Response($app);
         });
 
-        $this->container('route', function() {
-            return new Route($this);
+        $this->singleton('route', function($app) {
+            return new Route($app);
         });
 
-        $this->container('view', function() {
-            return new View($this);
+        $this->singleton('view', function($app) {
+            return new View($app);
         });
 
-        $this->container('exception', function() {
-            return new Exception($this, $this->exception);
+        $this->singleton('exception', function($app) {
+            return new Exception($app, $app->exception);
         });
 
-        $this->container('crypt', function() {
-            return new Crypt($this->getSecret());
+        $this->singleton('crypt', function($app) {
+            return new Crypt($app->getSecret());
         });
 
-        $this->container('cookie', function() {
-            return new Cookie($this, $this->getConfig('state')['cookie']);
+        $this->singleton('cookie', function($app) {
+            return new Cookie($app, $app->getConfig('state')['cookie']);
         });
 
-        $this->container('session', function() {
-            return new Session(new SessionDatabaseHandler($this, $this->getConfig('state')['session']));
+        $this->singleton('session', function($app) {
+            return new Session(new SessionDatabaseHandler($app, $app->getConfig('state')['session']));
         });
 
         return $this->factory();
@@ -646,8 +651,8 @@ class App implements AppInterface
      */
     public function __call($name, array $params = [])
     {
-        if (array_key_exists($name, $this->getServices())) {
-            return $this->singleton($name);
+        if (array_key_exists($name, static::$singletons[static::$id])) {
+            return $this->resolveSingleton($name);
         }
 
         throw new \RuntimeException(sprintf('Method [%s] does not exist!', $name));
@@ -666,8 +671,8 @@ class App implements AppInterface
      */
     public static function __callStatic($name, array $params = [])
     {
-        if (array_key_exists($name, static::getInstance()->getServices())) {
-            return static::getInstance()->singleton($name);
+        if (array_key_exists($name, static::$singletons[static::$id])) {
+            return static::getInstance()->resolveSingleton($name);
         }
 
         throw new \RuntimeException(sprintf('Static method [%s] does not exist!', $name));

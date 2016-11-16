@@ -54,7 +54,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testDuplicateServiceName()
     {
         $app = new App($this->config, 'test-duplicate');
-        $app->container('request', function() {});
+        $app->container('test', function() {});
+        $app->container('test', function() {});
     }
 
     /**
@@ -103,6 +104,30 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, $this->app->resolve('calculation'));
     }
 
+    public function testContainerReceivedAppInCallback()
+    {
+        $this->app->container('testapp', function($app) {
+            $this->assertTrue($app instanceof App);
+        });
+    }
+
+    public function testSingletonContainer()
+    {
+        $this->app->singleton('object', function() {
+            return new \stdClass;
+        });
+
+        $this->assertTrue(is_object($this->app->resolveSingleton('object')));
+    }
+
+    public function testSingletonContainerReceivedAppInCallback()
+    {
+        $this->app->singleton('testapp', function($app) {
+            $this->assertTrue($app instanceof App);
+            return new \stdClass;
+        });
+    }
+
     public function testContainerWithAppInstancePassedToCallback()
     {
         $this->app->container('getAppInstance', function() {
@@ -139,16 +164,16 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testSingletonThrowsExceptionForNonObject()
     {
-        $this->app->container('classObjectNotExist', function() {
+        $this->app->singleton('classObjectNotExist', function($app) {
             return 'I am just a string.';
         });
 
-        $this->app->singleton('classObjectNotExist');
+        $this->app->resolveSingleton('classObjectNotExist');
     }
 
     public function testSingletonReturnsClassInstance()
     {
-        $request = $this->app->singleton('request');
+        $request = $this->app->resolveSingleton('request');
         $this->assertTrue($request instanceof Request);
     }
 
@@ -205,7 +230,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testSingletonExceptionClassInstance()
     {
         $app = new App($this->config, uniqid(rand()));
-        $app->container('fakeException', function() use ($app) {
+        $app->singleton('fakeException', function() use ($app) {
             return new Exception($app, new \Exception('test exception'));
         });
 
@@ -217,7 +242,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testSingletonExceptionClassInstanceViaStaticMethod()
     {
         $app = new App($this->config, uniqid(rand()));
-        $app->container('fakeException', function() use ($app) {
+        $app->singleton('fakeException', function() use ($app) {
             return new Exception($app, new \Exception('test exception'));
         });
 
@@ -256,7 +281,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
         ->getMock();
 
         $app = new App($this->config, uniqid(rand()));
-        $app->container('fakeSession', function() use ($mockedHandler) {
+        $app->singleton('fakeSession', function() use ($mockedHandler) {
             return new Session($mockedHandler);
         });
 
@@ -281,23 +306,11 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
     public function testResolveServiceWithParametersInCallback()
     {
-        $this->app->container('greeting', function($param1, $param2) {
+        $this->app->container('greeting', function($app, $param1, $param2) {
             return sprintf('%s %s', $param1, $param2);
         });
 
         $this->assertEquals('hello world', $this->app->resolve('greeting', ['hello', 'world']));
-    }
-
-    /**
-     * @expectedException RuntimeException
-     */
-    public function testResolveSingletonWithParametersThrowsException()
-    {
-        $this->app->container('testService', function($param1, $param2) {
-            return new \stdClass;
-        });
-
-        $this->app->singleton('testService');
     }
 
     /**

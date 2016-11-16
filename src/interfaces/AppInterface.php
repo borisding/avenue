@@ -17,7 +17,16 @@ interface AppInterface
     public function container($name, \Closure $callback);
 
     /**
+     * Container method that registers the singleton.
+     *
+     * @param mixed $name
+     * @param \Closure $callback
+     */
+    public function singleton($name, \Closure $callback);
+
+    /**
      * Resolve the registered service.
+     * Parameters are allowed for resolver.
      *
      * @param mixed $name
      * @param array $params
@@ -25,11 +34,11 @@ interface AppInterface
     public function resolve($name, array $params = []);
 
     /**
-     * Return the singleton via object service.
+     * Resolve the registered singleton.
      *
-     * @param mixed $name
+     * @param  mixed $name
      */
-    public function singleton($name);
+    public function resolveSingleton($name);
 
     /**
      * Running application by rendering the application output.

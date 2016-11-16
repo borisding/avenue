@@ -4,7 +4,7 @@
  ********************************************************************/
 
 // register monolog dependency for logging
-$app->container('logger', function() use ($app) {
+$app->singleton('logger', function($app) {
     extract($app->getConfig('logging'));
 
     $logger = new \Monolog\Logger($channel);
