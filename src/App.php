@@ -183,21 +183,7 @@ class App implements AppInterface
      */
     public function container($name, \Closure $callback)
     {
-        $id = $this->getId();
-
-        if (!$this->isValidMethodName($name)) {
-            throw new \InvalidArgumentException('Invalid registered name for service container!');
-        }
-
-        if (!isset(static::$services[$id])) {
-            throw new \InvalidArgumentException('Failed to retrieve registered services.');
-        }
-
-        if (array_key_exists($name, static::$services[$id])) {
-            throw new \LogicException(sprintf('Duplicate service name [%s]. It is already taken!', $name));
-        }
-
-        return static::$services[$id][$name] = $callback;
+        return $this->register($name, $callback);
     }
 
     /**
@@ -211,21 +197,36 @@ class App implements AppInterface
      */
     public function singleton($name, \Closure $callback)
     {
+        return $this->register($name, $callback, 'singleton');
+    }
+
+    /**
+     * Register specific service based on the container's type.
+     *
+     * @param  mixed  $name
+     * @param  Closure $callback
+     * @param  string  $type
+     * @return Closure
+     */
+    protected function register($name, \Closure $callback, $type = 'service')
+    {
         $id = $this->getId();
 
+        if ($type === 'singleton') {
+            $container = &static::$singletons[$id];
+        } else {
+            $container = &static::$services[$id];
+        }
+        
         if (!$this->isValidMethodName($name)) {
-            throw new \InvalidArgumentException('Invalid registered name for singleton container!');
+            throw new \InvalidArgumentException(sprintf('Invalid registered name for %s container!', $type));
         }
 
-        if (!isset(static::$singletons[$id])) {
-            throw new \InvalidArgumentException('Failed to retrieve registered singletons.');
+        if (array_key_exists($name, $container)) {
+            throw new \LogicException(sprintf('Duplicate name [%s] for %s. It is already taken!', $name, $type));
         }
 
-        if (array_key_exists($name, static::$singletons[$id])) {
-            throw new \LogicException(sprintf('Duplicate singleton name [%s]. It is already taken!', $name));
-        }
-
-        return static::$singletons[$id][$name] = $callback;
+        return $container[$name] = $callback;
     }
 
     /**
