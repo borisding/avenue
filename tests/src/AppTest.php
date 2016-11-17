@@ -402,7 +402,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
     private function loadTranslationFile()
     {
-        return $this->app->setLocale('zh-CN', __DIR__ . '/mocks/zh-CN.php');
+        return $this->app->setLocale('zh-CN', __DIR__ . '/Mocks/zh-CN.php');
     }
 
     public function testValidTranslation()
