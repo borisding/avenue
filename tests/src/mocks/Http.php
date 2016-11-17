@@ -1,5 +1,5 @@
 <?php
-namespace Avenue\Tests\Src\Mocks;
+namespace Avenue\Tests\Mocks;
 
 class Http
 {

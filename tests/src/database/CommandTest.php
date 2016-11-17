@@ -5,7 +5,7 @@ use Avenue\App;
 use Avenue\Database\Command;
 use Avenue\Database\Connection;
 use Avenue\Tests\Database\AbstractDatabaseTest;
-use Avenue\Tests\Src\Mocks\Programming;
+use Avenue\Tests\Mocks\Programming;
 use Avenue\Tests\Reflection;
 use stdClass;
 

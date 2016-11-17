@@ -2,7 +2,7 @@
 namespace Avenue\Tests;
 
 use Avenue\App;
-use Avenue\Tests\Src\Mocks\Http;
+use Avenue\Tests\Mocks\Http;
 
 require_once 'mocks/FooController.php';
 require_once 'mocks/BarController.php';

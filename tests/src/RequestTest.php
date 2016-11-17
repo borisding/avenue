@@ -2,7 +2,7 @@
 namespace Avenue\Tests;
 
 use Avenue\App;
-use Avenue\Tests\Src\Mocks\Http;
+use Avenue\Tests\Mocks\Http;
 use Avenue\Tests\Reflection;
 
 class RequestTest extends \PHPUnit_Framework_TestCase

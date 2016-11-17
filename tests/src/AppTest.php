@@ -10,7 +10,6 @@ use Avenue\Exception;
 use Avenue\Crypt;
 use Avenue\State\Cookie;
 use Avenue\State\Session;
-use Avenue\Tests\Src\Mocks\FakeApp;
 use Avenue\Tests\Reflection;
 
 class AppTest extends \PHPUnit_Framework_TestCase
