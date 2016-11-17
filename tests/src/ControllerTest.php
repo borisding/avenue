@@ -1,7 +1,7 @@
 <?php
 namespace Avenue\Tests;
 
-require_once 'mocks/FooController.php';
+require_once 'Mocks/FooController.php';
 
 use Avenue\App;
 use Avenue\Controller;

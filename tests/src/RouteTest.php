@@ -4,8 +4,8 @@ namespace Avenue\Tests;
 use Avenue\App;
 use Avenue\Tests\Mocks\Http;
 
-require_once 'mocks/FooController.php';
-require_once 'mocks/BarController.php';
+require_once 'Mocks/FooController.php';
+require_once 'Mocks/BarController.php';
 
 class RouteTest extends \PHPUnit_Framework_TestCase
 {
