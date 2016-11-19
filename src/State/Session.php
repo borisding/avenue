@@ -1,6 +1,7 @@
 <?php
 namespace Avenue\State;
 
+use SessionHandlerInterface;
 use Avenue\Interfaces\State\SessionInterface;
 use Avenue\State\SessionHandler;
 
@@ -24,9 +25,9 @@ class Session implements SessionInterface
      * Session class constructor.
      * Register respective handler methods before starting session.
      *
-     * @param SessionHandler $handler
+     * @param SessionHandlerInterface $handler
      */
-    public function __construct(SessionHandler $handler)
+    public function __construct(SessionHandlerInterface $handler)
     {
         $this->handler = $handler;
         $this->setup()->start();
@@ -151,7 +152,7 @@ class Session implements SessionInterface
     {
         return static::CSRF_TOKEN_NAME;
     }
-    
+
     /**
      * Runtime and handlers settings before starting the session.
      *

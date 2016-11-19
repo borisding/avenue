@@ -1,31 +1,16 @@
 <?php
 namespace Avenue\Tests\State;
 
+use Avenue\Tests\Mocks\SessionHandler;
 use Avenue\State\Session;
 
 class SessionTest extends \PHPUnit_Framework_TestCase
 {
     private $session;
-
-    private $handler;
-
+    
     public function setUp()
     {
-        $this->handler = $this->getMockedHandler();
-        $this->handler->expects($this->any())
-        ->method('getAppSecret')
-        ->will($this->returnCallback(function() {
-            return 'testingsessionhandler';
-        }));
-
-        $this->session = new Session($this->handler);
-    }
-
-    private function getMockedHandler()
-    {
-        return $this->getMockBuilder('\Avenue\State\SessionDatabaseHandler')
-        ->disableOriginalConstructor()
-        ->getMock();
+        $this->session = new Session(new SessionHandler);
     }
 
     /**

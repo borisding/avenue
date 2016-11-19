@@ -1,10 +1,10 @@
 <?php
 namespace Avenue\State;
 
+use SessionHandlerInterface;
 use Avenue\App;
 use Avenue\Database\Command;
 use Avenue\State\SessionHandler;
-use SessionHandlerInterface;
 
 class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInterface
 {
@@ -97,7 +97,7 @@ class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInt
             return $this->decrypt($value);
         }
 
-        return null;
+        return '';
     }
 
     /**
@@ -105,7 +105,7 @@ class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInt
      *
      * @param  mixed $id
      * @param  mixed $value
-     * @return mixed
+     * @return boolean
      */
     public function write($id, $value)
     {
@@ -130,32 +130,36 @@ class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInt
             }
         }
 
-        return $this->db->cmd($sql)->runWith($params);
+        $this->db->cmd($sql)->runWith($params);
+        return true;
     }
 
     /**
      * Invoked once session is destroyed.
      *
      * @param  mixed $id
-     * @return mixed
+     * @return boolean
      */
     public function destroy($id)
     {
         $sql = sprintf('delete from %s where id = :id', $this->table);
-        return $this->db->cmd($sql)->runWith([':id' => $id]);
+        $this->db->cmd($sql)->runWith([':id' => $id]);
+
+        return true;
     }
 
     /**
      * Garbage collection to clean up old data by removing it.
      *
      * @param  integer $lifetime
-     * @return mixed
+     * @return boolean
      */
     public function gc($lifetime)
     {
         $previous = time() - intval($lifetime);
         $sql = sprintf('delete from %s where timestamp < :timestamp', $this->table);
 
-        return $this->db->cmd($sql)->runWith([':timestamp' => $previous]);
+        $this->db->cmd($sql)->runWith([':timestamp' => $previous]);
+        return true;
     }
 }
