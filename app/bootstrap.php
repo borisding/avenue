@@ -5,7 +5,7 @@
  *********************************************************************/
 
 // retrieve app config
-$config = require_once AVENUE_CONFIG_DIR . '/app.php';
+$config = require AVENUE_CONFIG_DIR . '/app.php';
 
 // instantiate app by providing config value
 $app = new \Avenue\App($config);
@@ -16,16 +16,16 @@ $app = new \Avenue\App($config);
  *******************************************************************/
 
 // include app handlers.
-require_once 'handlers.php';
+require 'handlers.php';
 
 // include app dependencies.
-require_once 'dependencies.php';
+require 'dependencies.php';
 
 // include app routes
-require_once 'routes.php';
+require 'routes.php';
 
 // include app view helpers.
-require_once 'views/helpers.php';
+require 'views/helpers.php';
 
 // set targeted locale for application.
 $app->setLocale('en-US');

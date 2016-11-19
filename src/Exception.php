@@ -58,15 +58,14 @@ class Exception implements ExceptionInterface
             die(sprintf('Exception view [%s] not found!', $exceptionErrorFile));
         }
 
-        require_once $exceptionErrorFile;
+        require $exceptionErrorFile;
 
         $response = $this->app->response();
         $response->write('');
-        $response->write(ob_get_clean());
 
-        return $response->render();
+        return $response->write(ob_get_clean())->render();
     }
-
+    
     /**
      * Return the base Exception class instance.
      *
@@ -76,7 +75,7 @@ class Exception implements ExceptionInterface
     {
         return $this->exception;
     }
-    
+
     /**
      * Get exception message.
      *
