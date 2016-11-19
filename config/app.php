@@ -26,11 +26,11 @@ return [
     'defaultController' => 'default',
 
     // database configuration
-    'database' => require_once 'database.php',
+    'database' => require_once 'services/database.php',
 
     // logging configuration
-    'logging' => require_once 'logging.php',
+    'logging' => require_once 'services/logging.php',
 
     // state configuration
-    'state' => require_once 'state.php'
+    'state' => require_once 'services/state.php'
 ];
