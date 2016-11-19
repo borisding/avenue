@@ -1,6 +1,4 @@
-[![Build Status](https://travis-ci.org/borisding/avenue.svg?branch=master)](https://travis-ci.org/borisding/avenue)
-
-## Avenue
+## Avenue [![Build Status](https://travis-ci.org/borisding/avenue.svg?branch=master)](https://travis-ci.org/borisding/avenue)
 - A lightweight MVC framework for quick PHP web development and prototyping.
 
 ## Features
