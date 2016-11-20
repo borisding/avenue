@@ -8,6 +8,21 @@ use Avenue\Tests\Database\AbstractDatabaseTest;
 
 class ConnectionTest extends AbstractDatabaseTest
 {
+    protected $config = [
+        'timezone' => 'UTC',
+        'environment' => 'development',
+        'database' => [
+            'development' => [
+                'master' => [
+                    'dsn' => 'sqlite::memory:'
+                ],
+                'slave' => [
+                    'dsn' => 'sqlite::memory:'
+                ]
+            ]
+        ]
+    ];
+    
     public function setUp()
     {
         parent::setUp();

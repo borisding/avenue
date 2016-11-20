@@ -157,7 +157,7 @@ interface CommandInterface
     public function debug(array $params);
 
     /**
-     * Handling default select all query from master.
+     * Handling default select all query.
      *
      * @param mixed $clause
      * @param mixed $params
@@ -166,16 +166,7 @@ interface CommandInterface
     public function selectAll($clause, $params, $type);
 
     /**
-     * Handling default select all query from slave.
-     *
-     * @param mixed $clause
-     * @param mixed $params
-     * @param mixed $type
-     */
-    public function selectAllSlave($clause, $params, $type);
-
-    /**
-     * Handling default select column(s) query from master.
+     * Handling default select column(s) query.
      *
      * @param array $columns
      * @param mixed $clause
@@ -183,16 +174,6 @@ interface CommandInterface
      * @param mixed $type
      */
     public function select(array $columns, $clause, $params, $type);
-
-    /**
-     * Handling default select column(s) query from slave.
-     *
-     * @param array $columns
-     * @param mixed $clause
-     * @param mixed $params
-     * @param mixed $type
-     */
-    public function selectSlave(array $columns, $clause, $params, $type);
 
     /**
      * Handling insert query method.

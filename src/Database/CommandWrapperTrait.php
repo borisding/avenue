@@ -4,7 +4,8 @@ namespace Avenue\Database;
 trait CommandWrapperTrait
 {
     /**
-     * Select all query wrapper with/without clause and parameters from master.
+     * Select all query wrapper with/without clause and parameters.
+     * Default select from slave, and divert to master instead if slave not applicable.
      *
      * @param  mixed $clause
      * @param  mixed $params
@@ -18,31 +19,13 @@ trait CommandWrapperTrait
             $clause,
             $params,
             $type,
-            false
-        );
-    }
-
-    /**
-     * Select all query wrapper with/without clause and parameters from slave.
-     *
-     * @param  mixed $clause
-     * @param  mixed $params
-     * @param  string $type
-     * @return mixed
-     */
-    public function selectAllSlave($clause = null, $params = null, $type = 'assoc')
-    {
-        return $this->getSelectWhereClause(
-            $this->getSelectAllClause(),
-            $clause,
-            $params,
-            $type,
             true
         );
     }
 
     /**
-     * Select column(s) query wrapper with/without clause and parameters from master.
+     * Select column(s) query wrapper with/without clause and parameters.
+     * Default select from slave, and divert to master instead if slave not applicable.
      *
      * @param  array  $columns
      * @param  mixed $clause
@@ -51,26 +34,6 @@ trait CommandWrapperTrait
      * @return mixed
      */
     public function select(array $columns, $clause = null, $params = null, $type = 'assoc')
-    {
-        return $this->getSelectWhereClause(
-            $this->getSelectClause($columns),
-            $clause,
-            $params,
-            $type,
-            false
-        );
-    }
-
-    /**
-     * Select column(s) query wrapper with/without clause and parameters from slave.
-     *
-     * @param  array  $columns
-     * @param  mixed $clause
-     * @param  mixed $params
-     * @param  string $type
-     * @return mixed
-     */
-    public function selectSlave(array $columns, $clause = null, $params = null, $type = 'assoc')
     {
         return $this->getSelectWhereClause(
             $this->getSelectClause($columns),
@@ -289,7 +252,7 @@ trait CommandWrapperTrait
             }
         }
     }
-    
+
     /**
      * Return the filled placeholders based on the values.
      *

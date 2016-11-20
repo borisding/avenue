@@ -228,7 +228,7 @@ class Connection implements ConnectionInterface
         $this->master = null;
         return true;
     }
-    
+
     /**
      * Disconnect slave PDO connection.
      *
