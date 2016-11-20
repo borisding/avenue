@@ -152,9 +152,9 @@ interface CommandInterface
     public function getInsertedId();
 
     /**
-     * Debug and dump params for prepared statement.
+     * Debug SQL by passing parameter(s).
      */
-    public function ddp();
+    public function debug(array $params);
 
     /**
      * Handling default select all query from master.

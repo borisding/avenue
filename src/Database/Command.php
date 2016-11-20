@@ -10,7 +10,7 @@ use Avenue\Interfaces\Database\CommandInterface;
 class Command implements CommandInterface
 {
     use CommandWrapperTrait;
-
+    
     /**
      * App class instance.
      *
@@ -45,6 +45,13 @@ class Command implements CommandInterface
      * @var mixed
      */
     private $statement;
+
+    /**
+     * SQL statement
+     *
+     * @var string
+     */
+    private $sql;
 
     /**
      * Supported fetch types.
@@ -163,7 +170,9 @@ class Command implements CommandInterface
      */
     public function cmd($sql, $slave = false)
     {
+        $this->sql = $sql;
         $this->statement = $this->connection->getPdo($slave)->prepare($sql);
+
         return $this;
     }
 
@@ -296,7 +305,7 @@ class Command implements CommandInterface
      */
     public function bind($key, $value, $reference = false)
     {
-        $type = $this->getParamScalar($value);
+        $type = $this->getParamDataType($value);
 
         if ($reference) {
             $this->statement->bindParam($key, $value, $type);
@@ -385,13 +394,32 @@ class Command implements CommandInterface
     }
 
     /**
-     * Shortcut for debug and dump params for prepared statement.
+     * Debug by printing out raw SQL with actual value(s)
      *
      * @return mixed
      */
-    public function ddp()
+    public function debug(array $params = [])
     {
-        return $this->statement->debugDumpParams();
+        $sql = $this->sql;
+
+        foreach ($params as $param => $value) {
+
+            if (is_string($value)) {
+                $value = sprintf("'%s'", $value);
+            } elseif (is_bool($value)) {
+                $value = $value ? 'TRUE' : 'FALSE';
+            } elseif (is_null($value)) {
+                $value = 'NULL';
+            }
+
+            if (is_int($param)) {
+                $sql = preg_replace('/\?/', $value, $sql, 1);
+            } else {
+                $sql = str_replace($param, $value, $sql);
+            }
+        }
+
+        return sprintf('[SQL] %s', $sql);
     }
 
     /**
@@ -432,17 +460,13 @@ class Command implements CommandInterface
     }
 
     /**
-     * Decide and get the scalar type of passed value.
+     * Decide and get the param data type of passed value.
      *
      * @param  mixed $value
      * @return integer
      */
-    private function getParamScalar($value)
+    private function getParamDataType($value)
     {
-        if (!is_scalar($value)) {
-            throw new \InvalidArgumentException('Failed to bind parameter. Invalid scalar type.');
-        }
-
         switch ($value) {
             case is_int($value):
                 $type = PDO::PARAM_INT;

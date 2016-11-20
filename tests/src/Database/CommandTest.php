@@ -508,7 +508,7 @@ class CommandTest extends AbstractDatabaseTest
 
     public function testUpdateSingleWithNamedParameter()
     {
-        $this->db->update(['name' => 'Scala'], 'id = :id', 1);
+        $this->db->update(['name' => 'Scala'], 'id = :id', [':id' => 1]);
         $result = $this->db->select(['name']);
         $this->assertEquals('Scala', $result[0]['name']);
     }
@@ -555,5 +555,41 @@ class CommandTest extends AbstractDatabaseTest
 
         $result = $this->db->select(['name'], 'id = ?', 5);
         $this->assertEquals('Elixir', $result[0]['name']);
+    }
+
+    public function testDebugSqlWithNamedPlacheholders()
+    {
+        $rawSql = $this->db
+        ->cmd('select * from programming where name = :name or id = :id')
+        ->debug([':name' => 'php', ':id' => 1]);
+
+        $this->assertEquals("[SQL] select * from programming where name = 'php' or id = 1", $rawSql);
+    }
+
+    public function testDebugSqlWithUnnamedPlacheholders()
+    {
+        $rawSql = $this->db
+        ->cmd('select * from programming where name = ? or id = ?')
+        ->debug(['php', 1]);
+
+        $this->assertEquals("[SQL] select * from programming where name = 'php' or id = 1", $rawSql);
+    }
+
+    public function testDebugSqlWithNullValue()
+    {
+        $rawSql = $this->db
+        ->cmd('select * from programming where name = ? or id = ?')
+        ->debug([NULL, 1]);
+
+        $this->assertEquals("[SQL] select * from programming where name = NULL or id = 1", $rawSql);
+    }
+
+    public function testDebugSqlWithBooleanValue()
+    {
+        $rawSql = $this->db
+        ->cmd('select * from programming where name = ? or id = ?')
+        ->debug([TRUE, 1]);
+
+        $this->assertEquals("[SQL] select * from programming where name = TRUE or id = 1", $rawSql);
     }
 }
