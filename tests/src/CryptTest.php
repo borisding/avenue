@@ -1,4 +1,6 @@
 <?php
+namespace Avenue\Tests;
+
 use Avenue\Crypt;
 
 class CryptTest extends \PHPUnit_Framework_TestCase
