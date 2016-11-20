@@ -12,7 +12,7 @@ if (php_sapi_name() === 'cli-server') {
 }
 
 // include entry script configuration
-require_once __DIR__ . '/config/entry.php';
+require __DIR__ . '/config/entry.php';
 
 // include bootstrap file, where app started
-require_once AVENUE_APP_DIR . '/bootstrap.php';
+require AVENUE_APP_DIR . '/bootstrap.php';
