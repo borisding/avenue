@@ -215,7 +215,7 @@ trait CommandWrapperTrait
                 }
             }
         }
-
+        
         return $this->cmd($sql)->batch($values)->run();
     }
 

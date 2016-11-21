@@ -10,7 +10,7 @@ use Avenue\Interfaces\Database\CommandInterface;
 class Command implements CommandInterface
 {
     use CommandWrapperTrait;
-    
+
     /**
      * App class instance.
      *
@@ -47,11 +47,18 @@ class Command implements CommandInterface
     private $statement;
 
     /**
-     * SQL statement
+     * SQL statement.
      *
      * @var string
      */
     private $sql;
+
+    /**
+     * SQL params data.
+     *
+     * @var array
+     */
+    private $data = [];
 
     /**
      * Supported fetch types.
@@ -305,6 +312,7 @@ class Command implements CommandInterface
      */
     public function bind($key, $value, $reference = false)
     {
+        $this->data[$key] = $value;
         $type = $this->getParamDataType($value);
 
         if ($reference) {
@@ -398,11 +406,11 @@ class Command implements CommandInterface
      *
      * @return mixed
      */
-    public function debug(array $params = [])
+    public function debug()
     {
         $sql = $this->sql;
 
-        foreach ($params as $param => $value) {
+        foreach ($this->data as $param => $value) {
 
             if (is_string($value)) {
                 $value = sprintf("'%s'", $value);

@@ -28,7 +28,7 @@ class CommandTest extends AbstractDatabaseTest
     {
         parent::setUp();
     }
-    
+
     /**
      * @expectedException InvalidArgumentException
      */
@@ -228,7 +228,8 @@ class CommandTest extends AbstractDatabaseTest
     {
         $rawSql = $this->db
         ->cmd('select * from programming where name = :name or id = :id')
-        ->debug([':name' => 'php', ':id' => 1]);
+        ->batch([':name' => 'php', ':id' => 1])
+        ->debug();
 
         $this->assertEquals("[SQL] select * from programming where name = 'php' or id = 1", $rawSql);
     }
@@ -237,7 +238,8 @@ class CommandTest extends AbstractDatabaseTest
     {
         $rawSql = $this->db
         ->cmd('select * from programming where name = ? or id = ?')
-        ->debug(['php', 1]);
+        ->batch(['php', 1])
+        ->debug();
 
         $this->assertEquals("[SQL] select * from programming where name = 'php' or id = 1", $rawSql);
     }
@@ -246,7 +248,8 @@ class CommandTest extends AbstractDatabaseTest
     {
         $rawSql = $this->db
         ->cmd('select * from programming where name = ? or id = ?')
-        ->debug([NULL, 1]);
+        ->batch([NULL, 1])
+        ->debug();
 
         $this->assertEquals("[SQL] select * from programming where name = NULL or id = 1", $rawSql);
     }
@@ -255,8 +258,30 @@ class CommandTest extends AbstractDatabaseTest
     {
         $rawSql = $this->db
         ->cmd('select * from programming where name = ? or id = ?')
-        ->debug([TRUE, 1]);
+        ->batch([TRUE, 1])
+        ->debug();
 
         $this->assertEquals("[SQL] select * from programming where name = TRUE or id = 1", $rawSql);
+    }
+
+    public function testDebugSqlWithBindValue()
+    {
+        $rawSql = $this->db
+        ->cmd('select * from programming where name = :name')
+        ->bind(':name', 'Go')
+        ->debug();
+
+        $this->assertEquals("[SQL] select * from programming where name = 'Go'", $rawSql);
+    }
+
+    public function testDebugSqlWithBindMultipleValues()
+    {
+        $rawSql = $this->db
+        ->cmd('select * from programming where name = :name or id = :id')
+        ->bind(':name', 'Go')
+        ->bind(':id', 1)
+        ->debug();
+
+        $this->assertEquals("[SQL] select * from programming where name = 'Go' or id = 1", $rawSql);
     }
 }

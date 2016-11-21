@@ -27,7 +27,7 @@ class CommandWrapperTest extends AbstractDatabaseTest
     {
         parent::setUp();
     }
-    
+
     /**
      * Tests for CRUD wrappers.
      */
@@ -304,5 +304,117 @@ class CommandWrapperTest extends AbstractDatabaseTest
 
         $result = $this->db->select(['name'], 'id = ?', 5);
         $this->assertEquals('Elixir', $result[0]['name']);
+    }
+
+    public function testSelectAllDebug()
+    {
+        $this->db->selectAll();
+        $rawSql = $this->db->debug();
+
+        $this->assertEquals('[SQL] select * from programming', $rawSql);
+    }
+
+    public function testSelectAllWithWhereClauseDebug()
+    {
+        $this->db->selectAll('id = :id', [':id' => 1]);
+        $rawSql = $this->db->debug();
+
+        $this->assertEquals('[SQL] select * from programming where id = 1', $rawSql);
+    }
+
+    public function testSelectAllWithOrderByClauseDebug()
+    {
+        $this->db->selectAll('order by name');
+        $rawSql = $this->db->debug();
+
+        $this->assertEquals("[SQL] select * from programming order by name", $rawSql);
+    }
+
+    public function testSelectAllWithLimitByClauseDebug()
+    {
+        $this->db->selectAll('limit :number', [':number' => 20]);
+        $rawSql = $this->db->debug();
+
+        $this->assertEquals('[SQL] select * from programming limit 20', $rawSql);
+    }
+
+    public function testSelectWithWhereClauseDebug()
+    {
+        $this->db->select(['name'], 'id = :id', [':id' => 1]);
+        $rawSql = $this->db->debug();
+
+        $this->assertEquals('[SQL] select name from programming where id = 1', $rawSql);
+    }
+
+    public function testSelectWithOrderByClauseDebug()
+    {
+        $this->db->select(['name'], 'order by id');
+        $rawSql = $this->db->debug();
+
+        $this->assertEquals('[SQL] select name from programming order by id', $rawSql);
+    }
+
+    public function testSelectWithLimitByClauseDebug()
+    {
+        $this->db->select(['name'], 'limit :number', [':number' => 20]);
+        $rawSql = $this->db->debug();
+
+        $this->assertEquals("[SQL] select name from programming limit 20", $rawSql);
+    }
+
+    public function testInsertDebug()
+    {
+        $this->db->insert(['name' => 'Elm']);
+        $rawSql = $this->db->debug();
+
+        $this->assertEquals("[SQL] insert into programming (name) values ('Elm')", $rawSql);
+    }
+
+    public function testDeleteAllDebug()
+    {
+        $this->db->deleteAll();
+        $rawSql = $this->db->debug();
+
+        $this->assertEquals('[SQL] delete from programming', $rawSql);
+    }
+
+    public function testDeleteDebug()
+    {
+        $this->db->delete('id = :id', [':id' => 1]);
+        $rawSql = $this->db->debug();
+
+        $this->assertEquals('[SQL] delete from programming where id = 1', $rawSql);
+    }
+
+    public function testUpdateAllDebug()
+    {
+        $this->db->updateAll(['name' => 'Python']);
+        $rawSql = $this->db->debug();
+
+        $this->assertEquals("[SQL] update programming set name = 'Python'", $rawSql);
+    }
+
+    public function testUpdateDebug()
+    {
+        $this->db->update(['name' => 'Python'], 'id = :id', [':id' => 1]);
+        $rawSql = $this->db->debug();
+
+        $this->assertEquals("[SQL] update programming set name = 'Python' where id = 1", $rawSql);
+    }
+
+    public function testUpsertNonExistRecordDebug()
+    {
+        $this->db->upsert(6, ['name' => 'Python']);
+        $rawSql = $this->db->debug();
+
+        $this->assertEquals("[SQL] insert into programming (name) values ('Python')", $rawSql);
+    }
+
+    public function testUpsertExistingRecordDebug()
+    {
+        $this->db->upsert(5, ['name' => 'Python']);
+        $rawSql = $this->db->debug();
+
+        $this->assertEquals("[SQL] update programming set name = 'Python' where id = 5", $rawSql);
     }
 }
