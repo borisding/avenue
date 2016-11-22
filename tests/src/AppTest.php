@@ -395,8 +395,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
     public function testSetGetLocale()
     {
-        $locale = 'en-US';
-        $this->app->setLocale($locale);
+        $locale = 'zh-CN';
+        $this->app->setLocale($locale, __DIR__ . '/Mocks/zh-CN.php');
         $this->assertEquals($locale, $this->app->getLocale());
     }
 
