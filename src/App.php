@@ -217,7 +217,7 @@ class App implements AppInterface
         } else {
             $container = &static::$services[$id];
         }
-        
+
         if (!$this->isValidMethodName($name)) {
             throw new \InvalidArgumentException(sprintf('Invalid registered name for %s container!', $type));
         }
@@ -426,7 +426,7 @@ class App implements AppInterface
     {
         $this->locale = $locale;
 
-        if (empty($locale)) {
+        if (empty(trim($locale))) {
             throw new \InvalidArgumentException('Locale is required for internationalization & localization!');
         }
 
@@ -452,33 +452,36 @@ class App implements AppInterface
      * @return mixed
      */
     public function t($source, array $values = []) {
-        $translated = $source;
+        $translation = $this->arrGet($source, $this->language, $source);
         $arrSource = [];
 
-        if (is_null($this->language) || strpos($source, '.') === false) {
+        if (is_null($this->language) || empty($source) || preg_match('/\s/', $source)) {
             return $source;
         }
 
-        $arrSource = explode('.', $source);
+        // if with nested, drill down to get translation
+        if (strpos($source, '.') !== false) {
+            $arrSource = explode('.', $source);
 
-        // simply return as source label if deep nesting intended
-        if (count($arrSource) !== 2) {
-            return $source;
+            // simply return as source label if deep nesting intended
+            if (count($arrSource) !== 2) {
+                return $source;
+            }
+
+            // get the source plain text and translate it
+            list($type, $name) = $arrSource;
+            $translation = $this->arrGet($name, $this->arrGet($type, $this->language, []), $source);
         }
-
-        // get the source plain text and translate it
-        list($type, $name) = $arrSource;
-        $translated = $this->arrGet($name, $this->arrGet($type, $this->language, []), $source);
 
         // replace placeholder(s) with values, if any
         if (!empty($values)) {
 
             foreach ($values as $index => $value) {
-                $translated = str_replace(sprintf('{%d}', $index), $value, $translated);
+                $translation = str_replace(sprintf('{%d}', $index), $value, $translation);
             }
         }
 
-        return $translated;
+        return $translation;
     }
 
     /**

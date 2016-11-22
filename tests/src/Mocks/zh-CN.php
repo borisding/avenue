@@ -1,7 +1,9 @@
 <?php
 return [
+    'name' => '名字',
+    'intro' => '我的名字叫{0}',
     'text' => [
-        'name' => '您好',
+        'hello' => '您好',
         'hasPlaceholders' => '嗨！{0}. 你见到{1}了吗？',
         'invalidPlaceholders' => '嗨！{ 0 }. 你见到{ 1}了吗？',
     ],

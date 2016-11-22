@@ -27,8 +27,5 @@ require 'routes.php';
 // include app view helpers.
 require 'views/helpers.php';
 
-// set targeted locale for application.
-$app->setLocale('en-US');
-
 // start running application
 $app->run();
