@@ -444,33 +444,37 @@ class App implements AppInterface
 
     /**
      * Translate source into targeted language.
-     * Values can be passed as indexed array for source that has placeholder(s).
-     * Support one level where indicated by a 'dot' in source label. Deep nesting not supported.
+     * Placeholder value(s) can be passed as indexed array for replacement in source.
+     * Multiple levels is indicated by 'dot' in source key.
      *
      * @param  mixed $source
      * @param  array $values
      * @return mixed
      */
     public function t($source, array $values = []) {
-        $translation = $this->arrGet($source, $this->language, $source);
-        $arrSource = [];
+        $language = $this->language;
+        $translation = $this->arrGet($source, $language, $source);
 
-        if (is_null($this->language) || empty($source) || preg_match('/\s/', $source)) {
-            return $source;
-        }
-
-        // if with nested, drill down to get translation
+        // drill down for multiple, if any
         if (strpos($source, '.') !== false) {
-            $arrSource = explode('.', $source);
+            $oriSourceKeys = $sourceKeys = explode('.', $source);
+            $proceed = count($oriSourceKeys) === count($this->arrRemoveEmpty($sourceKeys));
 
-            // simply return as source label if deep nesting intended
-            if (count($arrSource) !== 2) {
-                return $source;
+            if ($proceed) {
+
+                foreach ($sourceKeys as $key) {
+
+                    if (!isset($language[$key])) {
+                        return $source;
+                    }
+
+                    if (is_array($language[$key])) {
+                        $language = $language[$key];
+                    } else {
+                        $translation = $language[$key];
+                    }
+                }
             }
-
-            // get the source plain text and translate it
-            list($type, $name) = $arrSource;
-            $translation = $this->arrGet($name, $this->arrGet($type, $this->language, []), $source);
         }
 
         // replace placeholder(s) with values, if any
@@ -480,7 +484,7 @@ class App implements AppInterface
                 $translation = str_replace(sprintf('{%d}', $index), $value, $translation);
             }
         }
-
+        
         return $translation;
     }
 

@@ -442,6 +442,18 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('嗨！{ 0 }. 你见到{ 1}了吗？', $this->app->t('text.invalidPlaceholders', ['小明', '小强']));
     }
 
+    public function testTranslationWithDeepNesting()
+    {
+        $this->loadTranslationFile();
+        $this->assertEquals('您好', $this->app->t('nested1.hello0.hello1.hello2.hello3'));
+    }
+
+    public function testTranslationWithDeepNestingWithPlaceholders()
+    {
+        $this->loadTranslationFile();
+        $this->assertEquals('您好， 先生', $this->app->t('nested2.hello0.hello1.hello2.hello3', ['先生']));
+    }
+    
     public function testTranslationWithInvalidSource()
     {
         $this->loadTranslationFile();
