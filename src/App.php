@@ -278,8 +278,6 @@ class App implements AppInterface
      */
     public function run()
     {
-        $this->resolve('routes');
-
         // throw page not found exception, if any
         if (!$this->route->isFulfilled()) {
             throw new \Exception('Page not found!', 404);
@@ -484,7 +482,7 @@ class App implements AppInterface
                 $translation = str_replace(sprintf('{%d}', $index), $value, $translation);
             }
         }
-        
+
         return $translation;
     }
 

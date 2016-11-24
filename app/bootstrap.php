@@ -27,5 +27,5 @@ require 'routes.php';
 // include app view helpers.
 require 'views/helpers.php';
 
-// start running application
-$app->run();
+// resolve `routes` service and start running application
+$app->resolve('routes')->run();
