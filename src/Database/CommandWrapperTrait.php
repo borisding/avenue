@@ -5,7 +5,6 @@ trait CommandWrapperTrait
 {
     /**
      * Select all query wrapper with/without clause and parameters.
-     * Default select from slave, and divert to master instead if slave not applicable.
      *
      * @param  mixed $clause
      * @param  array $params
@@ -21,8 +20,48 @@ trait CommandWrapperTrait
     }
 
     /**
+     * Select count column query wrapper with/without clause and parameters.
+     *
+     * @param  string $column
+     * @param  string $clause
+     * @param  array $params
+     * @return mixed
+     */
+    public function selectCount($column = '*', $clause = '', array $params = [])
+    {
+        if (strpos($column, ':') !== false) {
+            list($column, $alias) = explode(':', $column);
+            $select = sprintf('select count(%s) as %s from %s', trim($column), trim($alias), $this->table);
+        } else {
+            $select = sprintf('select count(%s) from %s', trim($column), $this->table);
+        }
+
+        return $this->getSelectWhereClause(
+            $select,
+            $clause,
+            $params
+        );
+    }
+
+    /**
+     * Select disticnt column(s) query wrapper with/without clause and parameters.
+     *
+     * @param  array  $columns
+     * @param  string $clause
+     * @param  array $params
+     * @return mixed
+     */
+    public function selectDistinct(array $columns, $clause = '', array $params = [])
+    {
+        return $this->getSelectWhereClause(
+            sprintf('select distinct %s from %s', implode(', ', $columns), $this->table),
+            $clause,
+            $params
+        );
+    }
+
+    /**
      * Select column(s) query wrapper with/without clause and parameters.
-     * Default select from slave, and divert to master instead if slave not applicable.
      *
      * @param  array  $columns
      * @param  mixed $clause
@@ -37,9 +76,10 @@ trait CommandWrapperTrait
             $params
         );
     }
-    
+
     /**
      * Select statement's with where clause builder.
+     * Default select from slave, and divert to master instead if slave not applicable.
      *
      * @param  mixed $sql
      * @param  mixed $clause
@@ -52,9 +92,9 @@ trait CommandWrapperTrait
 
             if (stripos($clause, 'where') === false) {
                 $trimmedClause = trim(preg_replace('/[\s]+/', ' ', $clause));
-                $keywords = ['order by', 'group by', 'having', 'limit'];
+                $keywords = ['limit', 'order by', 'group by', 'having'];
                 $startWithKeyword = false;
-
+                
                 foreach ($keywords as $keyword) {
                     $position = stripos($trimmedClause, $keyword);
 

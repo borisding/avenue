@@ -157,7 +157,7 @@ interface CommandInterface
     public function debug();
 
     /**
-     * Handling default select all query.
+     * Handling select all query.
      *
      * @param mixed $clause
      * @param array $params
@@ -165,7 +165,25 @@ interface CommandInterface
     public function selectAll($clause, array $params);
 
     /**
-     * Handling default select column(s) query.
+     * Handling select count query.
+     *
+     * @param  mixed $column
+     * @param  mixed $clause
+     * @param  array  $params
+     */
+    public function selectCount($column, $clause, array $params);
+
+    /**
+     * Handling select distinct column(s) query.
+     *
+     * @param  array  $columns
+     * @param  mixed $clause
+     * @param  array  $params
+     */
+    public function selectDistinct(array $columns, $clause, array $params);
+    
+    /**
+     * Handling select column(s) query.
      *
      * @param array $columns
      * @param mixed $clause

@@ -196,6 +196,59 @@ class CommandWrapperTest extends AbstractDatabaseTest
         $this->assertTrue($result[0] instanceof stdClass);
     }
 
+    public function testSelectDistinctWithColumn()
+    {
+        $this->db->insert(['name' => 'PHP']);
+        $result = $this->db->selectDistinct(['name'])->fetchAll();
+        $this->assertEquals(5, count($result));
+    }
+
+    public function testSelectDistinctWithMultipleColumns()
+    {
+        $this->db->insert(['name' => 'PHP']);
+        $result = $this->db->selectDistinct(['id', 'name'])->fetchAll();
+        $this->assertEquals(6, count($result));
+    }
+
+    public function testSelectDistinctColumnWithClause()
+    {
+        $this->db->insert(['name' => 'PHP']);
+        $result = $this->db->selectDistinct(['name'], 'name = :name', [':name' => 'PHP'])->fetchAll();
+        $this->assertEquals(1, count($result));
+    }
+
+    public function testSelectDistinctMultipleColumnsWithClause()
+    {
+        $this->db->insert(['name' => 'PHP']);
+        $result = $this->db->selectDistinct(['id', 'name'], 'name = :name', [':name' => 'PHP'])->fetchAll();
+        $this->assertEquals(2, count($result));
+    }
+
+    public function testSelectCountAllWithColumn()
+    {
+        $total = $this->db->selectCount()->fetchColumn();
+        $this->assertEquals(5, $total);
+    }
+
+    public function testSelectCountAliasWithColumn()
+    {
+        $total = $this->db->selectCount('name:total')->fetchColumn();
+        $this->assertEquals(5, $total);
+    }
+
+    public function testSelectCountWithColumn()
+    {
+        $total = $this->db->selectCount('name')->fetchColumn();
+        $this->assertEquals(5, $total);
+    }
+
+    public function testSelectCountColumnWithClause()
+    {
+        $this->db->insert(['name' => 'PHP']);
+        $total = $this->db->selectCount('name', 'name = :name', [':name' => 'PHP'])->fetchColumn();
+        $this->assertEquals(2, $total);
+    }
+
     public function testInsert()
     {
         $this->db->insert(['name' => 'elixir']);
@@ -340,6 +393,48 @@ class CommandWrapperTest extends AbstractDatabaseTest
         $this->assertEquals("[SQL] select name from programming limit 20", $rawSql);
     }
 
+    public function testSelectDistinctWithWhereClauseDebug()
+    {
+        $rawSql = $this->db->selectDistinct(['name'], 'id = :id', [':id' => 1])->debug();
+        $this->assertEquals('[SQL] select distinct name from programming where id = 1', $rawSql);
+    }
+
+    public function testSelectDistinctWithOrderByClauseDebug()
+    {
+        $rawSql =$this->db->selectDistinct(['name'], 'order by id')->debug();
+        $this->assertEquals('[SQL] select distinct name from programming order by id', $rawSql);
+    }
+
+    public function testSelectDistinctWithLimitByClauseDebug()
+    {
+        $rawSql =$this->db->selectDistinct(['name'], 'limit :number', [':number' => 20])->debug();
+        $this->assertEquals("[SQL] select distinct name from programming limit 20", $rawSql);
+    }
+
+    public function testSelectCountAllDebug()
+    {
+        $rawSql = $this->db->selectCount()->debug();
+        $this->assertEquals('[SQL] select count(*) from programming', $rawSql);
+    }
+
+    public function testSelectCountAllAliasDebug()
+    {
+        $rawSql = $this->db->selectCount('*:total')->debug();
+        $this->assertEquals('[SQL] select count(*) as total from programming', $rawSql);
+    }
+
+    public function testSelectCountAllWithWhereClauseDebug()
+    {
+        $rawSql = $this->db->selectCount('*', 'name = ?', ['PHP'])->debug();
+        $this->assertEquals("[SQL] select count(*) from programming where name = 'PHP'", $rawSql);
+    }
+
+    public function testSelectCountColumnAliasWhereClauseDebug()
+    {
+        $rawSql = $this->db->selectCount('name:total', 'name = ?', ['PHP'])->debug();
+        $this->assertEquals("[SQL] select count(name) as total from programming where name = 'PHP'", $rawSql);
+    }
+    
     public function testInsertDebug()
     {
         $this->db->insert(['name' => 'Elm']);
