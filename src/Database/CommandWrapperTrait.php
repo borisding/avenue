@@ -8,18 +8,15 @@ trait CommandWrapperTrait
      * Default select from slave, and divert to master instead if slave not applicable.
      *
      * @param  mixed $clause
-     * @param  mixed $params
-     * @param  string $type
+     * @param  array $params
      * @return mixed
      */
-    public function selectAll($clause = null, $params = null, $type = 'assoc')
+    public function selectAll($clause = '', array $params = [])
     {
         return $this->getSelectWhereClause(
-            $this->getSelectAllClause(),
+            sprintf('select * from %s', $this->table),
             $clause,
-            $params,
-            $type,
-            true
+            $params
         );
     }
 
@@ -29,80 +26,60 @@ trait CommandWrapperTrait
      *
      * @param  array  $columns
      * @param  mixed $clause
-     * @param  mixed $params
-     * @param  string $type
+     * @param  array $params
      * @return mixed
      */
-    public function select(array $columns, $clause = null, $params = null, $type = 'assoc')
+    public function select(array $columns, $clause = '', array $params = [])
     {
         return $this->getSelectWhereClause(
-            $this->getSelectClause($columns),
+            sprintf('select %s from %s', implode(', ', $columns), $this->table),
             $clause,
-            $params,
-            $type,
-            true
+            $params
         );
     }
-
-    /**
-     * Return select all clause.
-     *
-     * @return string
-     */
-    private function getSelectAllClause()
-    {
-        return sprintf('select * from %s', $this->table);
-    }
-
-    /**
-     * Return select clause with accepted column(s).
-     *
-     * @param array $columns
-     * @return string
-     */
-    private function getSelectClause(array $columns)
-    {
-        return sprintf('select %s from %s', implode(', ', $columns), $this->table);
-    }
-
+    
     /**
      * Select statement's with where clause builder.
      *
      * @param  mixed $sql
      * @param  mixed $clause
-     * @param  mixed $params
-     * @param  mixed $type
-     * @param  mixed $slave
+     * @param  array $params
      * @return mixed
      */
-    private function getSelectWhereClause($sql, $clause, $params, $type, $slave)
+    private function getSelectWhereClause($sql, $clause, $params)
     {
         if (!empty($clause)) {
-            $clause = trim(preg_replace('/[\s]+/', ' ', $clause));
 
-            $limitPosition = stripos($clause, 'limit');
-            $orderByPosition = stripos($clause, 'order by');
+            if (stripos($clause, 'where') === false) {
+                $trimmedClause = trim(preg_replace('/[\s]+/', ' ', $clause));
+                $keywords = ['order by', 'group by', 'having', 'limit'];
+                $startWithKeyword = false;
 
-            if (($orderByPosition === false && $limitPosition === false) ||
-                ($orderByPosition === false && $limitPosition > 0) ||
-                ($orderByPosition !== false && $orderByPosition > 0)) {
-                $sql .= sprintf(' where %s', $clause);
-            } elseif ($orderByPosition !== false || $limitPosition !== false) {
-                $sql .= sprintf(' %s', $clause);
+                foreach ($keywords as $keyword) {
+                    $position = stripos($trimmedClause, $keyword);
+
+                    if ($position !== false && $position === 0) {
+                        $sql .= sprintf(' %s', $clause);
+                        $startWithKeyword = true;
+                        break;
+                    }
+                }
+
+                if (!$startWithKeyword) {
+                    $sql .= sprintf(' where %s', $clause);
+                }
+            } else {
+                $sql .= sprintf(' %s', trim($clause));
             }
         }
 
-        if (!empty($params) && !is_array($params)) {
-            $params = (array)$params;
-        }
-
-        $query = $this->cmd($sql, $slave === true);
+        $query = $this->cmd($sql, true);
 
         if (is_array($params)) {
             $query = $query->batch($params);
         }
 
-        return $query->fetchAll($type);
+        return $query;
     }
 
     /**
@@ -139,17 +116,12 @@ trait CommandWrapperTrait
      * Delete query wrapper with clause and parameters.
      *
      * @param  mixed $clause
-     * @param  mixed $params
+     * @param  array $params
      * @return boolean
      */
-    public function delete($clause, $params = null)
+    public function delete($clause, array $params = [])
     {
         $sql = sprintf('delete from %s where %s', $this->table, $clause);
-
-        if (!empty($params) && !is_array($params)) {
-            $params = (array)$params;
-        }
-
         $query = $this->cmd($sql);
 
         if (is_array($params)) {
@@ -182,10 +154,10 @@ trait CommandWrapperTrait
      *
      * @param  array  $columns
      * @param  mixed $clause
-     * @param  mixed $params
+     * @param  array $params
      * @return boolean
      */
-    public function update(array $columns, $clause, $params = null)
+    public function update(array $columns, $clause, array $params = [])
     {
         $values = array_values($columns);
         $sql = sprintf(
@@ -215,7 +187,7 @@ trait CommandWrapperTrait
                 }
             }
         }
-        
+
         return $this->cmd($sql)->batch($values)->run();
     }
 
@@ -246,7 +218,7 @@ trait CommandWrapperTrait
             $total = $this->cmd($sql)->bind(':id', $id)->fetchColumn();
 
             if ($total > 0) {
-                return $this->update($columns, sprintf('%s = ?', $this->pk), $id);
+                return $this->update($columns, sprintf('%s = ?', $this->pk), [$id]);
             } else {
                 return $this->insert($columns);
             }

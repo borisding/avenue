@@ -160,20 +160,18 @@ interface CommandInterface
      * Handling default select all query.
      *
      * @param mixed $clause
-     * @param mixed $params
-     * @param mixed $type
+     * @param array $params
      */
-    public function selectAll($clause, $params, $type);
+    public function selectAll($clause, array $params);
 
     /**
      * Handling default select column(s) query.
      *
      * @param array $columns
      * @param mixed $clause
-     * @param mixed $params
-     * @param mixed $type
+     * @param array $params
      */
-    public function select(array $columns, $clause, $params, $type);
+    public function select(array $columns, $clause, array $params);
 
     /**
      * Handling insert query method.
@@ -191,9 +189,9 @@ interface CommandInterface
      * Handling delete query method.
      *
      * @param mixed $clause
-     * @param mixed $params
+     * @param array $params
      */
-    public function delete($clause, $params);
+    public function delete($clause, array $params);
 
     /**
      * Handling update all query method.
@@ -207,9 +205,9 @@ interface CommandInterface
      *
      * @param array $columns
      * @param mixed $clause
-     * @param mixed $params
+     * @param array $params
      */
-    public function update(array $columns, $clause, $params);
+    public function update(array $columns, $clause, array $params);
 
     /**
      * Implement update/insert based on the existense of the record.
