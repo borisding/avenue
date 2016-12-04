@@ -4,35 +4,6 @@ namespace Avenue\Interfaces\Database;
 interface CommandInterface
 {
     /**
-     * Get the connection instance.
-     */
-    public function getConnectionInstance();
-
-    /**
-     * Set table with provided name.
-     *
-     * @param mixed $name
-     */
-    public function setTable($name);
-
-    /**
-     * Get the table name.
-     */
-    public function getTable();
-
-    /**
-     * Set primary key with provided column name.
-     *
-     * @param mixed $name
-     */
-    public function setPk($name);
-
-    /**
-     * Get the primary key column name.
-     */
-    public function getPk();
-
-    /**
      * Method for prepared statement.
      * Allowed to decide for master or slave.
      *
@@ -153,92 +124,268 @@ interface CommandInterface
 
     /**
      * Debug SQL statement.
-     */
-    public function debug();
-
-    /**
-     * Handling select all query.
      *
-     * @param mixed $clause
-     * @param array $params
+     * @param  mixed $sql
+     * @param  array  $data
      */
-    public function selectAll($clause, array $params);
+    public function debug($sql, array $data);
 
     /**
-     * Handling select count query.
+     * Sql select method.
      *
-     * @param  mixed $column
-     * @param  mixed $clause
-     * @param  array  $params
+     * @param  mixed $columns
      */
-    public function selectCount($column, $clause, array $params);
+    public function select($columns);
 
     /**
-     * Handling select distinct column(s) query.
+     * Sql select count method.
+     *
+     * @param  mixed $columns
+     */
+    public function selectCount($columns);
+
+    /**
+     * Sql select distinct method.
+     *
+     * @param  mixed $columns
+     */
+    public function selectDistinct($columns);
+
+    /**
+     * Sql from method.
+     *
+     * @param  mixed $table
+     */
+    public function from($table);
+
+    /**
+     * Sql insert method.
+     *
+     * @param  mixed $table
+     * @param  array  $columns
+     */
+    public function insert($table, array $columns);
+
+    /**
+     * Sql update method.
+     *
+     * @param  mixed $table
+     * @param  array  $columns
+     */
+    public function update($table, array $columns);
+
+    /**
+     * Sql delete method.
+     *
+     * @param  mixed $table
+     */
+    public function delete($table);
+
+    /**
+     * Sql where method.
+     */
+    public function where();
+
+    /**
+     * Sql and where method.
+     */
+    public function andWhere();
+
+    /**
+     * Sql or where method.
+     */
+    public function orWhere();
+
+    /**
+     * Sql order by method.
      *
      * @param  array  $columns
-     * @param  mixed $clause
-     * @param  array  $params
      */
-    public function selectDistinct(array $columns, $clause, array $params);
-    
+    public function orderBy(array $columns);
+
     /**
-     * Handling select column(s) query.
+     * Sql limit method.
      *
-     * @param array $columns
+     * @param  mixed $rows
+     * @param  mixed $from
+     */
+    public function limit($rows, $from);
+
+    /**
+     * Sql offset method.
+     *
+     * @param mixed $from
+     */
+    public function offset($from);
+
+    /**
+     * Sql group by method.
+     *
+     * @param  array  $columns
+     */
+    public function groupBy(array $columns);
+
+    /**
+     * Sql having method.
+     *
+     * @param  mixed $aggregate
+     * @param  mixed $operator
+     * @param  mixed $input
+     */
+    public function having($aggregate, $operator, $input);
+
+    /**
+     * Sql union method.
+     *
+     * @param  array  $sqls
+     */
+    public function union(array $sqls);
+
+    /**
+     * Sql join method.
+     *
+     * @param  mixed $table
+     * @param  array  $on
+     */
+    public function join($table, array $on);
+
+    /**
+     * Sql inner join method.
+     *
+     * @param  mixed $table
+     * @param  array  $on
+     */
+    public function innerJoin($table, array $on);
+
+    /**
+     * Sql left join method.
+     *
+     * @param  mixed $table
+     * @param  array  $on
+     */
+    public function leftJoin($table, array $on);
+
+    /**
+     * Sql right join method.
+     *
+     * @param  mixed $table
+     * @param  array  $on
+     */
+    public function rightJoin($table, array $on);
+
+    /**
+     * Sql full join method.
+     *
+     * @param  mixed $table
+     * @param  array  $on
+     */
+    public function fullJoin($table, array $on);
+
+    /**
+     * Sql like method.
+     *
+     * @param  mixed $column
+     * @param  mixed $input
+     */
+    public function like($column, $input);
+
+    /**
+     * Sql not like method.
+     *
+     * @param  mixed $column
+     * @param  mixed $input
+     */
+    public function notLike($column, $input);
+
+    /**
+     * Sql in method.
+     *
+     * @param  mixed $column
+     * @param  array  $input
+     */
+    public function in($column, array $input);
+
+    /**
+     * Sql not in method.
+     *
+     * @param  mixed $column
+     * @param  array  $input
+     */
+    public function notIn($column, array $input);
+
+    /**
+     * Sql between method.
+     *
+     * @param  mixed $column
+     * @param  array  $inputs
+     */
+    public function between($column, array $inputs);
+
+    /**
+     * Sql not between method.
+     *
+     * @param  mixed $column
+     * @param  array  $inputs
+     */
+    public function notBetween($column, array $inputs);
+
+    /**
+     * Sql is null method.
+     *
+     * @param  mixed  $column
+     */
+    public function isNull($column);
+
+    /**
+     * Sql is not null method.
+     *
+     * @param  mixed  $column
+     */
+    public function isNotNull($column);
+
+    /**
+     * Query method.
+     */
+    public function query();
+
+    /**
+     * Execute query method.
+     */
+    public function execute();
+
+    /**
+     * Set data method.
+     *
+     * @param mixed $input
+     */
+    public function setData($input);
+
+    /**
+     * Get data method.
+     */
+    public function getData();
+
+    /**
+     * Set sql method.
+     *
      * @param mixed $clause
-     * @param array $params
      */
-    public function select(array $columns, $clause, array $params);
+    public function setSql($clause);
 
     /**
-     * Handling insert query method.
-     *
-     * @param array $params
+     * Get sql method.
      */
-    public function insert(array $columns);
+    public function getSql();
 
     /**
-     * Handling delete all records query method.
+     * Reset method.
      */
-    public function deleteAll();
+    public function reset();
 
     /**
-     * Handling delete query method.
-     *
-     * @param mixed $clause
-     * @param array $params
-     */
-    public function delete($clause, array $params);
-
-    /**
-     * Handling update all query method.
-     *
-     * @param array $columns
-     */
-    public function updateAll(array $columns);
-
-    /**
-     * Handling update query method.
-     *
-     * @param array $columns
-     * @param mixed $clause
-     * @param array $params
-     */
-    public function update(array $columns, $clause, array $params);
-
-    /**
-     * Implement update/insert based on the existense of the record.
-     *
-     * @param mixed $id
-     * @param array $columns
-     */
-    public function upsert($id, array $columns);
-
-    /**
-     * Filling placeholders based on the values.
+     * Filling unnamed parameters based on the values.
      *
      * @param array $values
      */
-    public function getPlaceholders(array $values);
+    public function unnamedParams(array $values);
 }

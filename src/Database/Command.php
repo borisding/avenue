@@ -4,12 +4,12 @@ namespace Avenue\Database;
 use PDO;
 use Avenue\App;
 use Avenue\Database\Connection;
-use Avenue\Database\CommandWrapperTrait;
+use Avenue\Database\QueryBuilderTrait;
 use Avenue\Interfaces\Database\CommandInterface;
 
 class Command implements CommandInterface
 {
-    use CommandWrapperTrait;
+    use QueryBuilderTrait;
 
     /**
      * App class instance.
@@ -26,39 +26,11 @@ class Command implements CommandInterface
     protected $connection;
 
     /**
-     * Table name of model.
-     *
-     * @var mixed
-     */
-    protected $table;
-
-    /**
-     * Default table primary key of model.
-     *
-     * @var string
-     */
-    protected $pk = 'id';
-
-    /**
      * Prepared statement.
      *
      * @var mixed
      */
     private $statement;
-
-    /**
-     * SQL statement.
-     *
-     * @var string
-     */
-    private $sql;
-
-    /**
-     * SQL params data.
-     *
-     * @var array
-     */
-    private $data = [];
 
     /**
      * Supported fetch types.
@@ -101,12 +73,6 @@ class Command implements CommandInterface
         if (!$this->connection instanceof Connection) {
             $this->connection = new Connection($this->app);
         }
-
-        // assign table based on the class model if table is not specified
-        if (empty($this->table)) {
-            $namespace = get_class($this);
-            return $this->table = strtolower(substr($namespace, strrpos($namespace, '\\') + 1));
-        }
     }
 
     /**
@@ -124,50 +90,6 @@ class Command implements CommandInterface
     }
 
     /**
-     * Update the mapped model's table name.
-     *
-     * @param mixed $name
-     * @return \Avenue\Database\Command
-     */
-    public function setTable($name)
-    {
-        $this->table = $name;
-        return $this;
-    }
-
-    /**
-     * Return the mapped model's table name.
-     *
-     * @return mixed
-     */
-    public function getTable()
-    {
-        return $this->table;
-    }
-
-    /**
-     * Update the default model's PK column name.
-     *
-     * @param mixed $name
-     * @return \Avenue\Database\Command
-     */
-    public function setPk($name)
-    {
-        $this->pk = $name;
-        return $this;
-    }
-
-    /**
-     * Return the model's PK column name.
-     *
-     * @return mixed
-     */
-    public function getPk()
-    {
-        return $this->pk;
-    }
-
-    /**
      * Command for prepared statement.
      * Default for master database connection.
      *
@@ -177,9 +99,7 @@ class Command implements CommandInterface
      */
     public function cmd($sql, $slave = false)
     {
-        $this->sql = $sql;
         $this->statement = $this->connection->getPdo($slave)->prepare($sql);
-
         return $this;
     }
 
@@ -312,7 +232,6 @@ class Command implements CommandInterface
      */
     public function bind($key, $value, $reference = false)
     {
-        $this->data[$key] = $value;
         $type = $this->getParamDataType($value);
 
         if ($reference) {
@@ -402,15 +321,16 @@ class Command implements CommandInterface
     }
 
     /**
-     * Debug by printing out raw SQL with actual value(s)
+     * Debug by passing sql statement and data.
+     * Print out raw SQL with actual value(s).
      *
-     * @return mixed
+     * @param  mixed $sql
+     * @param  array  $data
+     * @return string
      */
-    public function debug()
+    public function debug($sql, array $data)
     {
-        $sql = $this->sql;
-
-        foreach ($this->data as $param => $value) {
+        foreach ($data as $param => $value) {
 
             if (is_string($value)) {
                 $value = sprintf("'%s'", $value);

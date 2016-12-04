@@ -5,9 +5,9 @@ use Avenue\Model;
 
 class User extends Model
 {
-    // example for getting all user records from 'user' table
+    // example for getting all user records
     public function getAll()
     {
-        return $this->cmd(sprintf('select * from %s', $this->table))->fetchAll();
+        return $this->select()->from('user')->query()->fetchAll();
     }
 }
