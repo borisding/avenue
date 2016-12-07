@@ -40,7 +40,7 @@ trait QueryBuilderTrait
         $this->setSql(sprintf('%s %s ', 'SELECT', $columns));
         return $this;
     }
-    
+
     /**
      * Select count clause builder. Default count all.
      * Passed as associative array if count with alias name.
@@ -270,12 +270,16 @@ trait QueryBuilderTrait
     /**
      * Group by clause builder.
      *
-     * @param  array  $columns
+     * @param  mixed  $columns
      * @return $this
      */
-    public function groupBy(array $columns)
+    public function groupBy($columns)
     {
-        $this->setSql(sprintf(' %s %s', 'GROUP BY', implode(', ', $columns)));
+        if (is_array($columns)) {
+            $columns = implode(', ', $columns);
+        }
+
+        $this->setSql(sprintf(' %s %s', 'GROUP BY', $columns));
         return $this;
     }
 
@@ -543,20 +547,44 @@ trait QueryBuilderTrait
     }
 
     /**
-     * Prepare query by binding input values.
-     * And clear stored data and sql statement string.
+     * Prepare query statement and reset data.
      *
      * @param  boolean $slave
      * @return $this
      */
-    public function query($slave = true)
+    private function query($slave = true)
     {
-        $query = $this->cmd($this->sql, $slave === true)->batch($this->data);
-        $this->reset();
+        $this->cmd($this->sql, $slave === true)
+        ->batch($this->data)
+        ->reset();
 
-        return $query;
+        return $this;
     }
 
+    /**
+     * Fetch records from prepared statement.
+     *
+     * @param  string  $type
+     * @param  boolean $slave
+     * @return mixed
+     */
+    public function all($type = 'assoc', $slave = true)
+    {
+        return $this->query($slave)->fetchAll($type);
+    }
+
+    /**
+     * Fetch one record from prepared statement.
+     *
+     * @param  string  $type
+     * @param  boolean $slave
+     * @return mixed
+     */
+    public function one($type = 'assoc', $slave = true)
+    {
+        return $this->query($slave)->fetchOne($type);
+    }
+    
     /**
      * Execute query by running sql statement while binding input data.
      * Clear stored data and sql statement string once executed.
@@ -633,11 +661,14 @@ trait QueryBuilderTrait
 
     /**
      * Reset persisted sql statement and data.
+     * @return $this;
      */
     public function reset()
     {
         $this->sql = '';
         $this->data = [];
         $this->whereExist = false;
+
+        return $this;
     }
 }

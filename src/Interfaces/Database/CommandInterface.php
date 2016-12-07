@@ -221,9 +221,9 @@ interface CommandInterface
     /**
      * Sql group by method.
      *
-     * @param  array  $columns
+     * @param  mixed  $columns
      */
-    public function groupBy(array $columns);
+    public function groupBy($columns);
 
     /**
      * Sql having method.
@@ -344,9 +344,14 @@ interface CommandInterface
     public function isNotNull($column);
 
     /**
-     * Query method.
+     * Fetch all records method.
      */
-    public function query();
+    public function all();
+
+    /**
+     * Fetch one record method.
+     */
+    public function one();
 
     /**
      * Execute query method.
