@@ -33,15 +33,14 @@ trait QueryBuilderTrait
      */
     public function select($columns = '*')
     {
-        $this->setSql(
-            (is_array($columns))
-            ? sprintf('%s %s ', 'SELECT', implode(', ', $columns))
-            : sprintf('%s %s ', 'SELECT', $columns)
-        );
+        if (is_array($columns)) {
+            $columns = implode(', ', $columns);
+        }
 
+        $this->setSql(sprintf('%s %s ', 'SELECT', $columns));
         return $this;
     }
-
+    
     /**
      * Select count clause builder. Default count all.
      * Passed as associative array if count with alias name.
@@ -69,12 +68,11 @@ trait QueryBuilderTrait
      */
     public function selectDistinct($columns)
     {
-        $this->setSql(
-            (is_array($columns))
-            ? sprintf('%s %s ', 'SELECT DISTINCT', implode(', ', $columns))
-            : sprintf('%s %s ', 'SELECT DISTINCT', $columns)
-        );
+        if (is_array($columns)) {
+            $columns = implode(', ', $columns);
+        }
 
+        $this->setSql(sprintf('%s %s ', 'SELECT DISTINCT', $columns));
         return $this;
     }
 
@@ -173,7 +171,14 @@ trait QueryBuilderTrait
 
         // with helper or callback function for grouping
         if ($numArgs === 1) {
-            $this->setSql(is_callable($args[0]) ? sprintf('(%s)', $args[0]()) : $args[0]);
+
+            if (is_callable($args[0])) {
+                $this->setSql('(');
+                $args[0]($this);
+                $this->setSql(')');
+            } else {
+                $this->setSql($args[0]);
+            }
         // default `=` operator
         } elseif ($numArgs === 2) {
             $this->setSql(sprintf('%s %s ?', $args[0], '='));
@@ -216,12 +221,16 @@ trait QueryBuilderTrait
     /**
      * Order by clause.
      *
-     * @param  array  $columns
+     * @param  mixed  $columns
      * @return $this
      */
-    public function orderBy(array $columns)
+    public function orderBy($columns)
     {
-        $this->setSql(sprintf(' %s %s', 'ORDER BY', implode(', ', $columns)));
+        if (is_array($columns)) {
+            $columns = implode(', ', $columns);
+        }
+
+        $this->setSql(sprintf(' %s %s', 'ORDER BY', $columns));
         return $this;
     }
 

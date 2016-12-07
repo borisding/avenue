@@ -199,9 +199,9 @@ interface CommandInterface
     /**
      * Sql order by method.
      *
-     * @param  array  $columns
+     * @param  mixed  $columns
      */
-    public function orderBy(array $columns);
+    public function orderBy($columns);
 
     /**
      * Sql limit method.
