@@ -389,10 +389,18 @@ trait QueryBuilderTrait
         $column1 = key($on);
         $column2 = current($on);
 
-        $this->setSql(sprintf(' %s %s ON %s = %s', $type, $table, $column1, $column2));
+        if (is_array($table)) {
+            $alias = current($table);
+            $table = key($table);
+
+            $this->setSql(sprintf(' %s %s AS %s ON %s = %s', $type, $table, $alias, $column1, $column2));
+        } else {
+            $this->setSql(sprintf(' %s %s ON %s = %s', $type, $table, $column1, $column2));
+        }
+
         return $this;
     }
-
+    
     /**
      * Like clause helper.
      *
