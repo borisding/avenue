@@ -136,6 +136,50 @@ trait QueryBuilderTrait
     }
 
     /**
+     * Update or insert statement builder.
+     *
+     * @param  mixed $table
+     * @param  mixed $id
+     * @param  array  $columns
+     * @return $this
+     */
+    public function upsert($table, $pk, array $columns)
+    {
+        if ($this->getConnectionInstance()->getMasterDriver() == 'mysql') {
+            $input = array_values($columns);
+            $this->setSql(sprintf(
+                'REPLACE INTO %s (%s) VALUES (%s)',
+                $table,
+                implode(', ', array_keys($columns)),
+                $this->unnamedParams($input)
+            ));
+
+            $this->setData($input);
+            return $this;
+        } else {
+            $pkValue = $this->app->arrGet($pk, $columns, null);
+
+            if (empty($pkValue)) {
+                throw new \InvalidArgumentException(
+                    sprintf('Primary key [%s] value is not provided.', $pk)
+                );
+            }
+
+            $total = $this->selectCount([$pk => 'total'])
+            ->from($table)
+            ->where($pk, $pkValue)
+            ->query()
+            ->column();
+
+            if ($total > 0) {
+                return $this->update($table, $columns)->where($pk, $pkValue);
+            } else {
+                return $this->insert($table, $columns);
+            }
+        }
+    }
+
+    /**
      * Delete clause builder.
      *
      * @param  mixed $table
@@ -400,7 +444,7 @@ trait QueryBuilderTrait
 
         return $this;
     }
-    
+
     /**
      * Like clause helper.
      *

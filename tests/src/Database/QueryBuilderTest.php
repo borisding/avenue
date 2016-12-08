@@ -333,4 +333,37 @@ class QueryBuilderTest extends AbstractDatabaseTest
         $result = $this->db->select()->from($this->table)->where('name', 'PHP')->query()->all();
         $this->assertEquals(2, count($result));
     }
+
+    public function testInsertRecordViaUpsert()
+    {
+        $this->db->upsert($this->table, 'id', [
+            'id' => 6,
+            'name' => 'Python'
+        ])->execute();
+
+        $result = $this->db->select()->from($this->table)->query()->all();
+        $this->assertEquals(6, count($result));
+    }
+
+    public function testUpdateRecordViaUpsert()
+    {
+        $this->db->upsert($this->table, 'id', [
+            'id' => 5,
+            'name' => 'Python'
+        ])->execute();
+
+        $result = $this->db->select()->from($this->table)->query()->all();
+        $this->assertEquals(5, count($result));
+        $this->assertEquals('Python', $result[4]['name']);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testUpsertInvalidArgumentException()
+    {
+        $this->db->upsert($this->table, 'id', [
+            'name' => 'Python'
+        ])->execute();
+    }
 }

@@ -175,6 +175,15 @@ interface CommandInterface
     public function update($table, array $columns);
 
     /**
+     * Sql upsert method.
+     *
+     * @param  mixed $table
+     * @param  mixed $pk
+     * @param  array  $columns
+     */
+    public function upsert($table, $pk, array $columns);
+    
+    /**
      * Sql delete method.
      *
      * @param  mixed $table
