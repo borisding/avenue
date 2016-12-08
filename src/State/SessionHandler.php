@@ -52,7 +52,7 @@ class SessionHandler implements SessionHandlerInterface
 
     /**
      * Return the app's secret as configured.
-     * 
+     *
      * @return mixed
      */
     public function getAppSecret()
@@ -109,5 +109,12 @@ class SessionHandler implements SessionHandlerInterface
         }
 
         return $value;
+    }
+
+    /**
+     * Write session data and end it.
+     */
+    public function __destruct() {
+        session_write_close(true);
     }
 }

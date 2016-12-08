@@ -41,6 +41,7 @@ class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInt
      *
      * @param App $app
      * @param array $config
+     * @return boolean
      */
     public function __construct(App $app, array $config = [])
     {
@@ -53,8 +54,10 @@ class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInt
         if (!$this->db instanceof Command) {
             $this->db = new Command();
         }
-    }
 
+        return true;
+    }
+    
     /**
      * Invoked when session is being opened.
      * Occasionally, trigger the garbage collection.

@@ -116,10 +116,10 @@ class Session implements SessionInterface
     public function start()
     {
         if (session_status() == PHP_SESSION_NONE) {
-            session_start();
+            return session_start();
         }
     }
-
+    
     /**
      * Generate unique random hashed string for CSRF token.
      *
