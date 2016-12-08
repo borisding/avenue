@@ -30,8 +30,7 @@ class Session implements SessionInterface
     public function __construct(SessionHandlerInterface $handler)
     {
         $this->handler = $handler;
-        $this->setup();
-        $this->start();
+        $this->setup()->start();
     }
     
     /**
@@ -157,7 +156,7 @@ class Session implements SessionInterface
     /**
      * Runtime and handlers settings before starting the session.
      *
-     * @return boolean
+     * @return $this
      */
     protected function setup()
     {
@@ -168,15 +167,7 @@ class Session implements SessionInterface
         ini_set('session.cookie_httponly', 1);
 
         // register respective handler methods
-        session_set_save_handler(
-            [$this->handler, 'open'],
-            [$this->handler, 'close'],
-            [$this->handler, 'read'],
-            [$this->handler, 'write'],
-            [$this->handler, 'destroy'],
-            [$this->handler, 'gc']
-        );
-
-        return true;
+        session_set_save_handler($this->handler, true);
+        return $this;
     }
 }

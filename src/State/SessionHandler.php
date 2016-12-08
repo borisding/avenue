@@ -110,11 +110,4 @@ class SessionHandler implements SessionHandlerInterface
 
         return $value;
     }
-
-    /**
-     * Write session data and end it.
-     */
-    public function __destruct() {
-        session_write_close(true);
-    }
 }
