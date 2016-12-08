@@ -8,6 +8,6 @@ class User extends Model
     // example for getting all user records
     public function getAll()
     {
-        return $this->select()->from('user')->query()->fetchAll();
+        return $this->select()->from('user')->query()->all();
     }
 }

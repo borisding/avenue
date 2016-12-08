@@ -43,69 +43,56 @@ class CommandTest extends AbstractDatabaseTest
         $this->assertTrue($this->db->getConnectionInstance() instanceof Connection);
     }
 
-    public function testSetPk()
-    {
-        $this->db->setPk('pk_col');
-        $pk = Reflection::getPropertyValue($this->db, 'pk');
-        $this->assertEquals('pk_col', $pk);
-    }
-
-    public function testGetPk()
-    {
-        $this->db->setPk('pk_col');
-        $this->assertEquals('pk_col', $this->db->getPk());
-    }
-
     public function testFetchAllMethod()
     {
-        $result = $this->db->cmd($this->selectAllSql())->fetchAll();
+        $result = $this->db->cmd($this->selectAllSql())->all();
         $this->assertEquals(count($result), 5);
     }
 
     public function testFetchOneMethod()
     {
-        $record = $this->db->cmd($this->selectAllSql())->fetchOne();
+        $record = $this->db->cmd($this->selectAllSql())->one();
         $this->assertTrue(array_key_exists('id', $record));
     }
 
     public function testDefaultFetchMasterConnection()
     {
-        $record1 = $this->db->cmd($this->selectAllSql())->fetchOne();
-        $record2 = $this->db->cmd($this->selectAllSql(), false)->fetchOne();
+        $record1 = $this->db->cmd($this->selectAllSql())->one();
+        $record2 = $this->db->cmd($this->selectAllSql(), false)->one();
 
         $this->assertEquals($record1, $record2);
     }
 
     public function testCmdMasterMethod()
     {
-        $record1 = $this->db->cmdMaster($this->selectAllSql())->fetchOne();
-        $record2 = $this->db->cmd($this->selectAllSql(), false)->fetchOne();
+        $record1 = $this->db->cmdMaster($this->selectAllSql())->one();
+        $record2 = $this->db->cmd($this->selectAllSql(), false)->one();
         $this->assertEquals($record1, $record2);
     }
 
     public function testCmdSlaveMethod()
     {
         $this->prepareSlaveData();
-        $record1 = $this->db->cmdSlave($this->selectAllSql())->fetchOne();
-        $record2 = $this->db->cmd($this->selectAllSql(), true)->fetchOne();
+        $record1 = $this->db->cmdSlave($this->selectAllSql())->one();
+        $record2 = $this->db->cmd($this->selectAllSql(), true)->one();
         $this->assertEquals($record1, $record2);
     }
 
     public function testFetchAllMethodReturnDefaultAssociativeData()
     {
-        $result = $this->db->cmd($this->selectAllSql())->fetchAll();
+        $result = $this->db->cmd($this->selectAllSql())->all();
         $this->assertTrue($this->app->arrIsAssoc($result[0]));
     }
 
     public function testFetchAllMethodReturnAssociativeData()
     {
-        $result = $this->db->cmd($this->selectAllSql())->fetchAll('assoc');
+        $result = $this->db->cmd($this->selectAllSql())->all('assoc');
         $this->assertTrue($this->app->arrIsAssoc($result[0]));
     }
 
     public function testFetchAllMethodReturnBothData()
     {
-        $result = $this->db->cmd($this->selectAllSql())->fetchAll('both');
+        $result = $this->db->cmd($this->selectAllSql())->all('both');
         $singleRecord = $result[0];
 
         $this->assertEquals($singleRecord['id'], $singleRecord[0]);
@@ -113,76 +100,76 @@ class CommandTest extends AbstractDatabaseTest
 
     public function testFetchAllMethodReturnObjectData()
     {
-        $result = $this->db->cmd($this->selectAllSql())->fetchAll('obj');
+        $result = $this->db->cmd($this->selectAllSql())->all('obj');
         $this->assertTrue($result[0] instanceof stdClass);
     }
 
     public function testFetchAllMethodReturnNumData()
     {
-        $result = $this->db->cmd($this->selectAllSql())->fetchAll('num');
+        $result = $this->db->cmd($this->selectAllSql())->all('num');
         $this->assertTrue($this->app->arrIsIndex($result[0]));
     }
 
     public function testFetchBothAllAliasMethod()
     {
-        $result1 = $this->db->cmd($this->selectAllSql())->fetchBothAll();
-        $result2 = $this->db->cmd($this->selectAllSql())->fetchAll('both');
+        $result1 = $this->db->cmd($this->selectAllSql())->bothAll();
+        $result2 = $this->db->cmd($this->selectAllSql())->all('both');
 
         $this->assertEquals($result1, $result2);
     }
 
     public function testFetchObjAllAliasMethod()
     {
-        $result1 = $this->db->cmd($this->selectAllSql())->fetchObjAll();
-        $result2 = $this->db->cmd($this->selectAllSql())->fetchAll('obj');
+        $result1 = $this->db->cmd($this->selectAllSql())->objAll();
+        $result2 = $this->db->cmd($this->selectAllSql())->all('obj');
 
         $this->assertEquals($result1, $result2);
     }
 
     public function testFetchNumAllAliasMethod()
     {
-        $result1 = $this->db->cmd($this->selectAllSql())->fetchNumAll();
-        $result2 = $this->db->cmd($this->selectAllSql())->fetchAll('num');
+        $result1 = $this->db->cmd($this->selectAllSql())->numAll();
+        $result2 = $this->db->cmd($this->selectAllSql())->all('num');
 
         $this->assertEquals($result1, $result2);
     }
 
     public function testFetchAssocAllAliasMethod()
     {
-        $result1 = $this->db->cmd($this->selectAllSql())->fetchAssocAll();
-        $result2 = $this->db->cmd($this->selectAllSql())->fetchAll('assoc');
+        $result1 = $this->db->cmd($this->selectAllSql())->assocAll();
+        $result2 = $this->db->cmd($this->selectAllSql())->all('assoc');
 
         $this->assertEquals($result1, $result2);
     }
 
     public function testFetchBothOneAliasMethod()
     {
-        $result1 = $this->db->cmd($this->selectAllSql())->fetchBothOne();
-        $result2 = $this->db->cmd($this->selectAllSql())->fetchOne('both');
+        $result1 = $this->db->cmd($this->selectAllSql())->bothOne();
+        $result2 = $this->db->cmd($this->selectAllSql())->one('both');
 
         $this->assertEquals($result1, $result2);
     }
 
     public function testFetchObjOneAliasMethod()
     {
-        $result1 = $this->db->cmd($this->selectAllSql())->fetchObjOne();
-        $result2 = $this->db->cmd($this->selectAllSql())->fetchOne('obj');
+        $result1 = $this->db->cmd($this->selectAllSql())->objOne();
+        $result2 = $this->db->cmd($this->selectAllSql())->one('obj');
 
         $this->assertEquals($result1, $result2);
     }
 
     public function testFetchNumOneAliasMethod()
     {
-        $result1 = $this->db->cmd($this->selectAllSql())->fetchNumOne();
-        $result2 = $this->db->cmd($this->selectAllSql())->fetchOne('num');
+        $result1 = $this->db->cmd($this->selectAllSql())->numOne();
+        $result2 = $this->db->cmd($this->selectAllSql())->one('num');
 
         $this->assertEquals($result1, $result2);
     }
 
     public function testFetchAssocOneAliasMethod()
     {
-        $result1 = $this->db->cmd($this->selectAllSql())->fetchAssocOne();
-        $result2 = $this->db->cmd($this->selectAllSql())->fetchOne('assoc');
+        $result1 = $this->db->cmd($this->selectAllSql())->assocOne();
+        $result2 = $this->db->cmd($this->selectAllSql())->one('assoc');
 
         $this->assertEquals($result1, $result2);
     }
@@ -190,19 +177,19 @@ class CommandTest extends AbstractDatabaseTest
     public function testFetchColumnMethod()
     {
         $sql = sprintf('select count(id) as total from %s', $this->table);
-        $total = $this->db->cmd($sql)->fetchColumn();
+        $total = $this->db->cmd($sql)->column();
         $this->assertEquals($total, count(array_values($this->data)));
     }
 
     public function testFetchClassAllMethod()
     {
-        $result = $this->db->cmd($this->selectAllSql())->fetchClassAll(Programming::class);
+        $result = $this->db->cmd($this->selectAllSql())->classAll(Programming::class);
         $this->assertEquals($result[0]->getId(), 1);
     }
 
     public function testFetchClassOneMethod()
     {
-        $record = $this->db->cmd($this->selectAllSql())->fetchClassOne(Programming::class);
+        $record = $this->db->cmd($this->selectAllSql())->classOne(Programming::class);
         $this->assertEquals($record->getId(), 1);
     }
 
@@ -212,7 +199,7 @@ class CommandTest extends AbstractDatabaseTest
     public function testFetchClassAllMethodException()
     {
         $class = '\App\Models\Mocks\UnknownClass';
-        $result = $this->db->cmd($this->selectAllSql())->fetchClassAll($class);
+        $result = $this->db->cmd($this->selectAllSql())->classAll($class);
     }
 
     /**
@@ -221,67 +208,24 @@ class CommandTest extends AbstractDatabaseTest
     public function testFetchClassOneMethodException()
     {
         $class = '\App\Models\Mocks\UnknownClass';
-        $result = $this->db->cmd($this->selectAllSql())->fetchClassOne($class);
+        $result = $this->db->cmd($this->selectAllSql())->classOne($class);
     }
 
-    public function testDebugSqlWithNamedPlacheholders()
+    public function testDebugSqlWithNamedParameters()
     {
-        $rawSql = $this->db
-        ->cmd('select * from programming where name = :name or id = :id')
-        ->batch([':name' => 'php', ':id' => 1])
-        ->debug();
+        $sql = 'select * from programming where name = :name or id = :id';
+        $params = [':name' => 'php', ':id' => 1];
+        $rawSql = $this->db->debug($sql, $params);
 
         $this->assertEquals("[SQL] select * from programming where name = 'php' or id = 1", $rawSql);
     }
 
-    public function testDebugSqlWithUnnamedPlacheholders()
+    public function testDebugSqlWithNamedSqlUnnamedParameters()
     {
-        $rawSql = $this->db
-        ->cmd('select * from programming where name = ? or id = ?')
-        ->batch(['php', 1])
-        ->debug();
+        $sql = 'select * from programming where name = ? or id = ?';
+        $params = ['php', 1];
+        $rawSql = $this->db->debug($sql, $params);
 
         $this->assertEquals("[SQL] select * from programming where name = 'php' or id = 1", $rawSql);
-    }
-
-    public function testDebugSqlWithNullValue()
-    {
-        $rawSql = $this->db
-        ->cmd('select * from programming where name = ? or id = ?')
-        ->batch([NULL, 1])
-        ->debug();
-
-        $this->assertEquals("[SQL] select * from programming where name = NULL or id = 1", $rawSql);
-    }
-
-    public function testDebugSqlWithBooleanValue()
-    {
-        $rawSql = $this->db
-        ->cmd('select * from programming where name = ? or id = ?')
-        ->batch([TRUE, 1])
-        ->debug();
-
-        $this->assertEquals("[SQL] select * from programming where name = TRUE or id = 1", $rawSql);
-    }
-
-    public function testDebugSqlWithBindValue()
-    {
-        $rawSql = $this->db
-        ->cmd('select * from programming where name = :name')
-        ->bind(':name', 'Go')
-        ->debug();
-
-        $this->assertEquals("[SQL] select * from programming where name = 'Go'", $rawSql);
-    }
-
-    public function testDebugSqlWithBindMultipleValues()
-    {
-        $rawSql = $this->db
-        ->cmd('select * from programming where name = :name or id = :id')
-        ->bind(':name', 'Go')
-        ->bind(':id', 1)
-        ->debug();
-
-        $this->assertEquals("[SQL] select * from programming where name = 'Go' or id = 1", $rawSql);
     }
 }

@@ -91,7 +91,7 @@ class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInt
     public function read($id)
     {
         $sql = sprintf('select value from %s where id = :id', $this->table);
-        $value = $this->db->cmd($sql, $this->readSlave)->bind(':id', $id)->fetchColumn();
+        $value = $this->db->cmd($sql, $this->readSlave)->bind(':id', $id)->column();
 
         if ($value) {
             return $this->decrypt($value);
@@ -121,7 +121,7 @@ class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInt
         // others
         } else {
             $sql = sprintf('select count(id) as total from %s where id = :id', $this->table);
-            $total = $this->db->cmd($sql)->bind(':id', $id)->fetchColumn();
+            $total = $this->db->cmd($sql)->bind(':id', $id)->column();
 
             if ($total > 0) {
                 $sql = sprintf('update %s set value = :value, timestamp = :timestamp where id = :id', $this->table);

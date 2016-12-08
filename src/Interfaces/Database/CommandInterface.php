@@ -43,14 +43,14 @@ interface CommandInterface
      *
      * @param mixed $type
      */
-    public function fetchAll($type);
+    public function all($type);
 
     /**
      * Fetch single record method based on type.
      *
      * @param mixed $type
      */
-    public function fetchOne($type);
+    public function one($type);
 
     /**
      * Fetch single record with class behavior.
@@ -58,7 +58,7 @@ interface CommandInterface
      * @param mixed $name
      * @param array $ctorArgs
      */
-    public function fetchClassOne($name, array $ctorArgs);
+    public function classOne($name, array $ctorArgs);
 
     /**
      * Fetch multiple records with class behavior.
@@ -66,19 +66,19 @@ interface CommandInterface
      * @param mixed $name
      * @param array $ctorArgs
      */
-    public function fetchClassAll($name, array $ctorArgs);
+    public function classAll($name, array $ctorArgs);
 
     /**
      * Fetch a column from the next row.
      *
      * @param integer $number
      */
-    public function fetchColumn($number);
+    public function column($number);
 
     /**
      * Fetch and get total number of rows.
      */
-    public function fetchTotalRows();
+    public function totalRows();
 
     /**
      * Bind parameters for prepared statement.
@@ -115,12 +115,12 @@ interface CommandInterface
     /**
      * Get the number of affected rows.
      */
-    public function getAffectedRows();
+    public function affectedRows();
 
     /**
      * Get inserted ID.
      */
-    public function getInsertedId();
+    public function insertedId();
 
     /**
      * Debug SQL statement.
@@ -344,14 +344,9 @@ interface CommandInterface
     public function isNotNull($column);
 
     /**
-     * Fetch all records method.
+     * Prepare query method.
      */
-    public function all();
-
-    /**
-     * Fetch one record method.
-     */
-    public function one();
+    public function query();
 
     /**
      * Execute query method.

@@ -51,16 +51,16 @@ class Command implements CommandInterface
      * @var array
      */
     private $fetchAlias = [
-        'fetchBothAll'  => 'both',
-        'fetchObjAll'   => 'obj',
-        'fetchNumAll'   => 'num',
-        'fetchAssocAll' => 'assoc',
-        'fetchBothOne'  => 'both',
-        'fetchObjOne'   => 'obj',
-        'fetchNumOne'   => 'num',
-        'fetchAssocOne' => 'assoc'
+        'bothAll'  => 'both',
+        'objAll'   => 'obj',
+        'numAll'   => 'num',
+        'assocAll' => 'assoc',
+        'bothOne'  => 'both',
+        'objOne'   => 'obj',
+        'numOne'   => 'num',
+        'assocOne' => 'assoc'
     ];
-
+    
     /**
      * Command class constructor.
      * Instantiate connection class and define table name if not specified.
@@ -153,7 +153,7 @@ class Command implements CommandInterface
      * @param  string $type
      * @return mixed
      */
-    public function fetchAll($type = 'assoc')
+    public function all($type = 'assoc')
     {
         $this->withFetchMode($type)->run();
         return $this->statement->fetchAll();
@@ -166,7 +166,7 @@ class Command implements CommandInterface
      * @param  string $type
      * @return mixed
      */
-    public function fetchOne($type = 'assoc')
+    public function one($type = 'assoc')
     {
         $this->withFetchMode($type)->run();
         return $this->statement->fetch();
@@ -179,7 +179,7 @@ class Command implements CommandInterface
      * @param  array $ctorArgs
      * @return mixed
      */
-    public function fetchClassOne($name, array $ctorArgs = [])
+    public function classOne($name, array $ctorArgs = [])
     {
         $this->withClassModeRun($name, $ctorArgs);
         return $this->statement->fetch();
@@ -192,7 +192,7 @@ class Command implements CommandInterface
      * @param  array $ctorArgs
      * @return mixed
      */
-    public function fetchClassAll($name, array $ctorArgs = [])
+    public function classAll($name, array $ctorArgs = [])
     {
         $this->withClassModeRun($name, $ctorArgs);
         return $this->statement->fetchAll();
@@ -204,7 +204,7 @@ class Command implements CommandInterface
      * @param  integer $number
      * @return mixed
      */
-    public function fetchColumn($number = 0)
+    public function column($number = 0)
     {
         $this->run();
         return $this->statement->fetchColumn($number);
@@ -215,7 +215,7 @@ class Command implements CommandInterface
      *
      * @return integer
      */
-    public function fetchTotalRows()
+    public function totalRows()
     {
         $this->run();
         return $this->statement->rowCount();
@@ -305,7 +305,7 @@ class Command implements CommandInterface
      *
      * @return mixed
      */
-    public function getInsertedId()
+    public function insertedId()
     {
         return $this->connection->getPdo()->lastInsertId();
     }
@@ -315,7 +315,7 @@ class Command implements CommandInterface
      *
      * @return integer
      */
-    public function getAffectedRows()
+    public function affectedRows()
     {
         return $this->statement->rowCount();
     }
@@ -420,10 +420,10 @@ class Command implements CommandInterface
      * eg:
      * for multiple records as object
      *
-     * `$this->cmd('...')->fetchObjAll()` is same with `$this->cmd('...')->fetchAll('obj')`
+     * `$this->cmd('...')->fetchObjAll()` is same with `$this->cmd('...')->all('obj')`
      *
      * for single record as object
-     * `$this->cmd('...')->fetchObjOne()` is same with `$this->cmd('...')->fetchOne('obj')`
+     * `$this->cmd('...')->fetchObjOne()` is same with `$this->cmd('...')->one('obj')`
      *
      * @param mixed $method
      * @param array $params
@@ -437,10 +437,10 @@ class Command implements CommandInterface
 
         // for single record
         if (strtolower(substr($method, -3)) === 'one') {
-            return $this->fetchOne($this->fetchAlias[$method]);
+            return $this->one($this->fetchAlias[$method]);
         }
 
         // for multiple records
-        return $this->fetchAll($this->fetchAlias[$method]);
+        return $this->all($this->fetchAlias[$method]);
     }
 }
