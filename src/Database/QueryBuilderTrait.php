@@ -552,39 +552,15 @@ trait QueryBuilderTrait
      * @param  boolean $slave
      * @return $this
      */
-    private function query($slave = true)
+    public function query($slave = true)
     {
-        $this->cmd($this->sql, $slave === true)
+        return $this->cmd($this->sql, $slave === true)
         ->batch($this->data)
         ->reset();
 
         return $this;
     }
 
-    /**
-     * Fetch records from prepared statement.
-     *
-     * @param  string  $type
-     * @param  boolean $slave
-     * @return mixed
-     */
-    public function all($type = 'assoc', $slave = true)
-    {
-        return $this->query($slave)->fetchAll($type);
-    }
-
-    /**
-     * Fetch one record from prepared statement.
-     *
-     * @param  string  $type
-     * @param  boolean $slave
-     * @return mixed
-     */
-    public function one($type = 'assoc', $slave = true)
-    {
-        return $this->query($slave)->fetchOne($type);
-    }
-    
     /**
      * Execute query by running sql statement while binding input data.
      * Clear stored data and sql statement string once executed.
@@ -593,10 +569,7 @@ trait QueryBuilderTrait
      */
     public function execute()
     {
-        $result = $this->cmd($this->sql)->batch($this->data)->run();
-        $this->reset();
-
-        return $result;
+        return $this->cmd($this->sql)->batch($this->data)->reset()->run();
     }
 
     /**
