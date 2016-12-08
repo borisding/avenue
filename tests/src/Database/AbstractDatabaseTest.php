@@ -10,7 +10,7 @@ abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase
 
     protected $db;
 
-    protected $table;
+    protected $table = 'programming';
 
     protected $data = [
         1 => 'PHP',
@@ -28,9 +28,6 @@ abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase
 
         $this->app = new App($this->config, uniqid(rand()));
         $this->db = new Command();
-
-        $this->db->setTable('programming');
-        $this->table = $this->db->getTable();
         $this->prepareMasterData();
     }
     
