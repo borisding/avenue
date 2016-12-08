@@ -30,9 +30,10 @@ class Session implements SessionInterface
     public function __construct(SessionHandlerInterface $handler)
     {
         $this->handler = $handler;
-        $this->setup()->start();
+        $this->setup();
+        $this->start();
     }
-
+    
     /**
      * Set session value.
      *
@@ -119,7 +120,7 @@ class Session implements SessionInterface
             return session_start();
         }
     }
-    
+
     /**
      * Generate unique random hashed string for CSRF token.
      *
@@ -156,7 +157,7 @@ class Session implements SessionInterface
     /**
      * Runtime and handlers settings before starting the session.
      *
-     * @return \Avenue\State\Session
+     * @return boolean
      */
     protected function setup()
     {
@@ -176,6 +177,6 @@ class Session implements SessionInterface
             [$this->handler, 'gc']
         );
 
-        return $this;
+        return true;
     }
 }
