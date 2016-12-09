@@ -10,6 +10,7 @@ use Avenue\Exception;
 use Avenue\Crypt;
 use Avenue\State\Cookie;
 use Avenue\State\Session;
+use Avenue\Tests\Mocks\SessionHandler;
 use Avenue\Tests\Reflection;
 
 class AppTest extends \PHPUnit_Framework_TestCase
@@ -272,16 +273,9 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
     private function getMockedSessionContainer($static = false)
     {
-        @session_start();
-
-        $mockedHandler = $this
-        ->getMockBuilder('\Avenue\State\SessionDatabaseHandler')
-        ->disableOriginalConstructor()
-        ->getMock();
-
         $app = new App($this->config, uniqid(rand()));
-        $app->singleton('fakeSession', function() use ($mockedHandler) {
-            return new Session($mockedHandler);
+        $app->singleton('fakeSession', function() {
+            return new Session(new SessionHandler());
         });
 
         if ($static) {
@@ -291,12 +285,18 @@ class AppTest extends \PHPUnit_Framework_TestCase
         return $app->fakeSession();
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testSingletonSessionClassInstance()
     {
         $session = $this->getMockedSessionContainer();
         $this->assertTrue($session instanceof Session);
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testSingletonSessionClassInstanceViaStaticMethod()
     {
         $session = $this->getMockedSessionContainer(true);
@@ -453,7 +453,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $this->loadTranslationFile();
         $this->assertEquals('您好， 先生', $this->app->t('nested2.hello0.hello1.hello2.hello3', ['先生']));
     }
-    
+
     public function testTranslationWithInvalidSource()
     {
         $this->loadTranslationFile();
