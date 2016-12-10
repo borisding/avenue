@@ -1,7 +1,7 @@
 <?php
 namespace Avenue\Interfaces\Database;
 
-interface CommandInterface
+interface TraceInterface
 {
     /**
      * Method for prepared statement.
@@ -182,7 +182,7 @@ interface CommandInterface
      * @param  array  $columns
      */
     public function upsert($table, $pk, array $columns);
-    
+
     /**
      * Sql delete method.
      *

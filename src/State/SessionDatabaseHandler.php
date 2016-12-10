@@ -3,7 +3,7 @@ namespace Avenue\State;
 
 use SessionHandlerInterface;
 use Avenue\App;
-use Avenue\Database\Command;
+use Avenue\Database\Trace;
 use Avenue\State\SessionHandler;
 
 class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInterface
@@ -11,7 +11,7 @@ class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInt
     /**
      * Database class instance.
      *
-     * @var \Avenue\Database\Command
+     * @var \Avenue\Database\Trace
      */
     protected $db;
 
@@ -51,13 +51,13 @@ class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInt
         $this->readSlave = $this->getConfig('readSlave') === true;
 
         // instantiate db instance
-        if (!$this->db instanceof Command) {
-            $this->db = new Command();
+        if (!$this->db instanceof Trace) {
+            $this->db = new Trace;
         }
 
         return true;
     }
-    
+
     /**
      * Invoked when session is being opened.
      * Occasionally, trigger the garbage collection.

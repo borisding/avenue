@@ -2,7 +2,7 @@
 namespace Avenue\Tests\Database;
 
 use Avenue\App;
-use Avenue\Database\Command;
+use Avenue\Database\Trace;
 
 abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase
 {
@@ -27,10 +27,10 @@ abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->app = new App($this->config, uniqid(rand()));
-        $this->db = new Command();
+        $this->db = new Trace;
         $this->prepareMasterData();
     }
-    
+
     protected function prepareMasterData()
     {
         $this->db->cmd($this->createTableSql())->run();

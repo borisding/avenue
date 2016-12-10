@@ -1,7 +1,7 @@
 <?php
 namespace Avenue;
 
-use Avenue\Database\Command as BaseModel;
+use Avenue\Database\Trace as BaseModel;
 
 abstract class Model extends BaseModel
 {
