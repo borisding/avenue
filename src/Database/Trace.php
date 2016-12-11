@@ -120,8 +120,10 @@ class Trace implements TraceInterface
      */
     public function __construct()
     {
-        $this->app = App::getInstance();
-
+        if (!$this->app instanceof App) {
+            $this->app = App::getInstance();
+        }
+        
         // create connection class instance if does not exist
         if (!$this->connection instanceof Connection) {
             $this->connection = new Connection($this->app);
