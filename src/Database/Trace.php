@@ -37,6 +37,13 @@ class Trace implements TraceInterface
     protected $pk = 'id';
 
     /**
+     * Foreign key.
+     *
+     * @var mixed
+     */
+    protected $fk;
+
+    /**
      * Connection class instance.
      *
      * @var \Avenue\Database\Connection
@@ -109,7 +116,7 @@ class Trace implements TraceInterface
 
     /**
      * Command class constructor.
-     * Instantiate connection class and define table name if not specified.
+     * Instantiate connection class.
      */
     public function __construct()
     {
@@ -146,7 +153,7 @@ class Trace implements TraceInterface
     {
         return $this
         ->select($columns)
-        ->from($this->table());
+        ->from($this->table);
     }
 
     /**
@@ -160,7 +167,7 @@ class Trace implements TraceInterface
     {
         return $this
         ->selectCount($columns)
-        ->from($this->table());
+        ->from($this->table);
     }
 
     /**
@@ -174,7 +181,7 @@ class Trace implements TraceInterface
     {
         return $this
         ->selectDistinct($columns)
-        ->from($this->table());
+        ->from($this->table);
     }
 
     /**
@@ -189,7 +196,7 @@ class Trace implements TraceInterface
     {
         return $this
         ->select($columns)
-        ->from($this->table())
+        ->from($this->table)
         ->where($this->pk, $id);
     }
 
@@ -203,11 +210,11 @@ class Trace implements TraceInterface
     {
         if (empty($id)) {
             return $this
-            ->insert($this->table(), $this->params)
+            ->insert($this->table, $this->params)
             ->execute();
         } else {
             return $this
-            ->update($this->table(), $this->params)
+            ->update($this->table, $this->params)
             ->where($this->pk, $id)
             ->execute();
         }
@@ -222,7 +229,7 @@ class Trace implements TraceInterface
     public function removeById($id)
     {
         return $this
-        ->delete($this->table())
+        ->delete($this->table)
         ->where($this->pk, $id)
         ->execute();
     }
@@ -235,25 +242,63 @@ class Trace implements TraceInterface
     public function removeAll()
     {
         return $this
-        ->delete($this->table())
+        ->delete($this->table)
         ->execute();
     }
 
     /**
-     * Decide table name for particular model class.
-     * Try to map with class name in lowercase instead
-     * if user defined `table` property does not exist.
+     * One-to-one relationship method.
+     * Targeted model class object need to be passed for mapping.
      *
-     * @return mixed
+     * @param  object  $targetObj
+     * @return $this
      */
-    public function table()
+    public function hasOne($targetObj)
     {
-        if (empty($this->table)) {
-            $namespace = get_class($this);
-            return $this->table = strtolower(substr($namespace, strrpos($namespace, '\\') + 1));
-        }
+        $tablePk = sprintf('%s.%s', $this->table, $this->pk);
+        $targetFk = sprintf('%s.%s', $targetObj->table, $targetObj->fk);
 
-        return $this->table;
+        return $this
+        ->innerJoin($targetObj->table, [$tablePk => $targetFk]);
+    }
+
+    /**
+     * One-to-many relationship method.
+     * Targeted model class object need to be passed for mapping.
+     *
+     * @param  object  $targetObj
+     * @return $this
+     */
+    public function hasMany($targetObj)
+    {
+        $tablePk = sprintf('%s.%s', $this->table, $this->pk);
+        $targetFk = sprintf('%s.%s', $targetObj->table, $targetObj->fk);
+
+        return $this
+        ->leftJoin($targetObj->table, [$tablePk => $targetFk]);
+    }
+
+    /**
+     * Many-to-many relationship method.
+     * Junction table, foreign keys (in associative array) and targeted model object to be provided.
+     * Key will be mapping current model's table, and value will be mapping targeted model.
+     *
+     * @param  mixed  $junctionTable
+     * @param  array   $junctionKeys
+     * @param  object  $targetObj
+     * @return $this
+     */
+    public function hasManyThrough($junctionTable, array $junctionKeys, $targetObj)
+    {
+        $currentPk = sprintf('%s.%s', $this->table, $this->pk);
+        $targetPk = sprintf('%s.%s', $targetObj->table, $targetObj->pk);
+
+        $currentJunctionFk = sprintf('%s.%s', $junctionTable, key($junctionKeys));
+        $targetJunctionFk = sprintf('%s.%s', $junctionTable, current($junctionKeys));
+
+        return $this
+        ->leftJoin($junctionTable, [$currentPk => $currentJunctionFk])
+        ->leftJoin($targetObj->table, [$targetJunctionFk => $targetPk]);
     }
 
     /**

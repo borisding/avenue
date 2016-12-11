@@ -445,7 +445,25 @@ interface TraceInterface
     public function removeAll();
 
     /**
-     * Table definition method.
+     * One-to-one relationship method.
+     *
+     * @param  object  $targetObj
      */
-    public function table();
+    public function hasOne($targetObj);
+
+    /**
+     * One-to-many relationship method.
+     *
+     * @param  object  $targetObj
+     */
+    public function hasMany($targetObj);
+
+    /**
+     * Many-to-many relationship method.
+     *
+     * @param  mixed  $junctionTable
+     * @param  array   $junctionKeys
+     * @param  object  $targetObj
+     */
+    public function hasManyThrough($junctionTable, array $junctionKeys, $targetObj);
 }
