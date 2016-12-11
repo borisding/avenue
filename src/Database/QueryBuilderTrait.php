@@ -4,35 +4,18 @@ namespace Avenue\Database;
 trait QueryBuilderTrait
 {
     /**
-     * SQL statement.
-     *
-     * @var string
-     */
-    private $sql;
-
-    /**
-     * SQL params data.
-     *
-     * @var array
-     */
-    private $data = [];
-
-    /**
-     * SQL where keyword exist.
-     *
-     * @var boolean
-     */
-    private $whereExist = false;
-
-    /**
      * Select clause builder. Default select all.
      * Multiple columns can be passed as indexed array.
      *
      * @param  mixed $columns
      * @return $this
      */
-    public function select($columns = '*')
+    public function select($columns = null)
     {
+        if (empty($columns)) {
+            $columns = '*';
+        }
+
         if (is_array($columns)) {
             $columns = implode(', ', $columns);
         }
@@ -48,8 +31,12 @@ trait QueryBuilderTrait
      * @param  mixed $columns
      * @return $this
      */
-    public function selectCount($columns = '*')
+    public function selectCount($columns = null)
     {
+        if (empty($columns)) {
+            $columns = '*';
+        }
+
         $this->setSql(
             (is_array($columns))
             ? sprintf('SELECT COUNT(%s) AS %s ', key($columns), current($columns))
@@ -68,6 +55,10 @@ trait QueryBuilderTrait
      */
     public function selectDistinct($columns)
     {
+        if (empty($columns)) {
+            $columns = '*';
+        }
+
         if (is_array($columns)) {
             $columns = implode(', ', $columns);
         }
@@ -437,9 +428,13 @@ trait QueryBuilderTrait
             $alias = current($table);
             $table = key($table);
 
-            $this->setSql(sprintf(' %s %s AS %s ON %s = %s', $type, $table, $alias, $column1, $column2));
+            $this->setSql(
+                sprintf(' %s %s AS %s ON %s = %s', $type, $table, $alias, $column1, $column2)
+            );
         } else {
-            $this->setSql(sprintf(' %s %s ON %s = %s', $type, $table, $column1, $column2));
+            $this->setSql(
+                sprintf(' %s %s ON %s = %s', $type, $table, $column1, $column2)
+            );
         }
 
         return $this;
@@ -621,79 +616,9 @@ trait QueryBuilderTrait
      */
     public function execute()
     {
-        return $this->cmd($this->sql)->batch($this->data)->reset()->run();
-    }
-
-    /**
-     * Assign input to data list based on the provided input.
-     *
-     * @param  mixed $input
-     */
-    public function setData($input)
-    {
-        if (is_array($input)) {
-            $this->data = array_merge($this->data, $input);
-        } else {
-            array_push($this->data, $input);
-        }
-    }
-
-    /**
-     * Return current stored data.
-     *
-     * @return array
-     */
-    public function getData()
-    {
-        return $this->data;
-    }
-
-    /**
-     * Build sql statement with clause provided.
-     *
-     * @param  mixed $clause
-     * @return string
-     */
-    public function setSql($clause)
-    {
-        return $this->sql .= $clause;
-    }
-
-    /**
-     * Return current built sql and clear it.
-     *
-     * @return string
-     */
-    public function getSql()
-    {
-        $sql = $this->sql;
-        $this->sql = '';
-        $this->whereExist = false;
-
-        return $sql;
-    }
-
-    /**
-     * Return the filled unnamed parameters based on the values.
-     *
-     * @param  array  $values
-     * @return string
-     */
-    public function unnamedParams(array $values)
-    {
-        return $this->app->fillRepeat('?', ', ', 0, count($values));
-    }
-
-    /**
-     * Reset persisted sql statement and data.
-     * @return $this;
-     */
-    public function reset()
-    {
-        $this->sql = '';
-        $this->data = [];
-        $this->whereExist = false;
-
-        return $this;
+        return $this->cmd($this->sql)
+        ->batch($this->data)
+        ->reset()
+        ->run();
     }
 }

@@ -3,6 +3,10 @@ namespace Avenue\Interfaces\Database;
 
 interface TraceInterface
 {
+    /*******************
+     * For SQL Command *
+     *******************/
+
     /**
      * Method for prepared statement.
      * Allowed to decide for master or slave.
@@ -129,6 +133,11 @@ interface TraceInterface
      * @param  array  $data
      */
     public function debug($sql, array $data);
+
+
+    /*********************
+     * For Query Builder *
+     *********************/
 
     /**
      * Sql select method.
@@ -391,10 +400,52 @@ interface TraceInterface
      */
     public function reset();
 
+
+    /*****************
+     * For Trace ORM *
+     *****************/
+
     /**
-     * Filling unnamed parameters based on the values.
-     *
-     * @param array $values
+     * Find record method.
      */
-    public function unnamedParams(array $values);
+    public function find();
+
+    /**
+     * Find with count records method.
+     */
+    public function findCount();
+
+    /**
+     * Find distinct records method.
+     */
+    public function findDistinct();
+
+    /**
+     * Find by ID method.
+     *
+     * @param  mixed $id
+     */
+    public function findById($id);
+
+    /**
+     * Save record method.
+     */
+    public function save();
+
+    /**
+     * Remove record by ID method.
+     *
+     * @param  mixed $id
+     */
+    public function removeById($id);
+
+    /**
+     * Remove all records method.
+     */
+    public function removeAll();
+
+    /**
+     * Table definition method.
+     */
+    public function table();
 }

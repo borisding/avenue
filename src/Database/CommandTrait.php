@@ -11,7 +11,7 @@ trait CommandTrait
      *
      * @param  mixed  $sql
      * @param  boolean $slave
-     * @return \Avenue\Database\Command
+     * @return $this
      */
     public function cmd($sql, $slave = false)
     {
@@ -144,7 +144,7 @@ trait CommandTrait
      * @param  mixed  $key
      * @param  mixed  $value
      * @param  boolean $reference
-     * @return \Avenue\Database\Command
+     * @return $this
      */
     public function bind($key, $value, $reference = false)
     {
@@ -165,7 +165,7 @@ trait CommandTrait
      *
      * @param  array  $params
      * @param  boolean $reference
-     * @return Avenue\Database\Command
+     * @return $this
      */
     public function batch(array $params = [], $reference = false)
     {
@@ -235,7 +235,7 @@ trait CommandTrait
     {
         return $this->statement->rowCount();
     }
-    
+
     /**
      * Set class mode and run targeted class.
      *
@@ -258,7 +258,7 @@ trait CommandTrait
      * @param  mixed $type
      * @param  mixed $className
      * @param  array $ctorArgs
-     * @return \Avenue\Database\Command
+     * @return $this
      */
     private function withFetchMode($type, $className = null, array $ctorArgs = [])
     {
