@@ -25,7 +25,7 @@ return [
     ],
     'session' => [
         // table name for database storage
-        'table' => 'session',
+        'table' => 'sessions',
 
         // session lifetime in seconds for garbage collector
         'lifetime' => 3600,
