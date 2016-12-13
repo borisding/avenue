@@ -30,6 +30,13 @@ class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInt
     protected $readSlave;
 
     /**
+     * Master driver is being used.
+     *
+     * @var mixed
+     */
+    protected $masterDriver;
+
+    /**
      * Weight of frequency to trigger garbage collection.
      *
      * @var integer
@@ -53,6 +60,11 @@ class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInt
         // instantiate db instance
         if (!$this->db instanceof Trace) {
             $this->db = new Trace;
+        }
+
+        // persist master driver
+        if (empty($this->masterDriver)) {
+            $this->masterDriver = $this->db->getConnectionInstance()->getMasterDriver();
         }
 
         return true;
@@ -119,7 +131,7 @@ class SessionDatabaseHandler extends SessionHandler implements SessionHandlerInt
         ];
 
         // mysql/maria
-        if ($this->db->getConnectionInstance()->getMasterDriver() == 'mysql') {
+        if ($this->masterDriver == 'mysql') {
             $sql = sprintf('replace into %s values (:id, :value, :timestamp)', $this->table);
         // others
         } else {
