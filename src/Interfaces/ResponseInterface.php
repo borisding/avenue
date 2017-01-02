@@ -119,4 +119,11 @@ interface ResponseInterface
      * Return true or false for cached content.
      */
     public function hasCache();
+
+    /**
+     * Convert array to JSON.
+     *
+     * @param  array  $data
+     */
+    public function toJson(array $data);
 }

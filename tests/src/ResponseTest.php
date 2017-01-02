@@ -183,4 +183,19 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         Reflection::setPropertyValue($this->response, 'boolCache', true);
         $this->assertTrue($this->response->hasCache());
     }
+
+    public function testConvertArrayToJson()
+    {
+        $arrayData = ['name' => 'borisding', 'job' => 'web developer', 'country' => 'Malaysia'];
+        $jsonData = $this->response->toJson($arrayData);
+        $this->assertEquals('{"name":"borisding","job":"web developer","country":"Malaysia"}', $jsonData);
+    }
+    
+    public function testToJsonSetContentTypeAsApplicationJson()
+    {
+        $arrayData = ['a' => 1, 'b' => 2];
+        $jsonData = $this->response->toJson($arrayData);
+        $jsonHeader = $this->response->getHeader('Content-Type');
+        $this->assertEquals($jsonHeader, 'application/json; charset=utf-8');
+    }
 }

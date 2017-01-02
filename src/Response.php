@@ -367,6 +367,20 @@ class Response implements ResponseInterface
     }
 
     /**
+     * Shortcut method to convert array to JSON data.
+     *
+     * @param  array  $data
+     * @param  integer $options
+     * @param  integer $depth
+     * @return string
+     */
+    public function toJson(array $data = [], $options = 0, $depth = 512)
+    {
+        $this->withJsonHeader();
+        return json_encode($data, $options, $depth);
+    }
+    
+    /**
      * Get the GMT date/time based on the timestamp.
      *
      * @param  mixed $timestamp
