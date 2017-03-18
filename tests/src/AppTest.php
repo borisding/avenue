@@ -54,8 +54,12 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testDuplicateServiceName()
     {
         $app = new App($this->config, 'test-duplicate');
-        $app->container('test', function() {});
-        $app->container('test', function() {});
+        $app->container('test', function () {
+            // your code here
+        });
+        $app->container('test', function () {
+            // your code here
+        });
     }
 
     /**
@@ -96,7 +100,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
     public function testContainer()
     {
-        $this->app->container('calculation', function() {
+        $this->app->container('calculation', function () {
             $result = 1 + 1;
             return $result;
         });
@@ -106,14 +110,14 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
     public function testContainerReceivedAppInCallback()
     {
-        $this->app->container('testapp', function($app) {
+        $this->app->container('testapp', function ($app) {
             $this->assertTrue($app instanceof App);
         });
     }
 
     public function testSingletonContainer()
     {
-        $this->app->singleton('object', function() {
+        $this->app->singleton('object', function () {
             return new \stdClass;
         });
 
@@ -122,7 +126,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
     public function testSingletonContainerReceivedAppInCallback()
     {
-        $this->app->singleton('testapp', function($app) {
+        $this->app->singleton('testapp', function ($app) {
             $this->assertTrue($app instanceof App);
             return new \stdClass;
         });
@@ -130,7 +134,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
     public function testContainerWithAppInstancePassedToCallback()
     {
-        $this->app->container('getAppInstance', function() {
+        $this->app->container('getAppInstance', function () {
             return $this->app;
         });
 
@@ -143,7 +147,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testContainerInvalidNameException()
     {
-        $this->app->container('my.calculation', function() {
+        $this->app->container('my.calculation', function () {
             $result = 1 + 1;
             return $result;
         });
@@ -164,7 +168,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testSingletonThrowsExceptionForNonObject()
     {
-        $this->app->singleton('classObjectNotExist', function($app) {
+        $this->app->singleton('classObjectNotExist', function ($app) {
             return 'I am just a string.';
         });
 
@@ -230,7 +234,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testSingletonExceptionClassInstance()
     {
         $app = new App($this->config, uniqid(rand()));
-        $app->singleton('fakeException', function() use ($app) {
+        $app->singleton('fakeException', function () use ($app) {
             return new Exception($app, new \Exception('test exception'));
         });
 
@@ -242,7 +246,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testSingletonExceptionClassInstanceViaStaticMethod()
     {
         $app = new App($this->config, uniqid(rand()));
-        $app->singleton('fakeException', function() use ($app) {
+        $app->singleton('fakeException', function () use ($app) {
             return new Exception($app, new \Exception('test exception'));
         });
 
@@ -274,7 +278,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     private function getMockedSessionContainer($static = false)
     {
         $app = new App($this->config, uniqid(rand()));
-        $app->singleton('fakeSession', function() {
+        $app->singleton('fakeSession', function () {
             return new Session(new SessionHandler());
         });
 
@@ -305,7 +309,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
     public function testResolveServiceWithParametersInCallback()
     {
-        $this->app->container('greeting', function($app, $param1, $param2) {
+        $this->app->container('greeting', function ($app, $param1, $param2) {
             return sprintf('%s %s', $param1, $param2);
         });
 
@@ -433,15 +437,21 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testTranslationWithPlaceholders()
     {
         $this->loadTranslationFile();
-        $this->assertEquals('嗨！小明. 你见到小强了吗？', $this->app->t('text.hasPlaceholders', ['小明', '小强']));
+        $this->assertEquals(
+            '嗨！小明. 你见到小强了吗？',
+            $this->app->t('text.hasPlaceholders', ['小明', '小强'])
+        );
     }
 
     public function testTranslationWithInvalidPlaceholers()
     {
         $this->loadTranslationFile();
-        $this->assertEquals('嗨！{ 0 }. 你见到{ 1}了吗？', $this->app->t('text.invalidPlaceholders', ['小明', '小强']));
+        $this->assertEquals(
+            '嗨！{ 0 }. 你见到{ 1}了吗？',
+            $this->app->t('text.invalidPlaceholders', ['小明', '小强'])
+        );
     }
-
+    
     public function testTranslationWithDeepNesting()
     {
         $this->loadTranslationFile();

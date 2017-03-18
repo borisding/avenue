@@ -1,8 +1,6 @@
 <?php
 namespace Avenue\Tests;
 
-require_once 'Mocks/FooController.php';
-
 use Avenue\App;
 use Avenue\Controller;
 use App\Controllers\FooController;
@@ -13,6 +11,8 @@ class ControllerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        require_once 'Mocks/FooController.php';
+        
         $this->app = new App(['timezone' => 'UTC'], uniqid(rand()));
         $this->app->route()->setParam('controller', 'foo');
         $this->app->route()->setParam('action', 'test');

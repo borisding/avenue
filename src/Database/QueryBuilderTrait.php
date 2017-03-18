@@ -206,7 +206,6 @@ trait QueryBuilderTrait
 
         // with helper or callback function for grouping
         if ($numArgs === 1) {
-
             if (is_callable($args[0])) {
                 $this->setSql('(');
                 $args[0]($this);

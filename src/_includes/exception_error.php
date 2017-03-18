@@ -50,7 +50,7 @@
             <h1>Oops! Something went wrong in application.</h1>
             <p>The application doesn't work as expected due to the following error:</p>
             <h3>Error Details</h3>
-            <?
+            <?php
                 $appId = $this->getAppId();
                 $exceptionClass = $this->getExceptionClass();
                 $codeInfo = $this->getCode();
@@ -64,12 +64,12 @@
                         <td><label>App ID:</label></td>
                         <td><?= $appId; ?></td>
                     </tr>
-                    <? if ($codeInfo): ?>
+                    <?php if ($codeInfo) : ?>
                     <tr>
                         <td><label>Code:</label></td>
                         <td><?= $this->app->e($codeInfo); ?></td>
                     </tr>
-                    <? endif; ?>
+                    <?php endif; ?>
                     <tr>
                         <td><label>Type:</label></td>
                         <td><?= $this->app->e($exceptionClass); ?></td>

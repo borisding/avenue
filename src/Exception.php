@@ -65,7 +65,7 @@ class Exception implements ExceptionInterface
 
         return $response->write(ob_get_clean())->render();
     }
-    
+
     /**
      * Return the base Exception class instance.
      *
@@ -151,6 +151,6 @@ class Exception implements ExceptionInterface
      */
     public function getAppId()
     {
-       return $this->app->getId();
+        return $this->app->getId();
     }
 }

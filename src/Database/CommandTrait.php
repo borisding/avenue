@@ -171,13 +171,11 @@ trait CommandTrait
     {
         // for ':param' binding
         if ($this->app->arrIsAssoc($params)) {
-
             foreach ($params as $key => $value) {
                 $this->bind($key, $value, $reference);
             }
         // for '?' binding
         } else {
-
             foreach ($params as $column => $value) {
                 $this->bind(++$column, $value, $reference);
             }

@@ -44,8 +44,13 @@ class ViewTest extends \PHPUnit_Framework_TestCase
      */
     public function testRegisteredHelperNameAlreadyExistedException()
     {
-        $this->view->register('test', function() {});
-        $this->view->register('test', function() {});
+        $this->view->register('test', function () {
+            // your code here
+        });
+
+        $this->view->register('test', function () {
+            // your code here
+        });
     }
 
     /**
@@ -53,7 +58,9 @@ class ViewTest extends \PHPUnit_Framework_TestCase
      */
     public function testRegisteredHelperInvalidNameException()
     {
-        $this->view->register('~!@#test', function() {});
+        $this->view->register('~!@#test', function () {
+            // your code here
+        });
     }
 
     /**
@@ -66,10 +73,10 @@ class ViewTest extends \PHPUnit_Framework_TestCase
 
     public function testRegisteredHelperReturnsUpperCase()
     {
-        $this->view->register('upper', function() {
+        $this->view->register('upper', function () {
             return strtoupper('boris');
         });
-
+        
         $output = $this->view->upper();
         $this->assertEquals('BORIS', $output);
     }

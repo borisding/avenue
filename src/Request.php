@@ -205,7 +205,7 @@ class Request implements RequestInterface
     {
         $headers = [];
 
-        $getHeaderName = function($key) {
+        $getHeaderName = function ($key) {
             $key = str_replace('_', ' ', $key);
             $key = ucwords(strtolower($key));
             $key = str_replace(' ', '-', $key);
@@ -214,9 +214,7 @@ class Request implements RequestInterface
         };
 
         if (is_array($_SERVER)) {
-
             foreach ($_SERVER as $key => $value) {
-
                 if (substr($key, 0, 5) == 'HTTP_') {
                     $key = $getHeaderName(substr($key, 5));
                     $headers[$key] = $value;
@@ -351,7 +349,6 @@ class Request implements RequestInterface
         $ipAddress = $this->app->arrGet('REMOTE_ADDR', $_SERVER);
 
         foreach (['HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR'] as $key) {
-
             if (!empty($this->app->arrGet($key, $_SERVER))) {
                 $ipAddress = $this->app->arrGet($key, $_SERVER);
                 break;
@@ -360,7 +357,7 @@ class Request implements RequestInterface
 
         return $ipAddress;
     }
-
+    
     /**
      * Return the raw data via request body.
      * Not applicable for enctype="multipart/form-data".

@@ -118,11 +118,9 @@ class Response implements ResponseInterface
     public function sendDefinedHeaders()
     {
         foreach ($this->headers as $type => $format) {
-
             // processed as multiple headers for the same type
             // when format is provided as index based array
             if ($this->app->arrIsIndex($format)) {
-
                 foreach ($format as $value) {
                     header($type . ': ' . $value, false);
                 }
@@ -379,7 +377,7 @@ class Response implements ResponseInterface
         $this->withJsonHeader();
         return json_encode($data, $options, $depth);
     }
-    
+
     /**
      * Get the GMT date/time based on the timestamp.
      *

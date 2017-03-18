@@ -73,8 +73,9 @@ class View implements ViewInterface
         ob_start();
 
         // store file name to temp variable and later usage
-        $this->target = $filename; unset($filename);
-
+        $this->target = $filename;
+        unset($filename);
+        
         // merge with direct variables assignment to object
         // the latter will overwrite the first
         extract(array_merge($this->params, $params));

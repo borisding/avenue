@@ -103,7 +103,7 @@ class QueryBuilderTest extends AbstractDatabaseTest
         $result = $this->db->select()
         ->from($this->table)
         ->where('id', 1)
-        ->orWhere(function($query) {
+        ->orWhere(function ($query) {
             $query->where('id', 2)->andWhere('name', '=', 'JavaScript');
         })
         ->query()
@@ -257,7 +257,9 @@ class QueryBuilderTest extends AbstractDatabaseTest
         ->where($this->db->in('t1.id', [1, 2, 3]))
         ->getSql();
 
-        $expected = 'SELECT t1.name, t2.name FROM programming AS t1 RIGHT OUTER JOIN programming AS t2 ON t1.id = t2.id WHERE t1.id IN (?, ?, ?)';
+        $expected = 'SELECT t1.name, t2.name FROM programming AS t1 ';
+        $expected .= 'RIGHT OUTER JOIN programming AS t2 ON t1.id = t2.id WHERE t1.id IN (?, ?, ?)';
+
         $this->assertEquals($expected, $sql);
     }
 
@@ -270,7 +272,9 @@ class QueryBuilderTest extends AbstractDatabaseTest
         ->where($this->db->in('t1.id', [1, 2, 3]))
         ->getSql();
 
-        $expected = 'SELECT t1.name, t2.name FROM programming AS t1 FULL OUTER JOIN programming AS t2 ON t1.id = t2.id WHERE t1.id IN (?, ?, ?)';
+        $expected = 'SELECT t1.name, t2.name FROM programming AS t1 ';
+        $expected .= 'FULL OUTER JOIN programming AS t2 ON t1.id = t2.id WHERE t1.id IN (?, ?, ?)';
+
         $this->assertEquals($expected, $sql);
     }
 

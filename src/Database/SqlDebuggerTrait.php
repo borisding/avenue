@@ -14,7 +14,6 @@ trait SqlDebuggerTrait
     public function debug($sql, array $data)
     {
         foreach ($data as $param => $value) {
-
             if (is_string($value)) {
                 $value = sprintf("'%s'", $value);
             } elseif (is_bool($value)) {

@@ -223,7 +223,7 @@ class App implements AppInterface
 
         return static::$singletons[$id][$name] = $callback;
     }
-    
+
     /**
      * Resolve registered service via callback by providing its name.
      *
@@ -444,7 +444,8 @@ class App implements AppInterface
      * @param  array $values
      * @return mixed
      */
-    public function t($source, array $values = []) {
+    public function t($source, array $values = [])
+    {
         $language = $this->language;
         $translation = $this->arrGet($source, $language, $source);
 
@@ -454,9 +455,7 @@ class App implements AppInterface
             $proceed = count($oriSourceKeys) === count($this->arrRemoveEmpty($sourceKeys));
 
             if ($proceed) {
-
                 foreach ($sourceKeys as $key) {
-
                     if (!isset($language[$key])) {
                         return $source;
                     }
@@ -472,7 +471,6 @@ class App implements AppInterface
 
         // replace placeholder(s) with values, if any
         if (!empty($values)) {
-
             foreach ($values as $index => $value) {
                 $translation = str_replace(sprintf('{%d}', $index), $value, $translation);
             }
@@ -539,7 +537,7 @@ class App implements AppInterface
      */
     protected function registerExceptionHandler()
     {
-        set_exception_handler(function(\Exception $exception) {
+        set_exception_handler(function (\Exception $exception) {
             $this->exception = $exception;
             $code = $this->exception->getCode();
             $statusCode = $this->response->getStatusCode();
@@ -567,7 +565,7 @@ class App implements AppInterface
      */
     protected function registerErrorHandler()
     {
-        set_error_handler(function($severity, $message, $file, $line) {
+        set_error_handler(function ($severity, $message, $file, $line) {
             if (!(error_reporting() & $severity)) {
                 return;
             }
@@ -583,35 +581,35 @@ class App implements AppInterface
      */
     protected function registerServices()
     {
-        $this->singleton('request', function($app) {
+        $this->singleton('request', function ($app) {
             return new Request($app);
         });
 
-        $this->singleton('response', function($app) {
+        $this->singleton('response', function ($app) {
             return new Response($app);
         });
 
-        $this->singleton('route', function($app) {
+        $this->singleton('route', function ($app) {
             return new Route($app);
         });
 
-        $this->singleton('view', function($app) {
+        $this->singleton('view', function ($app) {
             return new View($app);
         });
 
-        $this->singleton('exception', function($app) {
+        $this->singleton('exception', function ($app) {
             return new Exception($app, $app->exception);
         });
 
-        $this->singleton('crypt', function($app) {
+        $this->singleton('crypt', function ($app) {
             return new Crypt($app->getSecret());
         });
 
-        $this->singleton('cookie', function($app) {
+        $this->singleton('cookie', function ($app) {
             return new Cookie($app, $app->getConfig('state')['cookie']);
         });
 
-        $this->singleton('session', function($app) {
+        $this->singleton('session', function ($app) {
             return new Session(new SessionDatabaseHandler($app, $app->getConfig('state')['session']));
         });
 

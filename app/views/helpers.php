@@ -8,16 +8,16 @@
 $view = $app->view();
 
 // base url helper
-$view->register('baseUrl', function() use ($app) {
+$view->register('baseUrl', function () use ($app) {
     return $app->request()->getBaseUrl();
 });
 
 // get app version
-$view->register('version', function() use ($app) {
+$view->register('version', function () use ($app) {
     return $app->getAppVersion();
 });
 
 // translation helper
-$view->register('t', function($source, array $value = []) use ($app) {
+$view->register('t', function ($source, array $value = []) use ($app) {
     return $app->t($source, $value);
 });

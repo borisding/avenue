@@ -136,7 +136,6 @@ class Route implements RouteInterface
         }
 
         foreach ($this->filters as $token => $regx) {
-
             if (substr($token, 0, 1) === '@') {
                 $key = substr($token, 1, strlen($token));
 
@@ -221,9 +220,11 @@ class Route implements RouteInterface
             $filteredArrControllers = array_values(array_filter($arrControllers));
 
             if (count($arrControllers) !== count($filteredArrControllers)) {
-                throw new \InvalidArgumentException(sprintf('Invalid format of @resource token value [%s]!', $resource));
+                throw new \InvalidArgumentException(
+                    sprintf('Invalid format of @resource token value [%s]!', $resource)
+                );
             }
-
+            
             if (in_array($controller, $arrControllers)) {
                 $this->setParam('action', $requestMethod);
             }
@@ -270,7 +271,6 @@ class Route implements RouteInterface
 
         // check prefix
         if (!empty($prefix)) {
-            
             if (strpos($prefix, $fs) !== false) {
                 $namespace .= implode($bs, array_map('ucfirst', explode($fs, $prefix))) . $bs;
             } else {

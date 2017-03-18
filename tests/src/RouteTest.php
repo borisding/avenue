@@ -4,9 +4,6 @@ namespace Avenue\Tests;
 use Avenue\App;
 use Avenue\Tests\Mocks\Http;
 
-require_once 'Mocks/FooController.php';
-require_once 'Mocks/BarController.php';
-
 class RouteTest extends \PHPUnit_Framework_TestCase
 {
     private $app;
@@ -25,11 +22,14 @@ class RouteTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->app = new App([
-            'timezone' => 'UTC',
-            'defaultController' => 'default'
-        ], uniqid(rand()));
+        require_once 'Mocks/FooController.php';
+        require_once 'Mocks/BarController.php';
 
+        $this->app = new App(
+            ['timezone' => 'UTC', 'defaultController' => 'default'],
+            uniqid(rand())
+        );
+        
         $this->http = new Http();
         $this->route = $this->app->route();
 

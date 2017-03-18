@@ -39,12 +39,10 @@ trait StringHelperTrait
         $escapedData = [];
 
         if ($this->arrIsAssoc($data)) {
-
             foreach ($data as $key => $value) {
                 $escapedData[$key] = $this->escape($value);
             }
         } else {
-
             for ($i = 0, $len = count($data); $i < $len; $i++) {
                 $escapedData[$i] = $this->escape($data[$i]);
             }
@@ -149,5 +147,4 @@ trait StringHelperTrait
     {
         return implode($delimiter, array_fill($start, $end, $value));
     }
-
 }
