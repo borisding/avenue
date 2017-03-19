@@ -1,8 +1,9 @@
 <?php
-/****************************************
- * Built in PHP server for development. *
- ****************************************/
+/***********************************************
+ * Application entry script and bootstrapping. *
+ ***********************************************/
 
+// check if running via built in server
 if (php_sapi_name() === 'cli-server') {
     $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
